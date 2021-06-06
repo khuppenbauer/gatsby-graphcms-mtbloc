@@ -1,0 +1,29 @@
+{
+  "name": "gatsby-graphcms-mtbloc",
+  "description": "Gatsby MTB Loc",
+  "version": "1.0.0",
+  "author": "Kerstin Huppenbauer <k.huppenbauer@web.de>",
+  "dependencies": {
+    "@sentry/gatsby": "^6.5.1",
+    "@sentry/tracing": "^6.5.1",
+    "dotenv": "^10.0.0",
+    "gatsby": "^3.6.2",
+    "gatsby-plugin-image": "^1.6.0",
+    "gatsby-plugin-sentry": "^1.0.1",
+    "gatsby-source-graphcms": "^2.5.2",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1"
+  },
+  "devDependencies": {
+    "prettier": "2.2.1"
+  },
+  "scripts": {
+    "build": "gatsby build",
+    "develop": "gatsby develop",
+    "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md}\"",
+    "start": "npm run develop",
+    "serve": "gatsby serve",
+    "clean": "gatsby clean",
+    "test": "echo \"Write tests! -> https://gatsby.dev/unit-testing\" && exit 1"
+  }
+}
