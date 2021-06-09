@@ -1,21 +1,50 @@
-require('dotenv').config();
+require("dotenv").config()
 
 module.exports = {
+  siteMetadata: {
+    title: `MTB Loc`,
+    description: `MTB Loc Prototype`,
+    author: `Kerstin Huppenbauer`,
+  },
   plugins: [
+    `gatsby-plugin-react-helmet`,
+    `gatsby-plugin-image`,
     {
-      resolve: 'gatsby-source-graphcms',
+      resolve: `gatsby-source-filesystem`,
       options: {
-        endpoint: process.env.GRAPHCMS_ENDPOINT,
-        token: process.env.GRAPHCMS_TOKEN,
-        locales: ['de'],
-        stages: ['PUBLISHED'],
+        name: `images`,
+        path: `${__dirname}/src/images`,
       },
     },
     {
-      resolve: 'gatsby-plugin-sentry',
+      resolve: "gatsby-source-graphcms",
+      options: {
+        endpoint: process.env.GRAPHCMS_ENDPOINT,
+        token: process.env.GRAPHCMS_TOKEN,
+        locales: ["de"],
+        stages: ["PUBLISHED"],
+      },
+    },
+    `gatsby-transformer-sharp`,
+    `gatsby-plugin-sharp`,
+    {
+      resolve: `gatsby-plugin-manifest`,
+      options: {
+        name: `gatsby-starter-default`,
+        short_name: `starter`,
+        start_url: `/`,
+        background_color: `#663399`,
+        theme_color: `#663399`,
+        display: `minimal-ui`,
+        icon: `src/images/gatsby-icon.png`,
+      },
+    },
+    {
+      resolve: "gatsby-plugin-sentry",
       options: {
         dsn: process.env.SENTRY_DSN,
       },
     },
+    `gatsby-plugin-offline`,
   ],
 }
