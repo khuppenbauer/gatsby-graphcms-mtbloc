@@ -1,81 +1,86 @@
 import * as React from "react"
 
 const Footer = () => (
-  <footer class="text-gray-400 bg-gray-900 body-font">
-    <div class="container px-5 py-8 mx-auto flex items-center sm:flex-row flex-col">
-      <span class="flex title-font font-medium items-center md:justify-start justify-center text-white">
+  <footer className="text-gray-400 bg-gray-900 body-font">
+    <div className="container px-5 py-8 mx-auto flex items-center sm:flex-row flex-col">
+      <span className="flex title-font font-medium items-center md:justify-start justify-center text-white">
         <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          stroke="currentColor"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          class="w-10 h-10 text-white p-2 bg-blue-500 rounded-full"
+          className="h-12 w-12 text-white"
+          width="24"
+          height="24"
           viewBox="0 0 24 24"
+          strokeWidth="2"
+          stroke="currentColor"
+          fill="none"
+          strokeLinecap="round"
+          strokeLinejoin="round"
         >
-          <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
+          <path stroke="none" d="M0 0h24v24H0z" />
+          <circle cx="5" cy="18" r="3" />
+          <circle cx="19" cy="18" r="3" />
+          <polyline points="12 19 12 15 9 12 14 8 16 11 19 11" />
+          <circle cx="17" cy="5" r="1" />
         </svg>
-        <span class="ml-3 text-xl">MTB Loc</span>
+        <span className="ml-3 text-xl">MTB Loc</span>
       </span>
-      <p class="text-sm text-gray-400 sm:ml-4 sm:pl-4 sm:border-l-2 sm:border-gray-800 sm:py-2 sm:mt-0 mt-4">
+      <p className="text-sm text-gray-400 sm:ml-4 sm:pl-4 sm:border-l-2 sm:border-gray-800 sm:py-2 sm:mt-0 mt-4">
         © 2021 MTB Loc —
         <a
           href="https://twitter.com/khuppenbauer"
-          class="text-gray-500 ml-1"
+          className="text-gray-500 ml-1"
           target="_blank"
           rel="noopener noreferrer"
         >
           @khuppenbauer
         </a>
       </p>
-      <span class="inline-flex sm:ml-auto sm:mt-0 mt-4 justify-center sm:justify-start">
-        <span class="text-gray-400">
+      <span className="inline-flex sm:ml-auto sm:mt-0 mt-4 justify-center sm:justify-start">
+        <span className="text-gray-400">
           <svg
             fill="currentColor"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            class="w-5 h-5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            className="w-5 h-5"
             viewBox="0 0 24 24"
           >
             <path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"></path>
           </svg>
         </span>
-        <span class="ml-3 text-gray-400">
+        <span className="ml-3 text-gray-400">
           <svg
             fill="currentColor"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            class="w-5 h-5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            className="w-5 h-5"
             viewBox="0 0 24 24"
           >
             <path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z"></path>
           </svg>
         </span>
-        <span class="ml-3 text-gray-400">
+        <span className="ml-3 text-gray-400">
           <svg
             fill="none"
             stroke="currentColor"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            class="w-5 h-5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            className="w-5 h-5"
             viewBox="0 0 24 24"
           >
             <rect width="20" height="20" x="2" y="2" rx="5" ry="5"></rect>
             <path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37zm1.5-4.87h.01"></path>
           </svg>
         </span>
-        <span class="ml-3 text-gray-400">
+        <span className="ml-3 text-gray-400">
           <svg
             fill="currentColor"
             stroke="currentColor"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="0"
-            class="w-5 h-5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="0"
+            className="w-5 h-5"
             viewBox="0 0 24 24"
           >
             <path
