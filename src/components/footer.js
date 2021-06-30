@@ -1,6 +1,7 @@
 import * as React from "react"
+import { Link } from "gatsby"
 
-const Footer = () => (
+const Footer = ({ siteTitle }) => (
   <footer className="text-gray-400 bg-gray-900 body-font">
     <div className="container px-5 py-8 mx-auto flex items-center sm:flex-row flex-col">
       <span className="flex title-font font-medium items-center md:justify-start justify-center text-white">
@@ -21,7 +22,11 @@ const Footer = () => (
           <polyline points="12 19 12 15 9 12 14 8 16 11 19 11" />
           <circle cx="17" cy="5" r="1" />
         </svg>
-        <span className="ml-3 text-xl">MTB Loc</span>
+        <span className="ml-3 text-xl">
+          <Link to="/" style={{ color: `white`, textDecoration: `none` }}>
+              {siteTitle}
+            </Link>
+        </span>
       </span>
       <p className="text-sm text-gray-400 sm:ml-4 sm:pl-4 sm:border-l-2 sm:border-gray-800 sm:py-2 sm:mt-0 mt-4">
         © 2021 MTB Loc —
