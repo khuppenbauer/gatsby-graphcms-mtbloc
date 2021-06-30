@@ -11,20 +11,26 @@ import convert from "convert-units"
 
 const Tracks = ({ name, description, section, tracks }) => (
   <section className="text-gray-400 bg-gray-900 body-font">
-    <div className="container px-5 py-24 mx-auto">
-      { name || description ? (
-      <div className="flex flex-wrap w-full mb-20">
-        <div className="lg:w-1/2 w-full mb-6 lg:mb-0">
-          <h1 className="sm:text-3xl text-2xl font-medium title-font mb-2 text-white">
-          <Link to={section.url} style={{ color: `white`, textDecoration: `none` }}>
-            {section.label}
-          </Link> / {name}</h1>
-          <div className="h-1 w-20 bg-blue-500 rounded"></div>
+    <div className="container px-5 py-12 mx-auto">
+      {name || description ? (
+        <div className="flex flex-wrap w-full mb-20">
+          <div className="lg:w-1/2 w-full mb-6 lg:mb-0">
+            <h1 className="sm:text-3xl text-2xl font-medium title-font mb-2 text-white">
+              <Link
+                to={section.url}
+                style={{ color: `white`, textDecoration: `none` }}
+              >
+                {section.label}
+              </Link>{" "}
+              / {name}
+            </h1>
+            <div className="h-1 w-20 bg-blue-500 rounded"></div>
+          </div>
+          <p className="lg:w-1/2 w-full leading-relaxed text-gray-400 text-opacity-90">
+            {description}
+          </p>
         </div>
-        <p className="lg:w-1/2 w-full leading-relaxed text-gray-400 text-opacity-90">{description}</p>
-      </div>
-      ) : null
-      }
+      ) : null}
       <div className="flex flex-wrap -m-4">
         {tracks.map(track => {
           const {
@@ -96,6 +102,6 @@ const Tracks = ({ name, description, section, tracks }) => (
       </div>
     </div>
   </section>
-);
+)
 
 export default Tracks

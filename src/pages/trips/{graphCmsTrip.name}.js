@@ -3,14 +3,19 @@ import { graphql } from "gatsby"
 
 import Layout from "../../components/layout"
 import Seo from "../../components/seo"
-import Tracks from "../../components/tracks"
+import Tracks from "../../views/tracks"
 
 const TripPage = ({ data: { trip } }) => {
   const { name, description, tracks } = trip
   return (
     <Layout>
       <Seo title={name} />
-      <Tracks section={{url: "/trips", label: "Trips"}} name={name} description={description} tracks={tracks} />
+      <Tracks
+        section={{ url: "/trips", label: "Trips" }}
+        name={name}
+        description={description}
+        tracks={tracks}
+      />
     </Layout>
   )
 }
