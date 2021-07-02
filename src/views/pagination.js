@@ -20,50 +20,48 @@ const Tracks = ({ currentPage, numPages }) => {
   }
   return (
     <div className="bg-gray-900 px-4 py-3 flex flex-col items-center justify-between sm:px-6">
-      <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
-        <nav
-          className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px"
-          aria-label="Pagination"
+      <nav
+        className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px"
+        aria-label="Pagination"
+      >
+        <Link
+          to="/tracks"
+          className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-800 text-sm font-medium text-gray-400 hover:bg-gray-800"
         >
-          <Link
-            to="/tracks"
-            className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-800 text-sm font-medium text-gray-400 hover:bg-gray-800"
-          >
-            <ChevronDoubleLeftIcon className="h-5 w-5" aria-hidden="true" />
-          </Link>
-          <Link
-            to={`/tracks/${previous}`}
-            className="relative inline-flex items-center px-2 py-2 border border-gray-800 text-sm font-medium text-gray-400 hover:bg-gray-800"
-          >
-            <ChevronLeftIcon className="h-5 w-5" aria-hidden="true" />
-          </Link>
-          {Array.from({ length: paginationLength }, (_, i) => {
-            const j = startPage + i
-            const active = j === currentPage ? "bg-gray-800" : ""
-            return (
-              <Link
-                key={`pagination-number${j}`}
-                to={`/tracks/${j < 2 ? "" : j}`}
-                className={`${active} relative inline-flex items-center px-2 py-2 border border-gray-800 text-sm font-medium text-gray-400 hover:bg-gray-800`}
-              >
-                {j}
-              </Link>
-            )
-          })}
-          <Link
-            to={`/tracks/${next}`}
-            className="relative inline-flex items-center px-2 py-2 border border-gray-800 text-sm font-medium text-gray-400 hover:bg-gray-800"
-          >
-            <ChevronRightIcon className="h-5 w-5" aria-hidden="true" />
-          </Link>
-          <Link
-            to={`/tracks/${numPages}`}
-            className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-800 text-sm font-medium text-gray-400 hover:bg-gray-800"
-          >
-            <ChevronDoubleRightIcon className="h-5 w-5" aria-hidden="true" />
-          </Link>
-        </nav>
-      </div>
+          <ChevronDoubleLeftIcon className="h-5 w-5" aria-hidden="true" />
+        </Link>
+        <Link
+          to={`/tracks/${previous}`}
+          className="relative inline-flex items-center px-2 py-2 border border-gray-800 text-sm font-medium text-gray-400 hover:bg-gray-800"
+        >
+          <ChevronLeftIcon className="h-5 w-5" aria-hidden="true" />
+        </Link>
+        {Array.from({ length: paginationLength }, (_, i) => {
+          const j = startPage + i
+          const active = j === currentPage ? "bg-gray-800" : ""
+          return (
+            <Link
+              key={`pagination-number${j}`}
+              to={`/tracks/${j < 2 ? "" : j}`}
+              className={`${active} relative inline-flex items-center px-2 py-2 border border-gray-800 text-sm font-medium text-gray-400 hover:bg-gray-800`}
+            >
+              {j}
+            </Link>
+          )
+        })}
+        <Link
+          to={`/tracks/${next}`}
+          className="relative inline-flex items-center px-2 py-2 border border-gray-800 text-sm font-medium text-gray-400 hover:bg-gray-800"
+        >
+          <ChevronRightIcon className="h-5 w-5" aria-hidden="true" />
+        </Link>
+        <Link
+          to={`/tracks/${numPages}`}
+          className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-800 text-sm font-medium text-gray-400 hover:bg-gray-800"
+        >
+          <ChevronDoubleRightIcon className="h-5 w-5" aria-hidden="true" />
+        </Link>
+      </nav>
     </div>
   )
 }
