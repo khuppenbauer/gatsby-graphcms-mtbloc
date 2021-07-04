@@ -9,11 +9,13 @@ import {
 } from "@heroicons/react/outline"
 import convert from "convert-units"
 
+const assetBaseUrl = "https://media.graphcms.com/"
+
 const Tracks = ({ name, description, section, tracks }) => (
   <section className="text-gray-400 bg-gray-900 body-font">
     <div className="container px-5 py-12 mx-auto">
       {name || description ? (
-        <div className="flex flex-wrap w-full mb-20">
+        <div className="flex flex-wrap w-full mb-10">
           <div className="lg:w-1/2 w-full mb-6 lg:mb-0">
             <h1 className="sm:text-3xl text-2xl font-medium title-font mb-2 text-white">
               <Link
@@ -51,13 +53,15 @@ const Tracks = ({ name, description, section, tracks }) => (
             distance.val.toFixed(2)
           )
           const unit = distance.unit
+          const handle = staticImageUrl.replace(assetBaseUrl, "")
+          const asset = `${assetBaseUrl}resize=w:320,h:240,fit:crop/auto_image/compress/${handle}`
           return (
             <div key={id} className="p-4 md:w-1/3">
               <div className="h-full border-2 border-gray-800 rounded-lg overflow-hidden">
                 <Link to={gatsbyPath}>
                   <img
-                    className="lg:h-48 md:h-36 w-full object-cover object-center"
-                    src={staticImageUrl}
+                    className="w-full object-cover object-center"
+                    src={asset}
                     alt={name}
                     width="320"
                     height="240"
