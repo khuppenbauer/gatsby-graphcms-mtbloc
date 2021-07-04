@@ -37,7 +37,7 @@ module.exports = {
         background_color: `#111827`,
         theme_color: `#111827`,
         display: `minimal-ui`,
-        icon: `src/images/noun_GPS_1461739.png`,
+        icon: `src/images/logo.svg`,
       },
     },
     {

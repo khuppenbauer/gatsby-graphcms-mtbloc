@@ -24,10 +24,10 @@ const IndexPage = () => {
             </div>
             <div className="p-4 md:w-1/3">
               <div className="h-full border-2 border-gray-800 rounded-lg overflow-hidden">
-                <Link to="/regions">
+                <Link to="/trips">
                   <div className="p-6">
                     <h1 className="title-font text-lg font-medium text-white mb-3">
-                      Regionen
+                      Trips
                     </h1>
                   </div>
                 </Link>
@@ -35,10 +35,10 @@ const IndexPage = () => {
             </div>
             <div className="p-4 md:w-1/3">
               <div className="h-full border-2 border-gray-800 rounded-lg overflow-hidden">
-                <Link to="/trips">
+                <Link to="/regions">
                   <div className="p-6">
                     <h1 className="title-font text-lg font-medium text-white mb-3">
-                      Trips
+                      Regionen
                     </h1>
                   </div>
                 </Link>

@@ -21,6 +21,13 @@ const Layout = ({ children }) => {
           title
         }
       }
+      allGraphCmsPage {
+        nodes {
+          id
+          slug
+          title
+        }
+      }
     }
   `)
 
@@ -28,7 +35,10 @@ const Layout = ({ children }) => {
     <>
       <Header siteTitle={data.site.siteMetadata?.title} />
       <main>{children}</main>
-      <Footer siteTitle={data.site.siteMetadata?.title} />
+      <Footer
+        siteTitle={data.site.siteMetadata?.title}
+        metaPages={data.allGraphCmsPage.nodes}
+      />
     </>
   )
 }
