@@ -7,10 +7,6 @@ import Tracks from "../views/tracks"
 import Pagination from "../views/pagination"
 
 export default class TracksList extends React.Component {
-  generateLink = data => {
-    console.log(data)
-  }
-
   render() {
     const { data, pageContext } = this.props
     const { tracks } = data

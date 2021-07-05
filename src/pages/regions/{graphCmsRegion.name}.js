@@ -10,12 +10,7 @@ const RegionPage = ({ data: { region } }) => {
   return (
     <Layout>
       <Seo title={name} />
-      <Tracks
-        section={{ url: "/regions", label: "Regionen" }}
-        name={name}
-        description={description}
-        tracks={tracks}
-      />
+      <Tracks name={name} description={description} tracks={tracks} />
     </Layout>
   )
 }

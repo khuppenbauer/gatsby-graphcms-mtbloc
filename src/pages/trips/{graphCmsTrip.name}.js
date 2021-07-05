@@ -10,12 +10,7 @@ const TripPage = ({ data: { trip } }) => {
   return (
     <Layout>
       <Seo title={name} />
-      <Tracks
-        section={{ url: "/trips", label: "Trips" }}
-        name={name}
-        description={description}
-        tracks={tracks}
-      />
+      <Tracks name={name} description={description} tracks={tracks} />
     </Layout>
   )
 }

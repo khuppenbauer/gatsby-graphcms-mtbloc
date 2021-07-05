@@ -1,8 +1,9 @@
 import * as React from "react"
-import { Link, graphql } from "gatsby"
+import { graphql } from "gatsby"
 
 import Layout from "../components/layout"
 import Seo from "../components/seo"
+import Teaser from "../views/teaser"
 
 const RegionsPage = ({ data: { regions } }) => {
   return (
@@ -14,17 +15,7 @@ const RegionsPage = ({ data: { regions } }) => {
             {regions.nodes.map(region => {
               const { id, name, tracks, gatsbyPath } = region
               return tracks.length > 0 ? (
-                <div key={id} className="p-4 md:w-1/3">
-                  <div className="h-full border-2 border-gray-800 rounded-lg overflow-hidden">
-                    <Link to={gatsbyPath}>
-                      <div className="p-6">
-                        <h1 className="title-font text-lg font-medium text-white mb-3">
-                          {name}
-                        </h1>
-                      </div>
-                    </Link>
-                  </div>
-                </div>
+                <Teaser key={id} slug={gatsbyPath} title={name} />
               ) : null
             })}
           </div>
