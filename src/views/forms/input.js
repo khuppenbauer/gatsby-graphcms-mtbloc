@@ -1,10 +1,10 @@
 import React from "react"
 import { Field, ErrorMessage } from "formik"
 
-const Input = ({ name, label }) => (
+const Input = ({ name, label, mandatory }) => (
   <div className="relative mb-4">
     <label htmlFor={name} className="leading-7 text-sm text-gray-400">
-      {label}:
+      {label}{mandatory ? ' * ' : ' '}:
     </label>
     <Field
       name={name}
