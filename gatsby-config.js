@@ -3,8 +3,8 @@ require("dotenv").config()
 module.exports = {
   flags: { PRESERVE_WEBPACK_CACHE: true, PRESERVE_FILE_DOWNLOAD_CACHE: true },
   siteMetadata: {
-    title: `MTB Loc`,
-    description: `MTB Loc Prototype`,
+    title: `MapSeven`,
+    description: `MapSeven`,
     author: `Kerstin Huppenbauer`,
   },
   plugins: [
@@ -31,8 +31,8 @@ module.exports = {
     {
       resolve: `gatsby-plugin-manifest`,
       options: {
-        name: `MTB Loc`,
-        short_name: `MTB Loc`,
+        name: `MapSeven`,
+        short_name: `MapSeven`,
         start_url: `/`,
         background_color: `#111827`,
         theme_color: `#111827`,
