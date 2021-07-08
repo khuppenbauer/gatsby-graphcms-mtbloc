@@ -33,7 +33,7 @@ const Track = ({ track }) => {
   const handle = staticImageUrl.replace(assetBaseUrl, "")
   const asset = `${assetBaseUrl}resize=w:320,h:240,fit:crop/auto_image/compress/${handle}`
   return (
-    <div key={id} className="p-4 md:w-1/3">
+    <div key={id} className="p-4 md:w-1/3 xl:w-1/5">
       <div className="h-full border-2 border-gray-800 rounded-lg overflow-hidden">
         <Link to={gatsbyPath}>
           <img
