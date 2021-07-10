@@ -81,14 +81,6 @@ const Footer = ({ siteTitle, metaPages }) => (
                 </li>
               )
             })}
-            <li>
-              <Link
-                to="/meta/contact"
-                className="text-gray-400 hover:text-white"
-              >
-                Kontakt
-              </Link>
-            </li>
           </nav>
         </div>
       </div>
