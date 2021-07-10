@@ -17,7 +17,7 @@ const Footer = ({ siteTitle, metaPages }) => (
             height="60"
             fillRule="evenodd" 
             clipRule="evenodd" 
-            fill="#ffffff"
+            fill="#9CA3AF"
           >
             <path 
               fillRule="evenodd" 
@@ -34,7 +34,7 @@ const Footer = ({ siteTitle, metaPages }) => (
                 y="0px" 
                 fillRule="evenodd" 
                 clipRule="evenodd" 
-                fill="#ffffff"
+                fill="#9CA3AF"
               >
                 <g>
                   <path d="M66 75c50,6 116,16 116,25 0,7 -28,12 -109,14 -32,0 -49,4 -57,8 -8,6 10,11 14,12l-19 0c-30,-24 57,-28 62,-28 75,-2 92,-4 92,-6 0,-6 -134,-25 -165,-25l20 -12 4 7 8 -15 18 -12 14 10 17 -29 14 18 18 -25 54 58 -101 0z" />
@@ -43,7 +43,7 @@ const Footer = ({ siteTitle, metaPages }) => (
               </svg>
             </g>
           </svg>
-          <span className="ml-3 text-xl">{siteTitle}</span>
+          <span className="ml-3 text-xl text-gray-400">{siteTitle}</span>
         </Link>
       </div>
       <div className="flex-grow flex flex-wrap md:pl-20 -mb-10 md:mt-0 mt-10 md:text-left text-center">
@@ -97,15 +97,19 @@ const Footer = ({ siteTitle, metaPages }) => (
             target="_blank"
             rel="noreferrer"
           >
-            <svg
-              fill="currentColor"
-              strokeLinecap="round"
+            <svg 
+              class="h-6 w-6 text-gray-400"  
+              width="24" 
+              height="24" 
+              viewBox="0 0 24 24" 
+              strokeWidth="2" 
+              stroke="currentColor" 
+              fill="none" 
+              strokeLinecap="round" 
               strokeLinejoin="round"
-              strokeWidth="2"
-              className="w-5 h-5"
-              viewBox="0 0 24 24"
             >
-              <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+              <path stroke="none" d="M0 0h24v24H0z"/>
+              <path d="M7 10v4h3v7h4v-7h3l1 -4h-4v-2a1 1 0 0 1 1 -1h3v-4h-3a5 5 0 0 0 -5 5v2h-3" />
             </svg>
           </a>
           <a
@@ -114,15 +118,19 @@ const Footer = ({ siteTitle, metaPages }) => (
             target="_blank"
             rel="noreferrer"
           >
-            <svg
-              fill="currentColor"
-              strokeLinecap="round"
+            <svg 
+              class="h-6 w-6 text-gray-400"  
+              width="24" 
+              height="24" 
+              viewBox="0 0 24 24" 
+              strokeWidth="2" 
+              stroke="currentColor" 
+              fill="none" 
+              strokeLinecap="round" 
               strokeLinejoin="round"
-              strokeWidth="2"
-              className="w-5 h-5"
-              viewBox="0 0 24 24"
             >
-              <path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z"></path>
+              <path stroke="none" d="M0 0h24v24H0z"/>
+              <path d="M22 4.01c-1 .49-1.98.689-3 .99-1.121-1.265-2.783-1.335-4.38-.737S11.977 6.323 12 8v1c-3.245.083-6.135-1.395-8-4 0 0-4.182 7.433 4 11-1.872 1.247-3.739 2.088-6 2 3.308 1.803 6.913 2.423 10.034 1.517 3.58-1.04 6.522-3.723 7.651-7.742a13.84 13.84 0 0 0 .497 -3.753C20.18 7.773 21.692 5.25 22 4.009z" />
             </svg>
           </a>
           <a
@@ -131,15 +139,16 @@ const Footer = ({ siteTitle, metaPages }) => (
             target="_blank"
             rel="noreferrer"
           >
-            <svg
-              fill="currentColor"
-              strokeLinecap="round"
+            <svg 
+              class="h-6 w-6 text-gray-400"  
+              viewBox="0 0 24 24"  
+              fill="none"  
+              stroke="currentColor"  
+              strokeWidth="2"  
+              strokeLinecap="round"  
               strokeLinejoin="round"
-              strokeWidth="2"
-              className="w-5 h-5"
-              viewBox="0 0 24 24"
             >
-              <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12" />
+              <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
             </svg>
           </a>
         </span>

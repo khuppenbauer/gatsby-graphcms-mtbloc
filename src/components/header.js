@@ -15,7 +15,7 @@ const Header = ({ siteTitle }) => (
           height="60"
           fillRule="evenodd" 
           clipRule="evenodd" 
-          fill="#ffffff"
+          fill="#9CA3AF"
         >
           <path 
             fillRule="evenodd" 
@@ -32,7 +32,7 @@ const Header = ({ siteTitle }) => (
               y="0px" 
               fillRule="evenodd" 
               clipRule="evenodd" 
-              fill="#ffffff"
+              fill="#9CA3AF"
             >
               <g>
                 <path d="M66 75c50,6 116,16 116,25 0,7 -28,12 -109,14 -32,0 -49,4 -57,8 -8,6 10,11 14,12l-19 0c-30,-24 57,-28 62,-28 75,-2 92,-4 92,-6 0,-6 -134,-25 -165,-25l20 -12 4 7 8 -15 18 -12 14 10 17 -29 14 18 18 -25 54 58 -101 0z" />
@@ -41,7 +41,7 @@ const Header = ({ siteTitle }) => (
             </svg>
           </g>
         </svg>
-        <span className="ml-3 text-xl">{siteTitle}</span>
+        <span className="ml-3 text-xl text-gray-400">{siteTitle}</span>
       </Link>
       <nav className="md:ml-auto flex flex-wrap items-center text-base justify-center">
         <Link to="/tracks" className="mr-5 hover:text-white">
