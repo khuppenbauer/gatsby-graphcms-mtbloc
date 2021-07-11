@@ -103,7 +103,7 @@ const FormView = ({ form }) => {
 				)
 			} else {
 				return (
-					<div className="flex flex-wrap w-full mb-10">
+					<div className="flex flex-col w-full lg:w-1/2 mb-10">
 						<Form name={name} key={`form-${id}`} data-netlify={true}>
 							{
 								fields.map(field => {

@@ -98,7 +98,7 @@ const Footer = ({ siteTitle, metaPages }) => (
             rel="noreferrer"
           >
             <svg 
-              class="h-6 w-6 text-gray-400"  
+              className="h-6 w-6 text-gray-400"  
               width="24" 
               height="24" 
               viewBox="0 0 24 24" 
@@ -119,7 +119,7 @@ const Footer = ({ siteTitle, metaPages }) => (
             rel="noreferrer"
           >
             <svg 
-              class="h-6 w-6 text-gray-400"  
+              className="h-6 w-6 text-gray-400"  
               width="24" 
               height="24" 
               viewBox="0 0 24 24" 
@@ -140,7 +140,7 @@ const Footer = ({ siteTitle, metaPages }) => (
             rel="noreferrer"
           >
             <svg 
-              class="h-6 w-6 text-gray-400"  
+              className="h-6 w-6 text-gray-400"  
               viewBox="0 0 24 24"  
               fill="none"  
               stroke="currentColor"  
