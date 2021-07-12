@@ -3,6 +3,7 @@ import { graphql } from "gatsby"
 
 import Layout from "../../components/layout"
 import Seo from "../../components/seo"
+import Section from "../../components/section"
 import Tracks from "../../views/tracks"
 
 const RegionPage = ({ data: { region } }) => {
@@ -10,7 +11,9 @@ const RegionPage = ({ data: { region } }) => {
   return (
     <Layout>
       <Seo title={name} />
-      <Tracks name={name} description={description} tracks={tracks} />
+      <Section>
+        <Tracks name={name} description={description} tracks={tracks} />
+      </Section>
     </Layout>
   )
 }

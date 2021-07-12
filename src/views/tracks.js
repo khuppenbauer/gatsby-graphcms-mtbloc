@@ -75,9 +75,9 @@ const Track = ({ track }) => {
   )
 }
 
-const Tracks = ({ name, description, tracks }) => (
-  <section className="text-gray-400 bg-gray-900 body-font">
-    <div className="container px-5 py-12 mx-auto">
+const Tracks = ({ name, description, tracks }) => {
+  return (
+    <>
       {name || description ? (
         <Headline title={name} description={description} />
       ) : null}
@@ -87,8 +87,8 @@ const Tracks = ({ name, description, tracks }) => (
           return <Track key={id} track={track} />
         })}
       </div>
-    </div>
-  </section>
-)
+    </>
+  )
+}
 
 export default Tracks

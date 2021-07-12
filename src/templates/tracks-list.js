@@ -3,6 +3,7 @@ import { graphql } from "gatsby"
 
 import Layout from "../components/layout"
 import Seo from "../components/seo"
+import Section from "../components/section"
 import Tracks from "../views/tracks"
 import Pagination from "../views/pagination"
 
@@ -14,7 +15,9 @@ export default class TracksList extends React.Component {
     return (
       <Layout>
         <Seo title="Tracks" />
-        <Tracks tracks={tracks.nodes} />
+        <Section>
+          <Tracks tracks={tracks.nodes} />
+        </Section>
         <Pagination
           limit={limit}
           skip={skip}

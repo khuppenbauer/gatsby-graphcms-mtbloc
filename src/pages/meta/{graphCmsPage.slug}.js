@@ -4,28 +4,24 @@ import { graphql } from "gatsby"
 
 import Layout from "../../components/layout"
 import Seo from "../../components/seo"
+import Section from "../../components/section"
 import Headline from "../../views/headline"
 import Form from "../../views/form"
-
 
 const MetaPage = ({ data: { page } }) => {
   const { title, content, form } = page
   return (
     <Layout>
       <Seo title={title} />
-      <section className="text-gray-400 bg-gray-900 body-font">
-        <div className="container px-5 py-12 mx-auto">
-          <Headline title={title} />
-          <div className="flex flex-wrap w-full mb-10">
-            <ReactMarkdown className="leading-relaxed text-base">
-              {content.markdown}
-            </ReactMarkdown>
-          </div>
-          {
-            form ? <Form form={form} /> : null
-          }
+      <Section>
+        <Headline title={title} />
+        <div className="flex flex-wrap w-full mb-10">
+          <ReactMarkdown className="leading-relaxed text-base">
+            {content.markdown}
+          </ReactMarkdown>
         </div>
-      </section>
+        {form ? <Form form={form} /> : null}
+      </Section>
     </Layout>
   )
 }

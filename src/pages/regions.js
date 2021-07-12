@@ -3,24 +3,23 @@ import { graphql } from "gatsby"
 
 import Layout from "../components/layout"
 import Seo from "../components/seo"
+import Section from "../components/section"
 import Teaser from "../views/teaser"
 
 const RegionsPage = ({ data: { regions } }) => {
   return (
     <Layout>
       <Seo title="Regionen" />
-      <section className="text-gray-400 bg-gray-900 body-font">
-        <div className="container px-5 py-12 mx-auto">
-          <div className="flex flex-wrap -m-4">
-            {regions.nodes.map(region => {
-              const { id, name, tracks, gatsbyPath } = region
-              return tracks.length > 0 ? (
-                <Teaser key={id} slug={gatsbyPath} title={name} />
-              ) : null
-            })}
-          </div>
+      <Section>
+        <div className="flex flex-wrap -m-4">
+          {regions.nodes.map(region => {
+            const { id, name, tracks, gatsbyPath } = region
+            return tracks.length > 0 ? (
+              <Teaser key={id} slug={gatsbyPath} title={name} />
+            ) : null
+          })}
         </div>
-      </section>
+      </Section>
     </Layout>
   )
 }
