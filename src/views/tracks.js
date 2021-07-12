@@ -18,12 +18,16 @@ const Track = ({ track }) => {
     startState,
     startCountry,
     staticImageUrl,
-    totalElevationGain,
-    totalElevationLoss,
   } = track
   const distance = convert(track.distance).from("m").toBest()
   const number = new Intl.NumberFormat("de-DE").format(distance.val.toFixed(2))
   const unit = distance.unit
+  const totalElevationGain = new Intl.NumberFormat("de-DE").format(
+    track.totalElevationGain.toFixed(2)
+  )
+  const totalElevationLoss = new Intl.NumberFormat("de-DE").format(
+    track.totalElevationLoss.toFixed(2)
+  )
   const handle = staticImageUrl.replace(assetBaseUrl, "")
   const asset = `${assetBaseUrl}resize=w:320,h:240,fit:crop/auto_image/compress/${handle}`
   return (

@@ -1,44 +1,136 @@
 import React from "react"
 import { graphql } from "gatsby"
+import convert from "convert-units"
+import { Play, Square, ArrowUpRight, ArrowDownRight, ArrowRight, ChevronUp, ChevronDown, Download } from "react-feather"
 
 import Layout from "../../components/layout"
 import Seo from "../../components/seo"
+import Section from "../../components/section"
+import Mapbox from "../../components/mapbox"
 import Headline from "../../views/headline"
+import Tracks from "../../views/tracks"
 
 const TrackPage = ({ data: { track } }) => {
   const {
     name,
     startCity,
-    startTime,
-    totalElevationGain,
-    totalElevationLoss,
-    distance,
-    elevHigh,
-    elevLow,
+    startState,
+    startCountry,
+    endCity,
+    endState,
+    endCountry,
+    trip,
+    gpxFileSmallUrl,
+    gpxFileUrl,
+    geoJson,
   } = track
+  const distance = convert(track.distance).from("m").toBest()
+  const number = new Intl.NumberFormat("de-DE").format(distance.val.toFixed(2))
+  const unit = distance.unit
+  const totalElevationGain = new Intl.NumberFormat("de-DE").format(
+    track.totalElevationGain.toFixed(2)
+  )
+  const totalElevationLoss = new Intl.NumberFormat("de-DE").format(
+    track.totalElevationLoss.toFixed(2)
+  )
+  const elevHigh = new Intl.NumberFormat("de-DE").format(
+    track.elevHigh.toFixed(2)
+  )
+  const elevLow = new Intl.NumberFormat("de-DE").format(
+    track.elevLow.toFixed(2)
+  )
   return (
     <Layout>
       <Seo title={name} />
-      <section className="text-gray-400 bg-gray-900 body-font">
-        <div className="container px-5 py-12 mx-auto">
-          <Headline title={name} />
-          <div className="flex flex-wrap w-full mb-20">
-            Start: {startCity}
-            <br />
-            Datum: {startTime}
-            <br />
-            Höhenmeter: {totalElevationGain}
-            <br />
-            Tiefenmeter: {totalElevationLoss}
-            <br />
-            Distanz: {distance}
-            <br />
-            Höchster Punkt: {elevHigh}
-            <br />
-            Tiefster Punkt: {elevLow}
+      <Section>
+        <Headline title={name} />
+        <div className="mb-10">
+          <Mapbox data={geoJson} />
+        </div>
+        <Headline title="Infos" />
+        <div className="flex flex-wrap w-full mb-10">
+          <div className="pr-4 pb-4 sm:w-1/2 w-full">
+            <div className="bg-gray-800 rounded flex p-4 h-full items-center">
+              <Play className="text-blue-500 h-8 w-8" />
+              <span className="title-font font-medium text-white px-2">
+                {startCountry} / {startState} / {startCity}
+              </span>
+            </div>
           </div>
-        </div>  
-      </section>
+          <div className="pr-4 pb-4 sm:w-1/2 w-full">
+            <div className="bg-gray-800 rounded flex p-4 h-full items-center">
+              <Square className="text-blue-500 h-8 w-8" />
+              <span className="title-font font-medium text-white px-2">
+                {endCountry} / {endState} / {endCity}
+              </span>
+            </div>
+          </div>
+          <div className="pr-4 pb-4 sm:w-1/2 w-full">
+            <div className="bg-gray-800 rounded flex p-4 h-full items-center">
+              <ArrowUpRight className="text-blue-500 h-8 w-8" />
+              <span className="title-font font-medium text-white px-2">
+                {totalElevationGain} m
+              </span>
+            </div>
+          </div>
+          <div className="pr-4 pb-4 sm:w-1/2 w-full">
+            <div className="bg-gray-800 rounded flex p-4 h-full items-center">
+              <ArrowDownRight className="text-blue-500 h-8 w-8" />
+              <span className="title-font font-medium text-white px-2">
+                {totalElevationLoss} m
+              </span>
+            </div>
+          </div>
+          <div className="pr-4 pb-4 sm:w-1/2 w-full">
+            <div className="bg-gray-800 rounded flex p-4 h-full items-center">
+              <ChevronUp className="text-blue-500 h-8 w-8" />
+              <span className="title-font font-medium text-white px-2">
+                {elevHigh} m
+              </span>
+            </div>
+          </div>
+          <div className="pr-4 pb-4 sm:w-1/2 w-full">
+            <div className="bg-gray-800 rounded flex p-4 h-full items-center">
+              <ChevronDown className="text-blue-500 h-8 w-8" />
+              <span className="title-font font-medium text-white px-2">
+                {elevLow} m
+              </span>
+            </div>
+          </div>
+          <div className="pr-4 pb-4 sm:w-1/2 w-full">
+            <div className="bg-gray-800 rounded flex p-4 h-full items-center">
+              <ArrowRight className="text-blue-500 h-8 w-8" />
+              <span className="title-font font-medium text-white px-2">
+                {number} {unit}
+              </span>
+            </div>
+          </div>
+        </div>
+        <Headline title="Downloads" />
+        <div className="flex flex-wrap w-full mb-10">
+          <div className="pr-4 pb-4 sm:w-1/2 w-full">
+            <a href={gpxFileUrl}>
+              <div className="bg-gray-800 rounded flex p-4 h-full items-center">
+                <Download className="text-white h-8 w-8" />
+                <span className="title-font font-medium text-white px-2">
+                  GPX
+                </span>
+              </div>
+            </a>
+          </div>
+          <div className="pr-4 pb-4 sm:w-1/2 w-full">
+            <a href={gpxFileSmallUrl}>
+              <div className="bg-gray-800 rounded flex p-4 h-full items-center">
+                <Download className="text-white h-8 w-8" />
+                <span className="title-font font-medium text-white px-2">
+                  GPX komprimiert
+                </span>
+              </div>
+            </a>
+          </div>
+        </div>
+        {trip ? <Tracks name={trip.name} tracks={trip.tracks} /> : null}
+      </Section>
     </Layout>
   )
 }
@@ -48,12 +140,47 @@ export const pageQuery = graphql`
     track: graphCmsTrack(name: { eq: $name }) {
       name
       startCity
-      startTime
+      startState
+      startCountry
+      endCity
+      endState
+      endCountry
       totalElevationGain
       totalElevationLoss
       distance
       elevHigh
       elevLow
+      trip {
+        name
+        tracks {
+          id
+          gatsbyPath(filePath: "/tracks/{graphCmsTrack.name}")
+          distance
+          endCity
+          endCountry
+          endState
+          name
+          startCity
+          startCountry
+          startState
+          staticImageUrl
+          totalElevationGain
+          totalElevationLoss
+        }
+      }
+      geoJsonFileUrl
+      gpxFileSmallUrl
+      gpxFileUrl
+      geoJson
+      photos {
+        handle
+        width
+        height
+        location {
+          latitude
+          longitude
+        }
+      }
     }
   }
 `
