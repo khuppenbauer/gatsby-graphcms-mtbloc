@@ -1,13 +1,7 @@
 import React from "react"
 import { Link } from "gatsby"
-import {
-  ArrowSmUpIcon,
-  ArrowSmDownIcon,
-  ArrowSmRightIcon,
-  PlayIcon,
-  StopIcon,
-} from "@heroicons/react/outline"
 import convert from "convert-units"
+import { PlayCircle, StopCircle, ArrowUpCircle, ArrowDownCircle, ArrowRightCircle } from "react-feather"
 
 import Headline from "./headline"
 
@@ -52,25 +46,25 @@ const Track = ({ track }) => {
             </h1>
             <div className="my-4">
               <span className="text-gray-500 inline-flex items-center lg:mr-auto md:mr-0 mr-auto leading-none text-sm">
-                <PlayIcon className="h-6 w-6" />
+                <PlayCircle className="w-4 h-4 mr-1" />
                 {startCity} ({startState})
               </span>
               <span className="text-gray-500 inline-flex items-center lg:mr-auto md:mr-0 mr-auto leading-none text-sm">
-                <StopIcon className="h-6 w-6" />
+                <StopCircle className="w-4 h-4 mr-1" />
                 {endCity} ({endState})
               </span>
             </div>
             <div className="flex items-center flex-wrap ">
               <span className="text-gray-500 inline-flex items-center lg:mr-auto md:mr-0 mr-auto leading-none text-sm">
-                <ArrowSmRightIcon className="h-6 w-6" />
+                <ArrowRightCircle className="w-4 h-4 mr-1" />
                 {number} {unit}
               </span>
               <span className="text-gray-500 inline-flex items-center lg:mr-auto md:mr-0 mr-auto leading-none text-sm">
-                <ArrowSmUpIcon className="h-6 w-6" />
+                <ArrowUpCircle className="w-4 h-4 mr-1" />
                 {totalElevationGain} m
               </span>
               <span className="text-gray-500 inline-flex items-center lg:mr-auto md:mr-0 mr-auto leading-none text-sm">
-                <ArrowSmDownIcon className="h-6 w-6" />
+                <ArrowDownCircle className="w-4 h-4 mr-1" />
                 {totalElevationLoss} m
               </span>
             </div>

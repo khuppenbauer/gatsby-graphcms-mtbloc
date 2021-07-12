@@ -1,11 +1,6 @@
 import React from "react"
 import { Link } from "gatsby"
-import {
-  ChevronLeftIcon,
-  ChevronDoubleLeftIcon,
-  ChevronRightIcon,
-  ChevronDoubleRightIcon,
-} from "@heroicons/react/solid"
+import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from "react-feather"
 
 const Tracks = ({ currentPage, numPages }) => {
   const previous = currentPage > 2 ? currentPage - 1 : ""
@@ -28,13 +23,13 @@ const Tracks = ({ currentPage, numPages }) => {
           to="/tracks"
           className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-800 text-sm font-medium text-gray-400 hover:bg-gray-800"
         >
-          <ChevronDoubleLeftIcon className="h-5 w-5" aria-hidden="true" />
+          <ChevronsLeft className="h-5 w-5" />
         </Link>
         <Link
           to={`/tracks/${previous}`}
           className="relative inline-flex items-center px-2 py-2 border border-gray-800 text-sm font-medium text-gray-400 hover:bg-gray-800"
         >
-          <ChevronLeftIcon className="h-5 w-5" aria-hidden="true" />
+          <ChevronLeft className="h-5 w-5" />
         </Link>
         {Array.from({ length: paginationLength }, (_, i) => {
           const j = startPage + i
@@ -53,13 +48,13 @@ const Tracks = ({ currentPage, numPages }) => {
           to={`/tracks/${next}`}
           className="relative inline-flex items-center px-2 py-2 border border-gray-800 text-sm font-medium text-gray-400 hover:bg-gray-800"
         >
-          <ChevronRightIcon className="h-5 w-5" aria-hidden="true" />
+          <ChevronRight className="h-5 w-5" />
         </Link>
         <Link
           to={`/tracks/${numPages}`}
           className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-800 text-sm font-medium text-gray-400 hover:bg-gray-800"
         >
-          <ChevronDoubleRightIcon className="h-5 w-5" aria-hidden="true" />
+          <ChevronsRight className="h-5 w-5" />
         </Link>
       </nav>
     </div>
