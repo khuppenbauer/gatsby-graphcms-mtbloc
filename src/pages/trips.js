@@ -5,20 +5,31 @@ import Layout from "../components/layout"
 import Seo from "../components/seo"
 import Section from "../components/section"
 import Teaser from "../views/teaser"
+import Headline from "../views/headline"
 
-const TripsPage = ({ data: { trips } }) => {
+const TripsPage = ({ data: { countries } }) => {
   return (
     <Layout>
       <Seo title="Trips" />
       <Section>
-        <div className="flex flex-wrap -m-4">
-          {trips.nodes.map(trip => {
-            const { id, name, tracks, gatsbyPath } = trip
-            return tracks.length > 0 ? (
-              <Teaser key={id} slug={gatsbyPath} title={name} />
-            ) : null
-          })}
-        </div>
+        {countries.nodes.map(country => {
+          const { id: countryId, name, trips } = country;
+          return trips.length > 0 ? (
+            <>
+              <Headline key={`h-${countryId}`} title={name} />
+              <div key={`c-${countryId}`} className="flex flex-wrap -m-4 mb-10">
+                {trips.map(trip => {
+                  console.log(trip);
+                  const { id: tripId, name, tracks, gatsbyPath, image } = trip
+                  const tracksCount = tracks.length;
+                  return tracks.length > 0 ? (
+                    <Teaser key={tripId} slug={gatsbyPath} title={`${name} (${tracksCount})`} image={image} />
+                  ) : null
+                })}
+              </div>
+            </>
+          ) : null    
+        })}
       </Section>
     </Layout>
   )
@@ -26,17 +37,26 @@ const TripsPage = ({ data: { trips } }) => {
 
 export const pageQuery = graphql`
   {
-    trips: allGraphCmsTrip(sort: { fields: name, order: ASC }) {
+    countries: allGraphCmsCountry(sort: {fields: name, order: ASC}) {
       nodes {
         id
-        gatsbyPath(filePath: "/trips/{graphCmsTrip.name}")
         name
-        tracks {
+        trips {
           id
+          gatsbyPath(filePath: "/trips/{graphCmsTrip.name}")
+          name
+          image {
+            handle
+            width
+            height
+          }
+          tracks {
+            id
+          }
         }
       }
     }
-  }
+  }  
 `
 
 export default TripsPage

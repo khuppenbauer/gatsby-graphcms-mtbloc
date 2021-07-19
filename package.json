@@ -13,6 +13,7 @@
     "url": "https://github.com/khuppenbauer/gatsby-graphcms-mtbloc"
   },
   "dependencies": {
+    "@graphcms/react-image": "^1.0.1",
     "@material-ui/icons": "^4.11.2",
     "@sentry/gatsby": "^6.5.1",
     "@sentry/tracing": "^6.5.1",

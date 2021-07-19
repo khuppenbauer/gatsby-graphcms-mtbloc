@@ -1163,6 +1163,14 @@
     querystring "^0.2.0"
     strip-ansi "^6.0.0"
 
+"@graphcms/react-image@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@graphcms/react-image/-/react-image-1.0.1.tgz#1de29e4be1ed14d07113d923c47baf4ef1c819c7"
+  integrity sha512-ncHHa0Ud0yI9+JojC9X+DuRDmDT0nwBpGnPPsO88GkdUzE0UnwBEeF1nrdR/fJa9wQCc3CqV2HKhYC4LD26p8Q==
+  dependencies:
+    intersection-observer "^0.5.0"
+    prop-types "^15.6.0"
+
 "@graphql-tools/batch-execute@^7.1.2":
   version "7.1.2"
   resolved "https://registry.yarnpkg.com/@graphql-tools/batch-execute/-/batch-execute-7.1.2.tgz#35ba09a1e0f80f34f1ce111d23c40f039d4403a0"
@@ -9154,6 +9162,11 @@ internal-slot@^1.0.3:
     has "^1.0.3"
     side-channel "^1.0.4"
 
+intersection-observer@^0.5.0:
+  version "0.5.1"
+  resolved "https://registry.yarnpkg.com/intersection-observer/-/intersection-observer-0.5.1.tgz#e340fc56ce74290fe2b2394d1ce88c4353ac6dfa"
+  integrity sha512-Zd7Plneq82kiXFixs7bX62YnuZ0BMRci9br7io88LwDyF3V43cQMI+G5IiTlTNTt+LsDUppl19J/M2Fp9UkH6g==
+
 into-stream@^3.1.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/into-stream/-/into-stream-3.1.0.tgz#96fb0a936c12babd6ff1752a17d05616abd094c6"
@@ -13617,7 +13630,7 @@ prompts@^2.3.2:
     kleur "^3.0.3"
     sisteransi "^1.0.5"
 
-prop-types@^15.6.1, prop-types@^15.7.2:
+prop-types@^15.6.0, prop-types@^15.6.1, prop-types@^15.7.2:
   version "15.7.2"
   resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.7.2.tgz#52c41e75b8c87e72b9d9360e0206b99dcbffa6c5"
   integrity sha512-8QQikdH7//R2vurIJSutZ1smHYTcLpRWEOlHnzcWHmBYrOGUysKwSsrC89BCiFj3CbrfJ/nXFdJepOVrY1GCHQ==

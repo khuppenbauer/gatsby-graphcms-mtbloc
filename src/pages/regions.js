@@ -5,20 +5,30 @@ import Layout from "../components/layout"
 import Seo from "../components/seo"
 import Section from "../components/section"
 import Teaser from "../views/teaser"
+import Headline from "../views/headline"
 
-const RegionsPage = ({ data: { regions } }) => {
+const RegionsPage = ({ data: { countries } }) => {
   return (
     <Layout>
       <Seo title="Regionen" />
       <Section>
-        <div className="flex flex-wrap -m-4">
-          {regions.nodes.map(region => {
-            const { id, name, tracks, gatsbyPath } = region
-            return tracks.length > 0 ? (
-              <Teaser key={id} slug={gatsbyPath} title={name} />
-            ) : null
-          })}
-        </div>
+        {countries.nodes.map(country => {
+          const { id: countryId, name, regions } = country;
+          return regions.length > 0 ? (
+            <>
+              <Headline key={`h-${countryId}`} title={name} />
+              <div key={`c-${countryId}`} className="flex flex-wrap -m-4 mb-10">
+                {regions.map(region => {
+                  const { id: regionId, name, tracks, gatsbyPath } = region
+                  const tracksCount = tracks.length;
+                  return tracks.length > 0 ? (
+                    <Teaser key={regionId} slug={gatsbyPath} title={`${name} (${tracksCount})`} />
+                  ) : null
+                })}
+              </div>
+            </>
+          ) : null    
+        })}
       </Section>
     </Layout>
   )
@@ -26,13 +36,17 @@ const RegionsPage = ({ data: { regions } }) => {
 
 export const pageQuery = graphql`
   {
-    regions: allGraphCmsRegion(sort: { fields: name, order: ASC }) {
+    countries: allGraphCmsCountry(sort: {fields: name, order: ASC}) {
       nodes {
         id
-        gatsbyPath(filePath: "/regions/{graphCmsRegion.name}")
         name
-        tracks {
+        regions {
           id
+          gatsbyPath(filePath: "/regions/{graphCmsRegion.name}")
+          name
+          tracks {
+            id
+          }
         }
       }
     }
