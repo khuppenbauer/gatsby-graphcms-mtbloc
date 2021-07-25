@@ -8,6 +8,7 @@ import Tracks from "../../views/tracks"
 
 const RegionPage = ({ data: { region } }) => {
   const { name, description, tracks } = region
+  tracks.sort((a, b) => (a.name < b.name && 1) || -1)
   return (
     <Layout>
       <Seo title={name} />

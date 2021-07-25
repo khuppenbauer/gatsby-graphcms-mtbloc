@@ -64,6 +64,7 @@ const RegionsPage = ({ data: { countries } }) => {
       <Section>
         {countries.nodes.map(country => {
           const { id: countryId, name, regions } = country;
+          regions.sort((a, b) => (a.name > b.name && 1) || -1)
           return regions.length > 0 ? (
             <React.Fragment key={countryId}>
               <Headline title={name} />

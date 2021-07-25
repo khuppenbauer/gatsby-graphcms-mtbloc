@@ -8,6 +8,7 @@ import Tracks from "../../views/tracks"
 
 const TripPage = ({ data: { trip } }) => {
   const { name, description, tracks } = trip
+  tracks.sort((a, b) => (a.name > b.name && 1) || -1)
   return (
     <Layout>
       <Seo title={name} />
