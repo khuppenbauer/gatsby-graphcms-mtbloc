@@ -23,6 +23,8 @@ const TrackPage = ({ data: { track } }) => {
     gpxFileSmallUrl,
     gpxFileUrl,
     geoJson,
+    minCoords,
+    maxCoords,
   } = track
   const distance = convert(track.distance).from("m").toBest()
   const number = new Intl.NumberFormat("de-DE").format(distance.val.toFixed(2))
@@ -45,7 +47,7 @@ const TrackPage = ({ data: { track } }) => {
       <Section>
         <Headline title={name} />
         <div className="mb-10">
-          <Mapbox data={geoJson} />
+          <Mapbox data={geoJson} minCoords={minCoords} maxCoords={maxCoords} />
         </div>
         <Headline title="Infos" />
         <div className="flex flex-wrap w-full mb-10">
@@ -172,6 +174,14 @@ export const pageQuery = graphql`
       gpxFileSmallUrl
       gpxFileUrl
       geoJson
+      maxCoords {
+        latitude
+        longitude
+      }
+      minCoords {
+        latitude
+        longitude
+      }
       photos {
         handle
         width

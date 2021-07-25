@@ -8,11 +8,8 @@ mapboxgl.workerClass = require("worker-loader!mapbox-gl/dist/mapbox-gl-csp-worke
 const mapboxToken = process.env.GATSBY_MAPBOX_ACCESS_TOKEN
 
 const Mapbox = data => {
-  const { data: geoJson } = data
-  const coordinates = geoJson.features[0].geometry.coordinates
-  const bounds = coordinates.reduce(function (bounds, coord) {
-    return bounds.extend(coord)
-  }, new mapboxgl.LngLatBounds(coordinates[0], coordinates[0]))
+  const { data: geoJson, url, minCoords, maxCoords } = data
+  const geoJsonData = geoJson ? geoJson : url;
   // this ref holds the map DOM node so that we can pass it into Mapbox GL
   const mapNode = useRef(null)
 
@@ -25,6 +22,7 @@ const Mapbox = data => {
   useEffect(() => {
     // Token must be set before constructing map
     mapboxgl.accessToken = mapboxToken
+    const bounds = new mapboxgl.LngLatBounds([minCoords.longitude, minCoords.latitude], [maxCoords.longitude, maxCoords.latitude]);
     const map = new mapboxgl.Map({
       container: mapNode.current,
       style: "mapbox://styles/mapbox/outdoors-v11",
@@ -39,7 +37,7 @@ const Mapbox = data => {
       // add sources
       map.addSource("route", {
         type: "geojson",
-        data: geoJson,
+        data: geoJsonData,
       })
       map.addLayer({
         id: "route",
@@ -63,7 +61,7 @@ const Mapbox = data => {
     return () => {
       map.remove()
     }
-  }, [bounds, geoJson])
+  }, [geoJsonData, minCoords, maxCoords])
 
   // You can use other `useEffect` hooks to update the state of the map
   // based on incoming props.  Just beware that you might need to add additional
