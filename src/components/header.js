@@ -44,13 +44,28 @@ const Header = ({ siteTitle }) => (
         <span className="ml-3 text-xl text-gray-400">{siteTitle}</span>
       </Link>
       <nav className="md:ml-auto flex flex-wrap items-center text-base justify-center">
-        <Link to="/tracks" className="mr-5 hover:text-white">
+        <Link 
+          to="/tracks" 
+          className="mr-5 hover:text-white" 
+          activeClassName="border-b-2 text-white border-blue-500"
+          partiallyActive={true}
+        >
           Touren
         </Link>
-        <Link to="/trips" className="mr-5 hover:text-white">
+        <Link 
+          to="/trips" 
+          className="mr-5 hover:text-white" 
+          activeClassName="border-b-2 text-white border-blue-500"
+          partiallyActive={true}
+        >
           Trips
         </Link>
-        <Link to="/regions" className="mr-5 hover:text-white">
+        <Link 
+          to="/regions" 
+          className="mr-5 hover:text-white" 
+          activeClassName="border-b-2 text-white border-blue-500"
+          partiallyActive={true}
+        >
           Regionen
         </Link>
       </nav>
