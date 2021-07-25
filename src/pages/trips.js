@@ -7,6 +7,8 @@ import Section from "../components/section"
 import Teaser from "../views/teaser"
 import Headline from "../views/headline"
 
+const assetBaseUrl = process.env.GATSBY_ASSET_BASE_URL
+
 const TripsPage = ({ data: { countries } }) => {
   return (
     <Layout>
@@ -21,9 +23,11 @@ const TripsPage = ({ data: { countries } }) => {
                 {trips.map(trip => {
                   console.log(trip);
                   const { id: tripId, name, tracks, gatsbyPath, image } = trip
+                  const { handle } = image;
                   const tracksCount = tracks.length;
+                  const asset = `${assetBaseUrl}/resize=w:320,h:240,fit:crop/auto_image/compress/${handle}`
                   return tracks.length > 0 ? (
-                    <Teaser key={tripId} slug={gatsbyPath} title={`${name} (${tracksCount})`} image={image} />
+                    <Teaser key={tripId} slug={gatsbyPath} title={`${name} (${tracksCount})`} asset={asset} />
                   ) : null
                 })}
               </div>
@@ -47,8 +51,6 @@ export const pageQuery = graphql`
           name
           image {
             handle
-            width
-            height
           }
           tracks {
             id

@@ -5,7 +5,7 @@ import { PlayCircle, StopCircle, ArrowUpCircle, ArrowDownCircle, ArrowRightCircl
 
 import Headline from "./headline"
 
-const assetBaseUrl = "https://media.graphcms.com/"
+const assetBaseUrl = process.env.GATSBY_ASSET_BASE_URL
 
 const Track = ({ track }) => {
   const {
@@ -29,7 +29,7 @@ const Track = ({ track }) => {
     track.totalElevationLoss.toFixed(2)
   )
   const handle = staticImageUrl.replace(assetBaseUrl, "")
-  const asset = `${assetBaseUrl}resize=w:320,h:240,fit:crop/auto_image/compress/${handle}`
+  const asset = `${assetBaseUrl}/resize=w:320,h:240,fit:crop/auto_image/compress/${handle}`
   return (
     <div key={id} className="p-4 md:w-1/3 xl:w-1/5">
       <div className="h-full border-2 border-gray-800 rounded-lg overflow-hidden">
