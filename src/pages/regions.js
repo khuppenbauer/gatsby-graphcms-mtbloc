@@ -65,9 +65,9 @@ const RegionsPage = ({ data: { countries } }) => {
         {countries.nodes.map(country => {
           const { id: countryId, name, regions } = country;
           return regions.length > 0 ? (
-            <>
-              <Headline key={`h-${countryId}`} title={name} />
-              <div key={`c-${countryId}`} className="flex flex-wrap -m-4 mb-10">
+            <React.Fragment key={countryId}>
+              <Headline title={name} />
+              <div className="flex flex-wrap -m-4 mb-10">
                 {regions.map(region => {
                   const { id: regionId, name, tracks, gatsbyPath } = region
                   const tracksCount = tracks.length;
@@ -77,8 +77,8 @@ const RegionsPage = ({ data: { countries } }) => {
                   ) : null
                 })}
               </div>
-            </>
-          ) : null    
+            </React.Fragment>
+          ) : null
         })}
       </Section>
     </Layout>

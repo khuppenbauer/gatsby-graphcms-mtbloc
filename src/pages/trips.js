@@ -17,11 +17,10 @@ const TripsPage = ({ data: { countries } }) => {
         {countries.nodes.map(country => {
           const { id: countryId, name, trips } = country;
           return trips.length > 0 ? (
-            <>
-              <Headline key={`h-${countryId}`} title={name} />
-              <div key={`c-${countryId}`} className="flex flex-wrap -m-4 mb-10">
+            <React.Fragment key={countryId}>
+              <Headline title={name} />
+              <div className="flex flex-wrap -m-4 mb-10">
                 {trips.map(trip => {
-                  console.log(trip);
                   const { id: tripId, name, tracks, gatsbyPath, image } = trip
                   const { handle } = image;
                   const tracksCount = tracks.length;
@@ -31,7 +30,7 @@ const TripsPage = ({ data: { countries } }) => {
                   ) : null
                 })}
               </div>
-            </>
+            </React.Fragment>
           ) : null    
         })}
       </Section>
