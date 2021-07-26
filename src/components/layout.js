@@ -7,6 +7,7 @@
 
 import * as React from "react"
 import PropTypes from "prop-types"
+import { Helmet } from 'react-helmet';
 import { useStaticQuery, graphql } from "gatsby"
 
 import Header from "./header"
@@ -33,6 +34,9 @@ const Layout = ({ children }) => {
 
   return (
     <>
+      <Helmet>
+        <script async data-no-cookie src="https://cdn.splitbee.io/sb.js"></script>
+      </Helmet>
       <Header siteTitle={data.site.siteMetadata?.title} />
       <main>{children}</main>
       <Footer
