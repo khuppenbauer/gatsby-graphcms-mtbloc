@@ -1,4 +1,5 @@
 const path = require("path")
+const slugify = require("@sindresorhus/slugify");
 
 exports.createPages = async ({ graphql, actions, reporter }) => {
   const { createPage } = actions
@@ -8,6 +9,31 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
         allGraphCmsTrack {
           nodes {
             id
+          }
+        }
+        allGraphCmsCollection {
+          nodes {
+            name
+            description
+            collectionType {
+              name
+              slug
+            }
+            tracks {
+              id
+              gatsbyPath(filePath: "/tracks/{graphCmsTrack.name}")
+              distance
+              endCity
+              endCountry
+              endState
+              name
+              startCity
+              startCountry
+              startState
+              staticImageUrl
+              totalElevationGain
+              totalElevationLoss
+            }
           }
         }
       }
@@ -34,6 +60,20 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
         numPages,
         numTracks: tracks.length,
         currentPage: i + 1,
+      },
+    })
+  })
+
+  result.data.allGraphCmsCollection.nodes.forEach(node => {
+    const { name, collectionType, description, tracks } = node;
+    const slug = `${collectionType.slug}/${slugify(name)}`
+    createPage({
+      path: slug,
+      component: path.resolve("./src/templates/collections-list.js"),
+      context: { 
+        name,
+        description,
+        tracks,
       },
     })
   })

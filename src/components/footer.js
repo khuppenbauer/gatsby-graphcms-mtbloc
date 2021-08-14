@@ -3,7 +3,7 @@ import PropTypes from "prop-types"
 import { Link } from "gatsby"
 import { Facebook, Twitter, GitHub } from "react-feather"
 
-const Footer = ({ siteTitle, metaPages }) => (
+const Footer = ({ siteTitle, metaPages, collectionTypes }) => (
   <footer className="text-gray-400 bg-gray-900 body-font border-t-2 border-gray-800">
     <div className="container px-5 py-12 mx-auto flex md:items-center lg:items-start md:flex-row md:flex-nowrap flex-wrap flex-col">
       <div className="w-64 flex-shrink-0 md:mx-0 mx-auto text-center md:text-left">
@@ -47,21 +47,38 @@ const Footer = ({ siteTitle, metaPages }) => (
       <div className="flex-grow flex flex-wrap md:pl-20 -mb-10 md:mt-0 mt-10 md:text-left text-center">
         <div className="lg:w-1/4 md:w-1/2 w-full px-4">
           <nav className="list-none mb-10">
-            <li>
+            <li key="tracks">
               <Link to="/tracks" className="text-gray-400 hover:text-white">
                 Touren
               </Link>
             </li>
-            <li>
+            <li key="trips">
               <Link to="/trips" className="text-gray-400 hover:text-white">
                 Trips
               </Link>
             </li>
-            <li>
+            <li key="regions">
               <Link to="/regions" className="text-gray-400 hover:text-white">
                 Regionen
               </Link>
             </li>
+          </nav>
+        </div>
+        <div className="lg:w-1/4 md:w-1/2 w-full px-4">
+          <nav className="list-none mb-10">
+            {collectionTypes.map(collectionType => {
+                const { id, name, slug, collections } = collectionType;
+                return collections.length > 0 ? (
+                  <li key={id}>
+                    <Link 
+                      to={`/${slug}`}
+                      className="text-gray-400 hover:text-white"
+                    >
+                      {name}
+                    </Link>
+                </li>
+                ) : null
+              })}
           </nav>
         </div>
         <div className="lg:w-1/4 md:w-1/2 w-full px-4">

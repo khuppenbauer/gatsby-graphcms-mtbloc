@@ -29,6 +29,16 @@ const Layout = ({ children }) => {
           title
         }
       }
+      allGraphCmsCollectionType {
+        nodes {
+          id
+          name
+          slug
+          collections {
+            id
+          }
+        }
+      }
     }
   `)
 
@@ -42,6 +52,7 @@ const Layout = ({ children }) => {
       <Footer
         siteTitle={data.site.siteMetadata?.title}
         metaPages={data.allGraphCmsPage.nodes}
+        collectionTypes={data.allGraphCmsCollectionType.nodes} 
       />
     </>
   )
