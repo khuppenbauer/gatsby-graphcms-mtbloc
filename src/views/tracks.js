@@ -7,7 +7,7 @@ import Headline from "./headline"
 
 const assetBaseUrl = process.env.GATSBY_ASSET_BASE_URL
 
-const Track = ({ track }) => {
+const Track = ({ track, className }) => {
   const {
     id,
     name,
@@ -31,7 +31,7 @@ const Track = ({ track }) => {
   const handle = staticImageUrl.replace(assetBaseUrl, "")
   const asset = `${assetBaseUrl}/resize=w:320,h:240,fit:crop/auto_image/compress/${handle}`
   return (
-    <div key={id} className="p-4 md:w-1/3 xl:w-1/5">
+    <div key={id} className={className}>
       <div className="h-full border-2 border-gray-800 rounded-lg overflow-hidden">
         <Link to={gatsbyPath}>
           <img
@@ -79,7 +79,7 @@ const Track = ({ track }) => {
   )
 }
 
-const Tracks = ({ name, description, tracks }) => {
+const Tracks = ({ name, description, tracks, className }) => {
   return (
     <>
       {name || description ? (
@@ -88,7 +88,7 @@ const Tracks = ({ name, description, tracks }) => {
       <div className="flex flex-wrap -m-4">
         {tracks.map(track => {
           const { id } = track
-          return <Track key={id} track={track} />
+          return <Track key={id} track={track} className={className || 'p-4 md:w-1/3 xl:w-1/5'} />
         })}
       </div>
     </>
