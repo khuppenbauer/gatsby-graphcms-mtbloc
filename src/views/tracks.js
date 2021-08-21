@@ -28,19 +28,24 @@ const Track = ({ track, className }) => {
   const totalElevationLoss = new Intl.NumberFormat("de-DE").format(
     track.totalElevationLoss.toFixed(2)
   )
-  const handle = staticImageUrl.replace(assetBaseUrl, "")
-  const asset = `${assetBaseUrl}/resize=w:320,h:240,fit:crop/auto_image/compress/${handle}`
+  let asset;
+  if (staticImageUrl) {
+    const handle = staticImageUrl.replace(assetBaseUrl, "")
+    asset = `${assetBaseUrl}/resize=w:320,h:240,fit:crop/auto_image/compress/${handle}`  
+  }
   return (
     <div key={id} className={className}>
       <div className="h-full border-2 border-gray-800 rounded-lg overflow-hidden">
         <Link to={gatsbyPath}>
-          <img
-            className="w-full object-cover object-center"
-            src={asset}
-            alt={name}
-            width="320"
-            height="240"
+          { asset ? (
+            <img
+              className="w-full object-cover object-center"
+              src={asset}
+              alt={name}
+              width="320"
+              height="240"
           />
+          ) : null}
           <div className="p-6">
             <h2 className="tracking-widest text-xs title-font font-medium text-gray-500 mb-1 uppercase">
               {startCountry}
