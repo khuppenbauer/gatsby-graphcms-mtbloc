@@ -1,13 +1,16 @@
 import React from "react"
 import { Link } from "gatsby"
 import convert from "convert-units"
-import { PlayCircle, StopCircle, ArrowUpCircle, ArrowDownCircle, ArrowRightCircle } from "react-feather"
+import { PlayCircle, StopCircle, ArrowUpCircle, ArrowDownCircle, ArrowRightCircle, Navigation } from "react-feather"
 
 import Headline from "./headline"
 
 const assetBaseUrl = process.env.GATSBY_ASSET_BASE_URL
 
 const Track = ({ track, className }) => {
+  let geoDistance
+  let geoDistanceNumber
+  let geoDistanceUnit
   const {
     id,
     name,
@@ -28,6 +31,11 @@ const Track = ({ track, className }) => {
   const totalElevationLoss = new Intl.NumberFormat("de-DE").format(
     track.totalElevationLoss.toFixed(2)
   )
+  if (track.geoDistance) {
+    geoDistance = convert(track.geoDistance).from("m").toBest()
+    geoDistanceNumber = new Intl.NumberFormat("de-DE").format(geoDistance.val.toFixed(2))
+    geoDistanceUnit = geoDistance.unit
+  }
   let asset;
   if (staticImageUrl) {
     const handle = staticImageUrl.replace(assetBaseUrl, "")
@@ -63,7 +71,7 @@ const Track = ({ track, className }) => {
                 {endCity} ({endState})
               </span>
             </div>
-            <div className="flex items-center flex-wrap ">
+            <div className="flex items-center flex-wrap my-4">
               <span className="text-gray-500 inline-flex items-center lg:mr-auto md:mr-0 mr-auto leading-none text-sm">
                 <ArrowRightCircle className="w-4 h-4 mr-1" />
                 {number} {unit}
@@ -77,6 +85,14 @@ const Track = ({ track, className }) => {
                 {totalElevationLoss} m
               </span>
             </div>
+            { geoDistanceNumber && geoDistanceUnit ? (
+              <div className="my-4">
+                <span className="text-gray-500 inline-flex items-center lg:mr-auto md:mr-0 mr-auto leading-none text-sm">
+                  <Navigation className="w-4 h-4 mr-1" />
+                  {geoDistanceNumber} {geoDistanceUnit}
+                </span>
+              </div>
+            ) : null }
           </div>
         </Link>
       </div>

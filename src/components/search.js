@@ -110,13 +110,17 @@ const Search = () => {
   const CustomHits = connectHits((Hits) => {
     const { hits } = Hits;
     const tracks = hits.map((hit) => {
-      const { objectID: id, name, meta } = hit;
+      let geoDistance;
+      const { objectID: id, name, meta, _rankingInfo } = hit;
       const { 
         endCity, endState, 
         startCity, startState, startCountry, 
         distance, totalElevationGain, totalElevationLoss, 
         staticImageUrl
       } = meta;
+      if (_rankingInfo && _rankingInfo.geoDistance) {
+        geoDistance = _rankingInfo.geoDistance;
+      }
       const gatsbyPath = `/tracks/${slugify(name)}`;
       const track = {
         id,
@@ -131,6 +135,7 @@ const Search = () => {
         distance,
         totalElevationGain,
         totalElevationLoss,
+        geoDistance,
       };
       return track;
     });

@@ -22,9 +22,8 @@ export default createConnector({
     }
     return searchParameters
       .setQueryParameter('insideBoundingBox')
-      .setQueryParameter(
-        'aroundLatLng',
-        `${aroundLatLng.lat}, ${aroundLatLng.lng}`
-      );
+      .setQueryParameter('aroundLatLng', `${aroundLatLng.lat}, ${aroundLatLng.lng}`)
+      .setQueryParameter('aroundRadius', 5000)
+      .setQueryParameter('getRankingInfo', true);
   },
 });
