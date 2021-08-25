@@ -8,16 +8,20 @@ import {
   connectStats,
   connectCurrentRefinements,
   connectPoweredBy,
+  connectSortBy,
   Configure,
 } from "react-instantsearch-dom"
 import slugify from '@sindresorhus/slugify';
-import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from "react-feather"
+import { 
+  ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight,
+  ChevronDown, ChevronUp,
+} from "react-feather"
 
 import Places from "./algolia/widget"
 import Tracks from "../views/tracks"
 import Headline from "../views/headline"
 
-const indexName = "feature";
+const indexName = "tracks";
 
 const Search = () => {
   const searchClient = useMemo(
@@ -38,7 +42,44 @@ const Search = () => {
   const CustomStats = connectStats((Stats) => {
     const { nbHits } = Stats;
     return (
-      <div className="py-5">{nbHits} Touren</div>
+      <div className="pt-5">{nbHits} Touren</div>
+    )
+  });
+
+  const CustomSortBy = connectSortBy((SortBy) => {
+    const { items, refine, createURL } = SortBy;
+    return (
+      <div className="bg-gray-900 py-5 flex flex-col">
+        <nav
+          className="rounded-md shadow-sm -space-x-px"
+          aria-label="Sort"
+        >
+          {items.map(item => {
+            const { value, label, isRefined, dir } = item;
+            let dirIcon = ( <ChevronDown className="h-5 w-5" /> );
+            if (dir === 'asc') {
+              dirIcon = ( <ChevronUp className="h-5 w-5" /> );
+            }
+            if (dir === 'desc') {
+              dirIcon = ( <ChevronDown className="h-5 w-5" /> );
+            }
+            const active = isRefined ? "bg-gray-800" : "";
+            return (
+              <a
+                key={value}
+                className={`${active} relative inline-flex items-center px-2 py-2 border border-gray-800 text-sm font-medium text-gray-400 hover:bg-gray-800`}
+                href={createURL(value)}
+                onClick={event => {
+                  event.preventDefault();
+                  refine(value);
+                }}
+              >
+                {dirIcon} {label}
+              </a>
+            )
+          })}
+        </nav>
+      </div>      
     )
   });
 
@@ -111,13 +152,13 @@ const Search = () => {
     const { hits } = Hits;
     const tracks = hits.map((hit) => {
       let geoDistance;
-      const { objectID: id, name, meta, _rankingInfo } = hit;
       const { 
+        objectID: id, name, _rankingInfo,
         endCity, endState, 
         startCity, startState, startCountry, 
         distance, totalElevationGain, totalElevationLoss, 
         staticImageUrl
-      } = meta;
+      } = hit;
       if (_rankingInfo && _rankingInfo.geoDistance) {
         geoDistance = _rankingInfo.geoDistance;
       }
@@ -234,7 +275,7 @@ const Search = () => {
     <section className="text-gray-400 body-font bg-gray-900">
       <div className="container md:flex md:flex-wrap px-5 py-12 mx-auto">
         <InstantSearch indexName={indexName} searchClient={searchClient}>
-          <Configure hitsPerPage={20} filters="type:track" />
+          <Configure />
           <div className="md:w-1/4 md:pr-12 md:border-r md:border-b-0 md:mb-0 mb-10 pb-10 border-b border-gray-800">       
             <Headline title="Filter" />
             <CustomCurrentRefinements />
@@ -250,6 +291,19 @@ const Search = () => {
             <Headline title="Suche" />
             <Places />
             <CustomStats />
+            <CustomSortBy
+              defaultRefinement={indexName}
+              items={[
+                { value: `${indexName}`, label: 'Standard' },
+                { value: `${indexName}_name_asc`, label: 'Name', dir: 'asc' },
+                { value: `${indexName}_name_desc`, label: 'Name', dir: 'desc' },
+                { value: `${indexName}_distance_asc`, label: 'Länge', dir: 'asc' },
+                { value: `${indexName}_distance_desc`, label: 'Länge', dir: 'desc' },
+                { value: `${indexName}_elevation_asc`, label: 'Höhenmeter', dir: 'asc' },
+                { value: `${indexName}_elevation_desc`, label: 'Höhenmeter', dir: 'desc' },
+
+              ]}
+            />
             <CustomHits />
             <CustomPagination />
             <div className="bg-gray-900 px-4 py-3 md:flex md:flex-col items-center justify-between sm:px-6">
