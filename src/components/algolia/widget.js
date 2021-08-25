@@ -30,7 +30,7 @@ class Places extends Component {
           ref={this.createRef}
           type="search"
           id="address-input"
-          placeholder="Suche"
+          placeholder="Suche nach Orten"
           aria-label="Suche"
         />
     );

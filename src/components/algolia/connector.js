@@ -16,13 +16,19 @@ export default createConnector({
   },
 
   getSearchParameters(searchParameters, props, searchState) {
-    const { aroundLatLng } = searchState;  
+    const { aroundLatLng } = searchState;
     if (!aroundLatLng) {
       return searchParameters.setQueryParameter('insideBoundingBox')  
     }
+    const { lat, lng } = aroundLatLng;
+    if (!lat && !lng) {
+      return searchParameters
+      .setQueryParameter('insideBoundingBox')
+      .setQueryParameter('aroundLatLng');
+    }
     return searchParameters
       .setQueryParameter('insideBoundingBox')
-      .setQueryParameter('aroundLatLng', `${aroundLatLng.lat}, ${aroundLatLng.lng}`)
+      .setQueryParameter('aroundLatLng', `${lat}, ${lng}`)
       .setQueryParameter('aroundRadius', 5000)
       .setQueryParameter('getRankingInfo', true);
   },
