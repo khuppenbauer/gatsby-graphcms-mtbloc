@@ -1,5 +1,38 @@
 import React, { Component } from 'react';
-import connect from './connector';
+import { createConnector } from 'react-instantsearch-dom';
+
+const connect = createConnector({
+  displayName: 'GeoSearch',
+
+  getProvidedProps(props, searchState, searchResults) {
+    return {};
+  },
+
+  refine(props, searchState, nextValue) {
+    return {
+      ...searchState,
+      aroundLatLng: nextValue,
+      boundingBox: {},
+    };
+  },
+
+  getSearchParameters(searchParameters, props, searchState) {
+    const { aroundLatLng } = searchState;
+    if (!aroundLatLng) {
+      return searchParameters.setQueryParameter('insideBoundingBox')  
+    }
+    const { lat, lng } = aroundLatLng;
+    if (!lat && !lng) {
+      return searchParameters
+      .setQueryParameter('insideBoundingBox')
+      .setQueryParameter('aroundLatLng');
+    }
+    return searchParameters
+      .setQueryParameter('insideBoundingBox')
+      .setQueryParameter('aroundLatLng', `${lat}, ${lng}`)
+      .setQueryParameter('getRankingInfo', true);
+  },
+});
 
 class Places extends Component {
   createRef = c => (this.element = c);
