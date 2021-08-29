@@ -52,16 +52,6 @@ const Footer = ({ siteTitle, metaPages, collectionTypes }) => (
                 Touren
               </Link>
             </li>
-            <li key="trips">
-              <Link to="/trips" className="text-gray-400 hover:text-white">
-                Trips
-              </Link>
-            </li>
-            <li key="regions">
-              <Link to="/regions" className="text-gray-400 hover:text-white">
-                Regionen
-              </Link>
-            </li>
           </nav>
         </div>
         <div className="lg:w-1/4 md:w-1/2 w-full px-4">

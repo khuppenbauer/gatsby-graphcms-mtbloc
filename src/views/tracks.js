@@ -107,10 +107,10 @@ const Tracks = ({ name, description, tracks, className }) => {
         <Headline title={name} description={description} />
       ) : null}
       <div className="flex flex-wrap -m-4">
-        {tracks.map(track => {
+        {tracks ? tracks.map(track => {
           const { id } = track
           return <Track key={id} track={track} className={className || 'p-4 md:w-1/3 xl:w-1/5'} />
-        })}
+        }) : null}
       </div>
     </>
   )

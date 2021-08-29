@@ -19,7 +19,7 @@ const TrackPage = ({ data: { track } }) => {
     endCity,
     endState,
     endCountry,
-    trip,
+    collection,
     gpxFileSmallUrl,
     gpxFileUrl,
     geoJson,
@@ -131,7 +131,7 @@ const TrackPage = ({ data: { track } }) => {
             </a>
           </div>
         </div>
-        {trip ? <Tracks name={trip.name} tracks={trip.tracks} /> : null}
+        {collection ? <Tracks name={collection.name} tracks={collection.tracks} /> : null}
       </Section>
     </Layout>
   )
@@ -152,7 +152,7 @@ export const pageQuery = graphql`
       distance
       elevHigh
       elevLow
-      trip {
+      collection {
         name
         tracks {
           id
