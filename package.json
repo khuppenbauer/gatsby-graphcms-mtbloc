@@ -22,6 +22,7 @@
     "add": "^2.0.6",
     "algoliasearch": "^4.10.3",
     "convert-units": "^2.3.4",
+    "daisyui": "^1.14.0",
     "dotenv": "^10.0.0",
     "formik": "^2.2.9",
     "gatsby": "^3.6.2",

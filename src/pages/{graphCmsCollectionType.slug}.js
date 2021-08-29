@@ -6,29 +6,79 @@ import Layout from "../components/layout"
 import Seo from "../components/seo"
 import Section from "../components/section"
 import Teaser from "../views/teaser"
+import Headline from "../views/headline"
 
 const assetBaseUrl = process.env.GATSBY_ASSET_BASE_URL
 
 const CollectionTypePage = ({ data: { collectionType }}) => {
   const { name, slug, collections } = collectionType;
-  collections.sort((a, b) => (a.name > b.name && 1) || -1)
+  const res = [];
+  collections.map(collection => {
+    const { tracks } = collection;
+    tracks.map(track => {
+      const { startCountry, endCountry } = track;
+      if (!res[startCountry]) {
+        res[startCountry] = [];
+      }
+      if (!res[endCountry]) {
+        res[endCountry] = [];
+      }
+      if (!res[startCountry].includes(collection)) {
+        res[startCountry].push(collection);
+      }
+      if (!res[endCountry].includes(collection)) {
+        res[endCountry].push(collection);
+      }
+      return null;
+    })
+    return null;
+  });
+  const items = [];
+  Object.keys(res).forEach(function(key) {
+    items.push({
+      name: key,
+      collections: res[key].sort((a, b) => (a.name > b.name && 1) || -1)
+    });
+  }, res)
+  items.sort((a, b) => (a.name > b.name && 1) || -1)
   return (
     <Layout>
       <Seo title={name} />
       <Section>
-        <div className="flex flex-wrap -m-4 mb-10">
-          {collections.map(collection => {
-            const { id, name: title, tracks, images } = collection
-            const tracksCount = tracks.length;
-            let asset;
-            if (images.length > 0) {
-              asset = `${assetBaseUrl}/resize=w:320,h:240,fit:crop/auto_image/compress/${images[0].handle}`
-            }
-            return tracks.length > 0 ? (
-              <Teaser key={id} slug={`/${slug}/${slugify(title)}`} title={`${title} (${tracksCount})`} asset={asset} />
-            ) : null   
-          })}
-        </div>
+        {items.map(item => {
+          const { name: country, collections } = item;
+          return collections.length > 0 ? (
+            <React.Fragment key={country}>
+              <Headline title={country} />
+              <div className="flex flex-wrap -m-4 mb-10">
+                {collections.map(collection => {
+                  const { id, name, tracks, image, staticImage } = collection
+                  const tracksCount = tracks.length;
+                  let assets = [];
+                  if (image) {
+                    const { id, handle } = image;
+                    assets.push({
+                      id,
+                      handle: slugify(`${country}-${name}-${handle}`),
+                      src: `${assetBaseUrl}/resize=w:320,h:240,fit:crop/auto_image/compress/${handle}`,
+                    });
+                  }
+                  if (staticImage) {
+                    const { id, handle} = staticImage;
+                    assets.push({
+                      id,
+                      handle: slugify(`${country}-${name}-${handle}`),
+                      src: `${assetBaseUrl}/resize=w:320,h:240,fit:crop/auto_image/compress/${handle}`,
+                    });
+                  }
+                  return tracks.length > 0 ? (
+                    <Teaser key={id} slug={`/${slug}/${slugify(name)}`} title={`${name} (${tracksCount})`} assets={assets} />
+                  ) : null
+                })}
+              </div>
+            </React.Fragment>
+          ) : null    
+        })}
       </Section>
     </Layout>
   )
@@ -44,8 +94,15 @@ export const pageQuery = graphql`
         name
         tracks {
           id
+          startCountry
+          endCountry
         }
-        images {
+        image {
+          id
+          handle
+        }
+        staticImage {
+          id
           handle
         }
       }
