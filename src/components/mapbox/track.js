@@ -29,7 +29,6 @@ const Mapbox = data => {
       bounds,
       fitBoundsOptions: (bounds, { padding: 20 }),
     })
-
     mapRef.current = map
     map.addControl(new mapboxgl.NavigationControl(), "top-right")
 

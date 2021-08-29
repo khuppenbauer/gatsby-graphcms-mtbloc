@@ -6,7 +6,7 @@ import { Play, Square, ArrowUpRight, ArrowDownRight, ArrowRight, ChevronUp, Chev
 import Layout from "../../components/layout"
 import Seo from "../../components/seo"
 import Section from "../../components/section"
-import Mapbox from "../../components/mapbox"
+import Mapbox from "../../components/mapbox/track"
 import Headline from "../../views/headline"
 import Tracks from "../../views/tracks"
 

@@ -34,6 +34,15 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
               totalElevationGain
               totalElevationLoss
             }
+            geoJson
+            minCoords {
+              latitude
+              longitude
+            }
+            maxCoords {
+              latitude
+              longitude
+            }
           }
         }
       }
@@ -65,7 +74,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
   })
 
   result.data.allGraphCmsCollection.nodes.forEach(node => {
-    const { name, collectionType, description, tracks } = node;
+    const { name, collectionType, description, tracks, geoJson, minCoords, maxCoords } = node;
     const slug = `${collectionType.slug}/${slugify(name)}`
     createPage({
       path: slug,
@@ -74,6 +83,9 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
         name,
         description,
         tracks,
+        geoJson,
+        minCoords,
+        maxCoords,
       },
     })
   })
