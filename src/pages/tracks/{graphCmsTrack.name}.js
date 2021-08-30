@@ -2,13 +2,14 @@ import React from "react"
 import { graphql } from "gatsby"
 import convert from "convert-units"
 import { Play, Square, ArrowUpRight, ArrowDownRight, ArrowRight, ChevronUp, ChevronDown, Download } from "react-feather"
+import slugify from '@sindresorhus/slugify';
 
 import Layout from "../../components/layout"
 import Seo from "../../components/seo"
 import Section from "../../components/section"
 import Mapbox from "../../components/mapbox/track"
 import Headline from "../../views/headline"
-import Tracks from "../../views/tracks"
+import Teaser from "../../views/teaser"
 
 const TrackPage = ({ data: { track } }) => {
   const {
@@ -131,7 +132,28 @@ const TrackPage = ({ data: { track } }) => {
             </a>
           </div>
         </div>
-        {collection ? <Tracks name={collection.name} tracks={collection.tracks} /> : null}
+        {collection.length > 0 ? 
+          (
+            <>
+            <Headline title="Kategorien" />
+              <div className="flex flex-wrap -m-4 mb-10">
+                {collection.map(collectionItem => {
+                  const { 
+                    id: collectionId, 
+                    name: collectionName, 
+                    staticImage,
+                    image,
+                    tracks,
+                    collectionType,
+                  } = collectionItem;
+                  const { slug } = collectionType;
+                  const tracksCount = tracks.length;
+                  return <Teaser key={collectionId} id={collectionName} slug={`/${slug}/${slugify(collectionName)}`} title={`${collectionName} (${tracksCount})`} image={image} staticImage={staticImage} />
+                })}
+              </div>
+            </>
+          ) : null
+        }
       </Section>
     </Layout>
   )
@@ -153,21 +175,23 @@ export const pageQuery = graphql`
       elevHigh
       elevLow
       collection {
+        id
         name
         tracks {
           id
-          gatsbyPath(filePath: "/tracks/{graphCmsTrack.name}")
-          distance
-          endCity
-          endCountry
-          endState
+        }
+        image {
+          id
+          handle
+        }
+        staticImage {
+          id
+          handle
+        }
+        collectionType {
+          id
           name
-          startCity
-          startCountry
-          startState
-          staticImageUrl
-          totalElevationGain
-          totalElevationLoss
+          slug
         }
       }
       geoJsonFileUrl

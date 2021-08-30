@@ -8,8 +8,6 @@ import Section from "../components/section"
 import Teaser from "../views/teaser"
 import Headline from "../views/headline"
 
-const assetBaseUrl = process.env.GATSBY_ASSET_BASE_URL
-
 const CollectionTypePage = ({ data: { collectionType }}) => {
   const { name, slug, collections } = collectionType;
   const res = [];
@@ -54,25 +52,8 @@ const CollectionTypePage = ({ data: { collectionType }}) => {
                 {collections.map(collection => {
                   const { id, name, tracks, image, staticImage } = collection
                   const tracksCount = tracks.length;
-                  let assets = [];
-                  if (image) {
-                    const { id, handle } = image;
-                    assets.push({
-                      id,
-                      handle: slugify(`${country}-${name}-${handle}`),
-                      src: `${assetBaseUrl}/resize=w:320,h:240,fit:crop/auto_image/compress/${handle}`,
-                    });
-                  }
-                  if (staticImage) {
-                    const { id, handle} = staticImage;
-                    assets.push({
-                      id,
-                      handle: slugify(`${country}-${name}-${handle}`),
-                      src: `${assetBaseUrl}/resize=w:320,h:240,fit:crop/auto_image/compress/${handle}`,
-                    });
-                  }
-                  return tracks.length > 0 ? (
-                    <Teaser key={id} slug={`/${slug}/${slugify(name)}`} title={`${name} (${tracksCount})`} assets={assets} />
+                  return tracksCount > 0 ? (
+                    <Teaser key={id} id={country} slug={`/${slug}/${slugify(name)}`} title={`${name} (${tracksCount})`} image={image} staticImage={staticImage} />
                   ) : null
                 })}
               </div>

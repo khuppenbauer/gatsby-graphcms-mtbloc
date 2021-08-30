@@ -32,7 +32,6 @@ const Mapbox = data => {
     let clickedTrackId = null;
     mapRef.current = map
     map.addControl(new mapboxgl.NavigationControl(), 'top-right')
-    console.log(geoJsonData);
     map.on('load', () => {
       // add sources
       map.addSource('route', {
