@@ -8,7 +8,5 @@ module.exports = {
     extend: {},
   },
   variants: {},
-  plugins: [
-    require('daisyui'),
-  ],
+  plugins: [],
 }
