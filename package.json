@@ -46,6 +46,7 @@
     "react-helmet": "^6.1.0",
     "react-instantsearch-dom": "^6.12.1",
     "react-markdown": "^6.0.2",
+    "recharts": "^2.1.2",
     "tailwindcss": "^2.1.4",
     "worker-loader": "^3.0.8",
     "yarn": "^1.22.10"
