@@ -109,7 +109,7 @@ const Mapbox = data => {
   // You can use other `useEffect` hooks to update the state of the map
   // based on incoming props.  Just beware that you might need to add additional
   // refs to share objects or state between hooks.
-  return <div ref={mapNode} style={{ height: "50vH", width: "75vW" }} />;
+  return <div ref={mapNode} style={{ height: "50vH", width: "100%" }} />;
 }
 
 export default Mapbox

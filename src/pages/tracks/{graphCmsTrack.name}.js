@@ -10,6 +10,9 @@ import Section from "../../components/section"
 import Mapbox from "../../components/mapbox/track"
 import Headline from "../../views/headline"
 import Teaser from "../../views/teaser"
+import ImageSlider from "../../views/imageSlider"
+
+const assetBaseUrl = process.env.GATSBY_ASSET_BASE_URL
 
 const TrackPage = ({ data: { track } }) => {
   const {
@@ -26,7 +29,42 @@ const TrackPage = ({ data: { track } }) => {
     geoJson,
     minCoords,
     maxCoords,
+    photos,
   } = track
+  const assets = []; 
+  const features = photos.map((photo) => {
+    const { id, handle, fileName, location, width, height } = photo;
+    const { latitude, longitude } = location;
+    const orientation = width > height ? 'landscape' : 'portrait';
+    assets.push({
+      key: id,
+      id: handle,
+      src: `${assetBaseUrl}/resize=h:320,fit:crop/auto_image/compress/${handle}`,
+      title: fileName,
+      orientation,
+    });
+    return {
+      type: "Feature",
+      geometry: {
+        type: "Point",
+        coordinates: [
+          longitude,
+          latitude
+        ]
+      },
+      properties: {
+        id,
+        handle, 
+        fileName,
+        width,
+        height,
+        orientation,
+      }
+    }
+  });
+  if (features) {
+    geoJson.features.push(...features);
+  }
   const distance = convert(track.distance).from("m").toBest()
   const number = new Intl.NumberFormat("de-DE").format(distance.val.toFixed(2))
   const unit = distance.unit
@@ -47,9 +85,19 @@ const TrackPage = ({ data: { track } }) => {
       <Seo title={name} />
       <Section>
         <Headline title={name} />
-        <div className="mb-10">
+        <div className="mb-10 w-full">
           <Mapbox data={geoJson} minCoords={minCoords} maxCoords={maxCoords} />
         </div>
+        {assets.length > 0 ? (
+          <>
+            <Headline title="Fotos" />
+            <div className="flex flex-wrap w-full mb-10">
+              <div className="pr-4 pb-4 sm:w-1/2 w-full">
+                <ImageSlider images={assets} />
+              </div>
+            </div>
+          </>
+        ) : null}
         <Headline title="Infos" />
         <div className="flex flex-wrap w-full mb-10">
           <div className="pr-4 pb-4 sm:w-1/2 w-full">
@@ -194,7 +242,6 @@ export const pageQuery = graphql`
           slug
         }
       }
-      geoJsonFileUrl
       gpxFileSmallUrl
       gpxFileUrl
       geoJson
@@ -207,13 +254,15 @@ export const pageQuery = graphql`
         longitude
       }
       photos {
+        id
+        fileName
         handle
-        width
-        height
         location {
           latitude
           longitude
         }
+        width
+        height
       }
     }
   }

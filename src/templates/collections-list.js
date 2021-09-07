@@ -18,7 +18,7 @@ export default class CollectionsList extends React.Component {
           { geoJson && minCoords && maxCoords ? (
             <>
               <Headline title={name} description={description} />
-              <div className="mb-10">
+              <div className="mb-10 w-full">
                 <Mapbox data={geoJson} minCoords={minCoords} maxCoords={maxCoords} />
               </div>
               <Tracks name="Touren" tracks={tracks} />
