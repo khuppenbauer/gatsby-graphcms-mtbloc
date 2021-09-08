@@ -47,6 +47,11 @@ const Footer = ({ siteTitle, metaPages, collectionTypes }) => (
       <div className="flex-grow flex flex-wrap md:pl-20 -mb-10 md:mt-0 mt-10 md:text-left text-center">
         <div className="lg:w-1/4 md:w-1/2 w-full px-4">
           <nav className="list-none mb-10">
+          <li key="search">
+              <Link to="/search" className="text-gray-400 hover:text-white">
+                Suche
+              </Link>
+            </li>
             <li key="tracks">
               <Link to="/tracks" className="text-gray-400 hover:text-white">
                 Touren

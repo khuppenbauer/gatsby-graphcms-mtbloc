@@ -45,28 +45,20 @@ const Header = ({ siteTitle }) => (
       </Link>
       <nav className="md:ml-auto flex flex-wrap items-center text-base justify-center">
         <Link 
-          to="/tracks" 
+          to="/search" 
           className="mr-5 hover:text-white" 
           activeClassName="border-b-2 text-white border-blue-500"
           partiallyActive={true}
         >
-          Touren
+          Suche
         </Link>
         <Link 
-          to="/trips" 
+          to="/collections" 
           className="mr-5 hover:text-white" 
           activeClassName="border-b-2 text-white border-blue-500"
           partiallyActive={true}
         >
-          Trips
-        </Link>
-        <Link 
-          to="/regions" 
-          className="mr-5 hover:text-white" 
-          activeClassName="border-b-2 text-white border-blue-500"
-          partiallyActive={true}
-        >
-          Regionen
+          Sammlungen
         </Link>
       </nav>
     </div>

@@ -16,7 +16,7 @@ export default class TracksList extends React.Component {
       <Layout>
         <Seo title="Tracks" />
         <Section>
-          <Tracks tracks={tracks.nodes} />
+          <Tracks name="Alle Touren" tracks={tracks.nodes} />
         </Section>
         <Pagination
           limit={limit}

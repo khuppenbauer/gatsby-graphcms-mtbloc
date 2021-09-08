@@ -54,6 +54,9 @@ const Image = ({ id, slug, title, image, staticImage }) => {
       title,
     });
   }
+  if (assets.length === 0) {
+    return null;
+  }
 
   return (
     assets.length > 1 ? (
