@@ -39,6 +39,7 @@ const TrackPage = ({ data: { track } }) => {
     minCoords,
     maxCoords,
     photos,
+    staticImageUrl,
   } = track
   const points = geoJson.features[0].geometry.coordinates;
   const step = track.distance / points.length;
@@ -106,7 +107,7 @@ const TrackPage = ({ data: { track } }) => {
   const ticks = Array.from(Array(length), (x, index) => start + index * diff);
   return (
     <Layout>
-      <Seo title={name} />
+      <Seo title={name} image={staticImageUrl} />
       <Section>
         <Headline title={name} />
         <div className="mb-10 w-full">
@@ -306,6 +307,7 @@ export const pageQuery = graphql`
         width
         height
       }
+      staticImageUrl
     }
   }
 `

@@ -7,13 +7,16 @@ import Mapbox from "../components/mapbox/collection"
 import Headline from "../views/headline"
 import Tracks from "../views/tracks"
 
+const assetBaseUrl = process.env.GATSBY_ASSET_BASE_URL
+
 export default class CollectionsList extends React.Component {
   render() {
     const { pageContext } = this.props
-    const { name, description, tracks, geoJson, minCoords, maxCoords } = pageContext;
+    const { name, description, tracks, geoJson, minCoords, maxCoords, staticImage } = pageContext;
+    const staticImageUrl = `${assetBaseUrl}/${staticImage.handle}`;
     return (
       <Layout>
-        <Seo title={name} />
+        <Seo title={name} image={staticImageUrl} />
         <Section>
           { geoJson && minCoords && maxCoords ? (
             <>
