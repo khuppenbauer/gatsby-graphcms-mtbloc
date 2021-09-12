@@ -3,20 +3,11 @@ import { graphql } from "gatsby"
 import convert from "convert-units"
 import { Play, Square, ArrowUpRight, ArrowDownRight, ArrowRight, ChevronUp, ChevronDown, Download } from "react-feather"
 import slugify from '@sindresorhus/slugify';
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  ResponsiveContainer,
-  Tooltip,
-} from "recharts";
 
 import Layout from "../../components/layout"
 import Seo from "../../components/seo"
 import Section from "../../components/section"
-import Mapbox from "../../components/mapbox/track"
+import Map from "../../components/mapChart"
 import Headline from "../../views/headline"
 import Teaser from "../../views/teaser"
 import ImageSlider from "../../views/imageSlider"
@@ -41,16 +32,7 @@ const TrackPage = ({ data: { track } }) => {
     photos,
     staticImageUrl,
   } = track
-  const points = geoJson.features[0].geometry.coordinates;
-  const step = track.distance / points.length;
-  const elevation = points.map((coordinate, index) => {
-    const distance = index * step / 1000;
-    return {
-      elevation: Math.floor(coordinate[2]),
-      distance: distance.toFixed(2),
 
-    };
-  });
   const assets = []; 
   const features = photos.map((photo) => {
     const { id, handle, fileName, location, width, height } = photo;
@@ -100,37 +82,12 @@ const TrackPage = ({ data: { track } }) => {
   const elevLow = new Intl.NumberFormat("de-DE").format(
     track.elevLow.toFixed(2)
   )
-  const start = 0;
-  const diff = 5;
-  const end = Math.floor(track.distance / 1000);
-  const length = Math.floor(Math.abs((end - start) / diff)) + 1;
-  const ticks = Array.from(Array(length), (x, index) => start + index * diff);
   return (
     <Layout>
       <Seo title={name} image={staticImageUrl} />
       <Section>
         <Headline title={name} />
-        <div className="mb-10 w-full">
-          <Mapbox data={geoJson} minCoords={minCoords} maxCoords={maxCoords} />
-        </div>
-        <div className="mb-10">
-          <ResponsiveContainer 
-            width="100%" 
-            height={200}
-          >
-            <LineChart
-              data={elevation}
-              type="monotone"
-            >
-              <CartesianGrid strokeDasharray="3" stroke="#9CA3AF" />
-              <Tooltip cursor={{ strokeDasharray: '3 3' }} label="" />
-              <XAxis type="number" unit="km" dataKey="distance" stroke="#9CA3AF" domain={['dataMin', 'dataMax']} interval="preserveStart" ticks={ticks} />
-              <YAxis type="number" unit="m" dataKey="elevation" stroke="#9CA3AF" />
-              <Line type="monotone" dataKey="elevation" stroke="#3B82F6" strokeWidth={3} dot={false} />
-              <Line type="monotone" dataKey="distance" strokeWidth={0} dot={false} />
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
+        <Map data={geoJson} minCoords={minCoords} maxCoords={maxCoords} distance={track.distance} />
         {assets.length > 0 ? (
           <>
             <Headline title="Fotos" />
