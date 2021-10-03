@@ -1,7 +1,7 @@
 import * as React from "react"
 import PropTypes from "prop-types"
 import { Link } from "gatsby"
-import { Facebook, Twitter, GitHub } from "react-feather"
+import { Facebook, Twitter, GitHub, Linkedin } from "react-feather"
 
 const Footer = ({ siteTitle, metaPages, collectionTypes }) => (
   <footer className="text-gray-400 bg-gray-900 body-font border-t-2 border-gray-800">
@@ -125,6 +125,14 @@ const Footer = ({ siteTitle, metaPages, collectionTypes }) => (
           >
             <GitHub />
           </a>
+          <a
+            className="ml-3 text-gray-400"
+            href="https://www.linkedin.com/in/kerstin-huppenbauer"
+            target="_blank"
+            rel="noreferrer"
+          >
+            <Linkedin/>
+          </a>          
         </span>
       </div>
     </div>
