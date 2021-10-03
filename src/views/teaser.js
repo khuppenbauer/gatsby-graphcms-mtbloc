@@ -5,7 +5,7 @@ import Image from "./image"
 
 const Teaser = ({ id, slug, title, image, staticImage }) => {
   return (
-    <div className="p-4 md:w-1/3 xl:w-1/5 w-full">
+    <div className="p-4 md:w-1/3 w-full">
       <div className="h-full border-2 border-gray-800 rounded-lg overflow-hidden">
         <Image id={id} slug={slug} title={title} image={image} staticImage={staticImage} />
         <div className="p-6">

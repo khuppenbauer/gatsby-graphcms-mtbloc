@@ -61,7 +61,7 @@ const IndexPage = ({ data: { tracks, trackStatistic }}) => {
       <Seo title="Home" />
       <section className="text-gray-400 bg-gray-900 body-font">
         <div className="container px-5 py-12 mx-auto">
-          <div class="lg:w-4/5 mx-auto flex flex-wrap">
+          <div class="mx-auto flex flex-wrap">
             <img alt="ecommerce" class="lg:w-1/2 w-full lg:h-auto h-64 object-cover object-center rounded" src="https://media.graphcms.com/0faI5rNFTBaR2JdvNAML" />
             <div class="lg:w-1/2 w-full lg:pl-10 lg:py-6 mt-6 lg:mt-0">
               <h2 class="text-sm title-font text-gray-500 tracking-widest">MapSeven</h2>
@@ -119,7 +119,7 @@ const IndexPage = ({ data: { tracks, trackStatistic }}) => {
           <Headline title="Statistik" />
           <Statistic data={trackStatistic.nodes} />
         </div>
-        <div className="container px-5 pt-12 mx-auto">
+        <div className="container px-5 py-12 mx-auto">
           <Tracks tracks={tracks.nodes} name="Letzte Touren" />
         </div>
       </section>

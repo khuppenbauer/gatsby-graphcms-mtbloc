@@ -37,7 +37,7 @@ const hits = connectHits((Hits) => {
     return track;
   });
   return (
-    <Tracks tracks={tracks} className="p-4 md:w-1/2 xl:w-1/4" />
+    <Tracks tracks={tracks} className="p-4 md:w-1/2" />
   )
 });
 
