@@ -62,12 +62,12 @@ const IndexPage = ({ data: { tracks, trackStatistic }}) => {
       <Seo title="Home" image={image} />
       <section className="text-gray-400 bg-gray-900 body-font">
         <div className="container px-5 py-12 mx-auto">
-          <div class="mx-auto flex flex-wrap">
-            <img alt="ecommerce" class="lg:w-1/2 w-full lg:h-auto h-64 object-cover object-center rounded" src={image} />
-            <div class="lg:w-1/2 w-full lg:pl-10 lg:py-6 mt-6 lg:mt-0">
-              <h2 class="text-sm title-font text-gray-500 tracking-widest">MapSeven</h2>
-              <h1 class="text-white text-2xl title-font font-medium mb-1">Was ist das?</h1>
-              <p class="leading-relaxed">
+          <div className="mx-auto flex flex-wrap">
+            <img alt="ecommerce" className="lg:w-1/2 w-full lg:h-auto h-64 object-cover object-center rounded" src={image} />
+            <div className="lg:w-1/2 w-full lg:pl-10 lg:py-6 mt-6 lg:mt-0">
+              <h2 className="text-sm title-font text-gray-500 tracking-widest">MapSeven</h2>
+              <h1 className="text-white text-2xl title-font font-medium mb-1">Was ist das?</h1>
+              <p className="leading-relaxed">
                 Vor über 10 Jahren habe ich meine erste "Mountainbike-Tour" mit dem Smartphone aufgezeichnet.<br />
                 Inzwischen sind es über 1000 Touren, Zeit für eine kleine Website, um die Highlights wieder zu finden.<br />
                 ... und ihr könnt bei der Entwicklung live dabei sein.<br />
