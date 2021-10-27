@@ -2,10 +2,11 @@ import React from "react"
 import { Link } from "gatsby"
 import convert from "convert-units"
 import { PlayCircle, StopCircle, ArrowUpCircle, ArrowDownCircle, ArrowRightCircle, Navigation } from "react-feather"
+import slugify from '@sindresorhus/slugify';
 
 import Headline from "./headline"
+import Image from "./image"
 
-const assetBaseUrl = process.env.GATSBY_ASSET_BASE_URL
 
 const Track = ({ track, className }) => {
   let geoDistance
@@ -20,7 +21,8 @@ const Track = ({ track, className }) => {
     startCity,
     startState,
     startCountry,
-    staticImageUrl,
+    previewImageUrl,
+    overviewImageUrl,
   } = track
   const distance = convert(track.distance).from("m").toBest()
   const number = new Intl.NumberFormat("de-DE").format(distance.val.toFixed(2))
@@ -36,24 +38,34 @@ const Track = ({ track, className }) => {
     geoDistanceNumber = new Intl.NumberFormat("de-DE").format(geoDistance.val.toFixed(2))
     geoDistanceUnit = geoDistance.unit
   }
-  let asset;
-  if (staticImageUrl) {
-    const handle = staticImageUrl.replace(assetBaseUrl, "")
-    asset = `${assetBaseUrl}/resize=w:320,h:240,fit:crop/auto_image/compress/${handle}`  
+
+  let assets = [];
+  if (previewImageUrl) {
+    assets.push({
+      key: previewImageUrl,
+      id: slugify(`preview-${id}`),
+      src: previewImageUrl,
+      title: previewImageUrl,
+      button: 'map-pin',
+    });
   }
+  if (overviewImageUrl) {
+    assets.push({
+      key: overviewImageUrl,
+      id: slugify(`overview-${id}`),
+      src: overviewImageUrl,
+      title: overviewImageUrl,
+      button: 'map'
+    });
+  }
+
   return (
-    <div key={id} className={className}>
+    <div key={id} className={className}>      
       <div className="h-full border-2 border-gray-800 rounded-lg overflow-hidden">
+        {assets.length > 0 ? (
+          <Image id={id} assets={assets} slug={gatsbyPath} />
+        ) : null}
         <Link to={gatsbyPath}>
-          { asset ? (
-            <img
-              className="w-full object-cover object-center"
-              src={asset}
-              alt={name}
-              width="320"
-              height="240"
-          />
-          ) : null}
           <div className="p-6">
             <h2 className="tracking-widest text-xs title-font font-medium text-gray-500 mb-1 uppercase">
               {startCountry}

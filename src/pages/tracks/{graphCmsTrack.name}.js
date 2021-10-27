@@ -30,7 +30,7 @@ const TrackPage = ({ data: { track } }) => {
     minCoords,
     maxCoords,
     photos,
-    staticImageUrl,
+    previewImageUrl,
   } = track
 
   const assets = []; 
@@ -84,7 +84,7 @@ const TrackPage = ({ data: { track } }) => {
   )
   return (
     <Layout>
-      <Seo title={name} image={staticImageUrl} />
+      <Seo title={name} image={previewImageUrl} />
       <Section>
         <Headline title={name} />
         <Map data={geoJson} minCoords={minCoords} maxCoords={maxCoords} distance={track.distance} />
@@ -264,7 +264,6 @@ export const pageQuery = graphql`
         width
         height
       }
-      staticImageUrl
     }
   }
 `

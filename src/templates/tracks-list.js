@@ -53,7 +53,8 @@ export const pageQuery = graphql`
         startCity
         startCountry
         startState
-        staticImageUrl
+        previewImageUrl
+        overviewImageUrl
         totalElevationGain
         totalElevationLoss
       }

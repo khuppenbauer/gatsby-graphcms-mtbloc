@@ -13,7 +13,7 @@ const hits = connectHits((Hits) => {
       endCity, endState, 
       startCity, startState, startCountry, 
       distance, totalElevationGain, totalElevationLoss, 
-      staticImageUrl
+      previewImageUrl, overviewImageUrl,
     } = hit;
     if (_rankingInfo && _rankingInfo.geoDistance) {
       geoDistance = _rankingInfo.geoDistance;
@@ -28,7 +28,8 @@ const hits = connectHits((Hits) => {
       startCity,
       startState,
       startCountry,
-      staticImageUrl,
+      previewImageUrl,
+      overviewImageUrl,
       distance,
       totalElevationGain,
       totalElevationLoss,

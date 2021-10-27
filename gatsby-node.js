@@ -30,7 +30,8 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
               startCity
               startCountry
               startState
-              staticImageUrl
+              previewImageUrl
+              overviewImageUrl
               totalElevationGain
               totalElevationLoss
             }
