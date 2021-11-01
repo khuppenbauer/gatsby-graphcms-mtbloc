@@ -124,7 +124,7 @@ const Mapbox = data => {
       container: mapContainer.current,
       style: 'mapbox://styles/mapbox/outdoors-v11',
       bounds,
-      fitBoundsOptions: (bounds, { padding: 20 }),
+      fitBoundsOptions: (bounds, { padding: 50 }),
     });
     addControls();
     map.current.on('load', () => {
