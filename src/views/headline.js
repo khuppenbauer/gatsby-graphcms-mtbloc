@@ -1,4 +1,5 @@
 import React from "react"
+import ReactMarkdown from "react-markdown"
 
 const Headline = ({ title, description }) => (
   <div className="flex flex-wrap w-full mb-6">
@@ -10,9 +11,9 @@ const Headline = ({ title, description }) => (
     </div>
     {description ? (
       <div className="w-full mb-t lg:mt-0">
-        <p className="w-full leading-relaxed text-gray-400 text-opacity-90">
-          {description}
-        </p>
+        <ReactMarkdown className="w-full leading-relaxed text-gray-400 text-opacity-90 pt-4">
+          {description.markdown}
+        </ReactMarkdown>
       </div>
     ) : null}
   </div>

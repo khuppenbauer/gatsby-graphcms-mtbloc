@@ -43,23 +43,37 @@ const CollectionTypePage = ({ data: { collectionType }}) => {
     <Layout>
       <Seo title={name} />
       <Section>
-        {items.map(item => {
-          const { name: country, collections } = item;
-          return collections.length > 0 ? (
-            <React.Fragment key={country}>
-              <Headline title={country} />
-              <div className="flex flex-wrap -m-4 mb-10">
-                {collections.map(collection => {
-                  const { id, name, tracks, image, staticImage } = collection
-                  const tracksCount = tracks.length;
-                  return tracksCount > 0 ? (
-                    <Teaser key={id} id={country} slug={`/${slug}/${slugify(name)}`} title={`${name} (${tracksCount})`} image={image} staticImage={staticImage} />
-                  ) : null
-                })}
-              </div>
-            </React.Fragment>
-          ) : null    
-        })}
+        {items.length > 0 ? (
+          items.map(item => {
+            const { name: country, collections } = item;
+            return collections.length > 0 ? (
+              <React.Fragment key={country}>
+                <Headline title={country} />
+                <div className="flex flex-wrap -m-4 mb-10">
+                  {collections.map(collection => {
+                    const { id, name, tracks, image, staticImage } = collection
+                    const tracksCount = tracks.length;
+                    return tracksCount > 0 ? (
+                      <Teaser key={id} id={country} slug={`/${slug}/${slugify(name)}`} title={`${name} (${tracksCount})`} image={image} staticImage={staticImage} />
+                    ) : null
+                  })}
+                </div>
+              </React.Fragment>
+            ) : null 
+          })
+        ) : (
+          <div className="flex flex-wrap -m-4 mb-10">
+            <>
+              <Headline title={name} />
+              {collections.map(collection => {
+                const { id, name, image, staticImage } = collection
+                return (
+                  <Teaser key={id} id={id} slug={`/${slug}/${slugify(name)}`} title={`${name}`} image={image} staticImage={staticImage} />
+                )
+              })}
+            </>
+          </div>
+        )}
       </Section>
     </Layout>
   )

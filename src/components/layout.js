@@ -29,7 +29,7 @@ const Layout = ({ children }) => {
           title
         }
       }
-      allGraphCmsCollectionType {
+      allGraphCmsCollectionType(sort: {order: ASC, fields: name}) {
         nodes {
           id
           name

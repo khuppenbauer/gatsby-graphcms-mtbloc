@@ -28,7 +28,7 @@ const CollectionsPage = ({ data: { collectionTypes }}) => {
 
 export const pageQuery = graphql`
   {
-    collectionTypes: allGraphCmsCollectionType {
+    collectionTypes: allGraphCmsCollectionType(sort: {order: ASC, fields: name}) {
       nodes {
         id
         name

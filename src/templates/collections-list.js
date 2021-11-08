@@ -1,4 +1,5 @@
 import * as React from "react"
+import slugify from '@sindresorhus/slugify';
 
 import Layout from "../components/layout"
 import Seo from "../components/seo"
@@ -6,14 +7,15 @@ import Features from "../components/features"
 import Mapbox from "../components/mapbox/collection"
 import Headline from "../views/headline"
 import Tracks from "../views/tracks"
+import Teaser from "../views/teaser"
 
 const assetBaseUrl = process.env.GATSBY_ASSET_BASE_URL
 
 export default class CollectionsList extends React.Component {
   render() {
     const { pageContext } = this.props
-    const { name, description, tracks, geoJson, minCoords, maxCoords, staticImage } = pageContext;
-    const staticImageUrl = `${assetBaseUrl}/${staticImage.handle}`;
+    const { name, description, tracks, geoJson, minCoords, maxCoords, staticImage, subCollections } = pageContext;
+    const staticImageUrl = staticImage ? `${assetBaseUrl}/${staticImage.handle}` : '';
     return (
       <Layout>
         <Seo title={name} image={staticImageUrl} />
@@ -26,7 +28,30 @@ export default class CollectionsList extends React.Component {
                   <div className="mb-10 w-full">
                     <Mapbox data={geoJson} minCoords={minCoords} maxCoords={maxCoords} />
                   </div>
-                  <Tracks name="Touren" tracks={tracks} className="p-4 lg:w-1/2" />
+                  {tracks.length > 0 ? (
+                    <Tracks name="Touren" tracks={tracks} className="p-4 lg:w-1/2" />
+                  ) : (
+                    subCollections.length > 0 ? (
+                      <>
+                        <Headline title="Sammlungen" />
+                        <div className="flex flex-wrap -m-4 mb-10">
+                          {subCollections.map(collectionItem => {
+                            const { 
+                              id: collectionId, 
+                              name: collectionName, 
+                              staticImage,
+                              image,
+                              tracks,
+                              collectionType,
+                            } = collectionItem;
+                            const { slug } = collectionType;
+                            const tracksCount = tracks.length;
+                            return <Teaser key={collectionId} id={collectionName} slug={`/${slug}/${slugify(collectionName)}`} title={`${collectionName} (${tracksCount})`} image={image} staticImage={staticImage} className="p-4 md:w-1/2 w-full" />
+                          })}
+                        </div>
+                      </>
+                    ) : null
+                  )}
                 </>
               ) :
                 <Tracks name={name} description={description} tracks={tracks} className="p-4 lg:w-1/2" />

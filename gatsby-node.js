@@ -14,7 +14,9 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
         allGraphCmsCollection {
           nodes {
             name
-            description
+            description {
+              markdown
+            }
             collectionType {
               name
               slug
@@ -47,6 +49,26 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
             staticImage {
               handle
             }
+            subCollections {
+              id
+              name
+              tracks {
+                id
+              }
+              image {
+                id
+                handle
+              }
+              staticImage {
+                id
+                handle
+              }
+              collectionType {
+                id
+                name
+                slug
+              }
+            }
           }
         }
       }
@@ -78,7 +100,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
   })
 
   result.data.allGraphCmsCollection.nodes.forEach(node => {
-    const { name, collectionType, description, tracks, geoJson, minCoords, maxCoords, staticImage } = node;
+    const { name, collectionType, description, tracks, geoJson, minCoords, maxCoords, staticImage, subCollections } = node;
     const slug = `${collectionType.slug}/${slugify(name)}`
     createPage({
       path: slug,
@@ -91,6 +113,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
         minCoords,
         maxCoords,
         staticImage,
+        subCollections,
       },
     })
   })

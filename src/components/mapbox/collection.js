@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from "react"
+import slugify from "@sindresorhus/slugify";
 
 import mapboxgl from "mapbox-gl"
 import "mapbox-gl/dist/mapbox-gl.css"
@@ -49,10 +50,7 @@ const Mapbox = data => {
         },
         paint: {
           'line-color': [
-            'case',
-            ['boolean', ['feature-state', 'click'], false],
-            'green',
-            'red'
+            'get', 'color',
           ],
           'line-width': [
             'case',
@@ -67,8 +65,14 @@ const Mapbox = data => {
         map.on('click', 'route', function(e) {
           if (e.features.length > 0) {
             const { properties } = e.features[0];
-            const { name } = properties;
-            const html = `${name}`;
+            const { name, type } = properties;
+            let url;
+            if (type === 'track') {
+              url = `/tracks/${slugify(name)}`;
+            } else {
+              url = `/regions/${slugify(name)}`;
+            }
+            const html = `<a href="${url}">${name}</a>`;
             if (html) {
               new mapboxgl.Popup()
                 .setLngLat(e.lngLat)
