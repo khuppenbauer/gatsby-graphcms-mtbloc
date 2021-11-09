@@ -8,12 +8,18 @@ import {
   ResponsiveContainer,
   Tooltip,
 } from "recharts";
+import { getPathLength } from "geolib";
 
 import { TrackContext } from "./mapChart"
 
 const Charts = ({ data: { features }, distance }) => {
   const { dispatch } = useContext(TrackContext);
-  const points = features[0].geometry.coordinates;
+  const geoJson = features.reduce((prev, current) => {
+    const prevDistance = prev ? getPathLength(prev.geometry.coordinates) : 0;
+    const currentDistance = current ? getPathLength(current.geometry.coordinates) : 0;
+    return (prevDistance > currentDistance) ? prev : current;
+  });
+  const points = geoJson.geometry.coordinates;
   const step = distance / points.length;
   const elevation = points.map((coordinate, index) => {
     const distance = index * step / 1000;
@@ -31,7 +37,7 @@ const Charts = ({ data: { features }, distance }) => {
 
   const markPoint = ({ activeTooltipIndex: index, isTooltipActive }) => {
     if (isTooltipActive === true && index) {
-      const trackPoint = features[0].geometry.coordinates[index];
+      const trackPoint = geoJson.geometry.coordinates[index];
       dispatch({ type: 'chart', data: trackPoint});
     }
   };
