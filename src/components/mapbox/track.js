@@ -44,7 +44,9 @@ const Mapbox = data => {
           'line-cap': 'round',
         },
         paint: {
-          'line-color': 'red',
+          'line-color': [
+            'get', 'color',
+          ],
           'line-width': 2,
         },
         filter: ['==', '$type', 'LineString'],
