@@ -40,10 +40,28 @@ const Collections = ({collections}) => (
             image,
             tracks,
             collectionType,
+            subCollection,
           } = collectionItem;
           const { slug } = collectionType;
           const tracksCount = tracks.length;
-          return <Teaser key={collectionId} id={collectionName} slug={`/${slug}/${slugify(collectionName)}`} title={`${collectionName} (${tracksCount})`} image={image} staticImage={staticImage} className="p-4 md:w-1/2 w-full" />
+          const subCollectionTeaser = subCollection && subCollection.length > 0 && subCollection.map((subCollectionItem) => {
+            const {
+              id: subCollectionId,
+              name: subCollectionName,
+              staticImage: subCollectionStaticImage,
+              image: subCollectionImage,
+            } = subCollectionItem;
+            const subCollectionSlug = `${subCollectionItem.collectionType.slug}/${subCollectionItem.slug}`;
+            return (
+              <Teaser key={subCollectionId} id={subCollectionName} slug={subCollectionSlug} title={subCollectionName} subtitle={subCollectionItem.collectionType.name} image={subCollectionImage} staticImage={subCollectionStaticImage} className="p-4 md:w-1/2 w-full" />
+            );
+          });
+          return (
+            <React.Fragment key={`t-${collectionId}`}>
+              {subCollectionTeaser}
+              <Teaser key={collectionId} id={collectionName} slug={`/${slug}/${slugify(collectionName)}`} title={`${collectionName} (${tracksCount})`} subtitle={collectionType.name} image={image} staticImage={staticImage} className="p-4 md:w-1/2 w-full" />
+            </React.Fragment>
+          )
         })}
       </div>
     </>
@@ -277,6 +295,24 @@ export const pageQuery = graphql`
           id
           name
           slug
+        }
+        subCollection {
+          id
+          name
+          slug
+          collectionType {
+            name
+            slug
+            id
+          }
+          image {
+            id
+            handle
+          }
+          staticImage {
+            id
+            handle
+          }
         }
       }
       gpxFileSmallUrl

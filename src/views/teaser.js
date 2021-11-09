@@ -6,7 +6,7 @@ import Image from "./image"
 
 const assetBaseUrl = process.env.GATSBY_ASSET_BASE_URL
 
-const Teaser = ({ id, slug, title, image, staticImage, className }) => {
+const Teaser = ({ id, slug, title, subtitle, image, staticImage, className }) => {
   let assets = [];
   if (image) {
     const { id: imageId, handle } = image;
@@ -35,6 +35,11 @@ const Teaser = ({ id, slug, title, image, staticImage, className }) => {
           <Image id={id} assets={assets} slug={slug} />
         ) : null}
         <div className="p-6">
+          {subtitle ? (
+            <h2 className="tracking-widest text-xs title-font font-medium text-gray-500 mb-1 uppercase">
+            {subtitle}
+            </h2>
+          ) : null}
           <Link to={slug}>
             <h1 className="title-font text-lg font-medium text-white mb-3">
               {title}
