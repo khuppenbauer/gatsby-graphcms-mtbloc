@@ -14,7 +14,9 @@ import { TrackContext } from "./mapChart"
 
 const Charts = ({ data: { features }, distance }) => {
   const { dispatch } = useContext(TrackContext);
-  const geoJson = features.reduce((prev, current) => {
+  const geoJson = features
+    .filter((feature) => feature.geometry.type === 'LineString')
+    .reduce((prev, current) => {
     const prevDistance = prev ? getPathLength(prev.geometry.coordinates) : 0;
     const currentDistance = current ? getPathLength(current.geometry.coordinates) : 0;
     return (prevDistance > currentDistance) ? prev : current;
