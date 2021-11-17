@@ -15,11 +15,6 @@ export default async function handler(req, res) {
     const database = client.db(db);
     const features = database.collection(collection); 
     const cursor = features.find(query);
-    if ((await cursor.count()) === 0) {
-      return {
-        statusCode: 404,
-    };
-    }
     await cursor.forEach(item => items.push(item));
   } finally {
     await client.close();

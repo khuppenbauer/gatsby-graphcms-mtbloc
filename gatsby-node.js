@@ -20,6 +20,8 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
             collectionType {
               name
               slug
+              mapLayer
+              teaser
             }
             tracks {
               id
@@ -114,6 +116,8 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
         maxCoords,
         staticImage,
         subCollections,
+        mapLayer: collectionType.mapLayer,
+        teaser: collectionType.teaser,
       },
     })
   })

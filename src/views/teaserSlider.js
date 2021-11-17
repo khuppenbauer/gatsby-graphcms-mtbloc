@@ -65,11 +65,16 @@ const TeaserSlider = ({ items }) => {
         </div>
       </div>
       {items.length > 1 ? (
-        <div className="absolute flex justify-between items-center transform-y right-6 bottom-6">
-          <button className="rounded-full h-6 w-6 bg-gray-800 flex items-center justify-center" onClick={slideRight}>
-            <ChevronRight className="w-8 h-8"/>
-          </button>
-        </div>
+        <>
+          <div className="absolute flex justify-between items-center transform bottom-6">
+            <span className="text-gray-500 inline-flex leading-none text-sm py-1">{index+1} / {items.length}</span>
+          </div>
+          <div className="absolute flex justify-between items-center transform-y right-6 bottom-6">
+            <button className="rounded-full h-6 w-6 bg-gray-800 flex items-center justify-center" onClick={slideRight}>
+              <ChevronRight className="w-8 h-8"/>
+            </button>
+          </div>
+        </>
       ) : null}
     </div>
   )

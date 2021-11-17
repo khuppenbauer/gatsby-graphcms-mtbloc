@@ -3,16 +3,54 @@ import { graphql } from "gatsby"
 import convert from "convert-units"
 import { Play, Square, ArrowUpRight, ArrowDownRight, ArrowRight, ChevronUp, ChevronDown, Download } from "react-feather"
 import slugify from '@sindresorhus/slugify';
+import { QueryClient, QueryClientProvider } from "react-query";
 
 import Layout from "../../components/layout"
 import Seo from "../../components/seo"
 import Map from "../../components/mapChart"
-import Features from "../../components/features"
 import Headline from "../../views/headline"
 import Teaser from "../../views/teaser"
 import ImageSlider from "../../views/imageSlider"
+import Features from "../../views/features"
+import useFeature from "../../hooks/useFeature"
 
 const assetBaseUrl = process.env.GATSBY_ASSET_BASE_URL
+const queryClient = new QueryClient();
+
+const teaserFeatures = ['map', 'book', 'track', 'image'];
+const mapLayerFeatures = ['pass', 'residence'];
+const featureTypes = ['map', 'book', 'track', 'image', 'pass', 'residence'];
+
+const Feature = ({ 
+  type, tracks, images, minCoords, maxCoords, geoJsonFeatures, setGeoJsonFeatures 
+}) => {
+  const { status, data } = useFeature(minCoords, maxCoords, type);
+  if (status === 'success' && data.length > 0) {
+    if (mapLayerFeatures.includes(type)) {
+      const features = data.map((item) => {
+        const { geoJson } = item;
+        geoJson.features[0].properties.type = type;
+        return geoJson.features[0];
+      });
+      if (features.length > 0) {
+        geoJsonFeatures.features.push(...features);
+        setGeoJsonFeatures(geoJsonFeatures);
+      }
+    }
+    if (teaserFeatures.includes(type)) {
+      return (
+        <Features type={type} data={data} tracks={tracks} images={images} />
+      )
+    }
+  } else {
+    return (
+      <></>
+    )
+  }
+  return (
+    <></>
+  );
+};
 
 const Assets = ({ assets }) => (
   assets.length > 0 ? (
@@ -198,8 +236,7 @@ const TrackPage = ({ data: { track } }) => {
     photos,
     previewImageUrl,
   } = track
-
-  const assets = []; 
+  const assets = [];
   const features = photos.map((photo) => {
     const { id, handle, fileName, location, width, height } = photo;
     const { latitude, longitude } = location;
@@ -227,13 +264,14 @@ const TrackPage = ({ data: { track } }) => {
         width,
         height,
         orientation,
+        type: 'image',
       }
     }
   });
   if (features) {
     geoJson.features.push(...features);
   }
-
+  const [geoJsonFeatures, setGeoJsonFeatures] = React.useState(geoJson);
   return (
     <Layout>
       <Seo title={name} image={previewImageUrl} />
@@ -248,13 +286,22 @@ const TrackPage = ({ data: { track } }) => {
             <Collections collections={collection} />
           </div>
           <div className="lg:flex lg:flex-col lg:w-1/3 lg:pl-6">
-            <Features 
-              minCoords={minCoords}
-              maxCoords={maxCoords}
-              name={name}
-              photos={photos}
-              types={['map', 'track', 'image']}
-            />
+            <QueryClientProvider client={queryClient}>
+              {featureTypes.map((featureType) => {
+                return (
+                  <Feature
+                    key={featureType}
+                    type={featureType}
+                    tracks={[track]}
+                    images={photos}
+                    minCoords={minCoords} 
+                    maxCoords={maxCoords}
+                    geoJsonFeatures={geoJsonFeatures}
+                    setGeoJsonFeatures={setGeoJsonFeatures}
+                  />
+                )  
+              })}
+            </QueryClientProvider>
           </div>
         </div>
       </section>

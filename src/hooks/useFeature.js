@@ -1,0 +1,45 @@
+import { useQuery } from "react-query";
+import axios from "axios";
+
+const getFeatures = async (minCoords, maxCoords, type) => {
+  const url = '/api/feature-geo-intersect';
+
+  const { latitude: minLat, longitude: minLng } = minCoords;
+  const { latitude: maxLat, longitude: maxLng } = maxCoords;
+
+  const body = {
+    collection: "features",
+    query: {
+      type,
+      "geometry": {
+        $geoIntersects: {
+          $geometry: {
+            type: 'Polygon',
+            coordinates: [
+              [
+                [minLng, minLat],
+                [maxLng, minLat],
+                [maxLng, maxLat],
+                [minLng, maxLat],
+                [minLng, minLat],
+              ],
+            ],
+          }
+        }
+      }
+    }
+  };
+  const { data } = await axios({
+    url,
+    method: 'post',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: JSON.stringify(body),
+  });
+  return data;
+}
+
+export default function useFeatures(minCoords, maxCoords, type) {
+  return useQuery(type, () => getFeatures(minCoords, maxCoords, type));
+}
