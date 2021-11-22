@@ -1,10 +1,9 @@
 import React from "react"
-import convert from "convert-units"
-import { ArrowUpCircle, ArrowDownCircle, ArrowRightCircle } from "react-feather"
 import slugify from '@sindresorhus/slugify';
 import { renderToString } from 'react-dom/server';
 
 import TeaserSlider from "./teaserSlider"
+import { renderMetaData } from "../helpers/track"
 
 const getMapItems = (data) => data
   .filter(item => item.type === 'map')
@@ -49,32 +48,8 @@ const getTrackItems = (data, tracks) => data
   })
   .map(trackItem => {
     const { _id: id, foreignKey: key, name: trackName, meta } = trackItem;
-    const { previewImageUrl: img } = meta;
-    const distance = convert(meta.distance).from("m").toBest()
-    const number = new Intl.NumberFormat("de-DE").format(distance.val.toFixed(2))
-    const unit = distance.unit
-    const totalElevationGain = new Intl.NumberFormat("de-DE").format(
-      meta.totalElevationGain.toFixed(2)
-    )
-    const totalElevationLoss = new Intl.NumberFormat("de-DE").format(
-      meta.totalElevationLoss.toFixed(2)
-    )
-    const text = (
-      <div className="flex items-center flex-col my-4">
-        <span className="text-gray-500 inline-flex items-center lg:mr-auto md:mr-0 mr-auto leading-none text-sm py-1">
-          <ArrowRightCircle className="w-4 h-4 mr-1" />
-          {number} {unit}
-        </span>
-        <span className="text-gray-500 inline-flex items-center lg:mr-auto md:mr-0 mr-auto leading-none text-sm py-1">
-          <ArrowUpCircle className="w-4 h-4 mr-1" />
-          {totalElevationGain} m
-        </span>
-        <span className="text-gray-500 inline-flex items-center lg:mr-auto md:mr-0 mr-auto leading-none text-sm py-1">
-          <ArrowDownCircle className="w-4 h-4 mr-1" />
-          {totalElevationLoss} m
-        </span>
-      </div>
-    );
+    const { previewImageUrl: img, distance, totalElevationGain, totalElevationLoss } = meta;
+    const text = renderMetaData({ distance, totalElevationGain, totalElevationLoss });
     return {
       id,
       key,

@@ -1,6 +1,5 @@
 import React from "react"
 import { graphql } from "gatsby"
-import convert from "convert-units"
 import { Play, Square, ArrowUpRight, ArrowDownRight, ArrowRight, ChevronUp, ChevronDown, Download } from "react-feather"
 import slugify from '@sindresorhus/slugify';
 import { QueryClient, QueryClientProvider } from "react-query";
@@ -13,6 +12,7 @@ import Teaser from "../../views/teaser"
 import ImageSlider from "../../views/imageSlider"
 import Features from "../../views/features"
 import useFeature from "../../hooks/useFeature"
+import { convertMetaData } from "../../helpers/track"
 
 const assetBaseUrl = process.env.GATSBY_ASSET_BASE_URL
 const queryClient = new QueryClient();
@@ -41,15 +41,16 @@ const Feature = ({
       return (
         <Features type={type} data={data} tracks={tracks} images={images} />
       )
+    } else {
+      return (
+        <></>
+      )
     }
   } else {
     return (
       <></>
     )
   }
-  return (
-    <></>
-  );
 };
 
 const Assets = ({ assets }) => (
@@ -89,7 +90,7 @@ const Collections = ({collections}) => (
               staticImage: subCollectionStaticImage,
               image: subCollectionImage,
             } = subCollectionItem;
-            const subCollectionSlug = `${subCollectionItem.collectionType.slug}/${subCollectionItem.slug}`;
+            const subCollectionSlug = `/${subCollectionItem.collectionType.slug}/${subCollectionItem.slug}`;
             return (
               <Teaser key={subCollectionId} id={subCollectionName} slug={subCollectionSlug} title={subCollectionName} subtitle={subCollectionItem.collectionType.name} image={subCollectionImage} staticImage={subCollectionStaticImage} className="p-4 md:w-1/2 w-full" />
             );
@@ -143,21 +144,14 @@ const Infos = ({ track }) => {
     endState,
     endCountry,
   } = track;
-  const distance = convert(track.distance).from("m").toBest()
-  const number = new Intl.NumberFormat("de-DE").format(distance.val.toFixed(2))
-  const unit = distance.unit
-  const totalElevationGain = new Intl.NumberFormat("de-DE").format(
-    track.totalElevationGain.toFixed(2)
-  )
-  const totalElevationLoss = new Intl.NumberFormat("de-DE").format(
-    track.totalElevationLoss.toFixed(2)
-  )
-  const elevHigh = new Intl.NumberFormat("de-DE").format(
-    track.elevHigh.toFixed(2)
-  )
-  const elevLow = new Intl.NumberFormat("de-DE").format(
-    track.elevLow.toFixed(2)
-  )
+
+  const { 
+    distance,
+    totalElevationGain,
+    totalElevationLoss,
+    elevLow,
+    elevHigh,
+  } = convertMetaData(track);
 
   return (
     <>
@@ -183,7 +177,7 @@ const Infos = ({ track }) => {
           <div className="bg-gray-800 rounded flex p-4 h-full items-center">
             <ArrowUpRight className="text-blue-500 h-8 w-8" />
             <span className="title-font font-medium text-white px-2">
-              {totalElevationGain} m
+              {totalElevationGain}
             </span>
           </div>
         </div>
@@ -191,7 +185,7 @@ const Infos = ({ track }) => {
           <div className="bg-gray-800 rounded flex p-4 h-full items-center">
             <ArrowDownRight className="text-blue-500 h-8 w-8" />
             <span className="title-font font-medium text-white px-2">
-              {totalElevationLoss} m
+              {totalElevationLoss}
             </span>
           </div>
         </div>
@@ -199,7 +193,7 @@ const Infos = ({ track }) => {
           <div className="bg-gray-800 rounded flex p-4 h-full items-center">
             <ChevronUp className="text-blue-500 h-8 w-8" />
             <span className="title-font font-medium text-white px-2">
-              {elevHigh} m
+              {elevHigh}
             </span>
           </div>
         </div>
@@ -207,7 +201,7 @@ const Infos = ({ track }) => {
           <div className="bg-gray-800 rounded flex p-4 h-full items-center">
             <ChevronDown className="text-blue-500 h-8 w-8" />
             <span className="title-font font-medium text-white px-2">
-              {elevLow} m
+              {elevLow}
             </span>
           </div>
         </div>
@@ -215,7 +209,7 @@ const Infos = ({ track }) => {
           <div className="bg-gray-800 rounded flex p-4 h-full items-center">
             <ArrowRight className="text-blue-500 h-8 w-8" />
             <span className="title-font font-medium text-white px-2">
-              {number} {unit}
+              {distance}
             </span>
           </div>
         </div>

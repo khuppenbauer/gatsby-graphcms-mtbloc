@@ -1,12 +1,12 @@
 import React from "react"
 import { Link } from "gatsby"
 import convert from "convert-units"
-import { PlayCircle, StopCircle, ArrowUpCircle, ArrowDownCircle, ArrowRightCircle, Navigation } from "react-feather"
+import { PlayCircle, StopCircle, Navigation } from "react-feather"
 import slugify from '@sindresorhus/slugify';
 
 import Headline from "./headline"
 import Image from "./image"
-
+import { renderMetaData } from "../helpers/track"
 
 const Track = ({ track, className }) => {
   let geoDistance
@@ -23,16 +23,11 @@ const Track = ({ track, className }) => {
     startCountry,
     previewImageUrl,
     overviewImageUrl,
+    distance,
+    totalElevationGain,
+    totalElevationLoss,
   } = track
-  const distance = convert(track.distance).from("m").toBest()
-  const number = new Intl.NumberFormat("de-DE").format(distance.val.toFixed(2))
-  const unit = distance.unit
-  const totalElevationGain = new Intl.NumberFormat("de-DE").format(
-    track.totalElevationGain.toFixed(2)
-  )
-  const totalElevationLoss = new Intl.NumberFormat("de-DE").format(
-    track.totalElevationLoss.toFixed(2)
-  )
+
   if (track.geoDistance) {
     geoDistance = convert(track.geoDistance).from("m").toBest()
     geoDistanceNumber = new Intl.NumberFormat("de-DE").format(geoDistance.val.toFixed(2))
@@ -84,18 +79,7 @@ const Track = ({ track, className }) => {
               </span>
             </div>
             <div className="flex items-center flex-wrap my-4">
-              <span className="text-gray-500 inline-flex items-center lg:mr-auto md:mr-0 mr-auto leading-none text-sm">
-                <ArrowRightCircle className="w-4 h-4 mr-1" />
-                {number} {unit}
-              </span>
-              <span className="text-gray-500 inline-flex items-center lg:mr-auto md:mr-0 mr-auto leading-none text-sm">
-                <ArrowUpCircle className="w-4 h-4 mr-1" />
-                {totalElevationGain} m
-              </span>
-              <span className="text-gray-500 inline-flex items-center lg:mr-auto md:mr-0 mr-auto leading-none text-sm">
-                <ArrowDownCircle className="w-4 h-4 mr-1" />
-                {totalElevationLoss} m
-              </span>
+              { renderMetaData({ distance, totalElevationGain, totalElevationLoss })}
             </div>
             { geoDistanceNumber && geoDistanceUnit ? (
               <div className="my-4">

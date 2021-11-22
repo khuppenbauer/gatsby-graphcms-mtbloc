@@ -29,7 +29,7 @@ const TeaserSlider = ({ items }) => {
           <h1 className="title-font text-lg font-medium text-white mb-3">{title}</h1>
         ) : null}
         {text ? (
-          <p className="leading-relaxed mb-3" dangerouslySetInnerHTML={{__html: text }} />
+          <div className="flex items-center flex-wrap my-4" dangerouslySetInnerHTML={{__html: text }} />
         ) : null}
       </>
     );
