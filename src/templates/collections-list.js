@@ -52,6 +52,27 @@ const CollectionsListTemplate = (props) => {
     name, description, tracks, geoJson, minCoords, maxCoords, 
     staticImage, subCollections, mapLayer, teaser, 
   } = pageContext;
+  geoJson.features.map((geoJsonFeature) => {
+    const { geometry, properties } = geoJsonFeature;
+    const { type, coordinates } = geometry;
+    if (type === 'LineString') {
+      const index = Math.round(coordinates.length / 2);
+      const trackPoint = {
+        type: "Point",
+        coordinates: coordinates[index],
+      };
+      const trackPointFeature = {
+        type: 'Feature',
+        properties: {
+          ...properties,
+          type: 'trackPoint',
+        },
+        geometry: trackPoint,
+      };
+      geoJson.features.push(trackPointFeature);
+      return geoJsonFeature;
+    }
+  });
   const features = [...new Set([...teaser, ...mapLayer])];
   const staticImageUrl = staticImage ? `${assetBaseUrl}/${staticImage.handle}` : '';
   const [geoJsonFeatures, setGeoJsonFeatures] = React.useState(geoJson);

@@ -5,14 +5,16 @@ import "mapbox-gl/dist/mapbox-gl.css"
 
 import { 
   addControls, 
-  addTrack, 
-  addSymbol, 
-  addImageClick, 
-  addSymbolClick, 
+  addTrack,
+  addTrackPoint,
   addArea,
+  addSymbol,
+  addImageClick,
+  addSymbolClick,
   addMapClick,
   addBookClick,
   addRegionClick,
+  addTrackPointClick,
 } from "../../helpers/mapbox"
 
 mapboxgl.workerClass = require("worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker").default
@@ -40,6 +42,7 @@ const Mapbox = data => {
       map.current.addSource('route', {
         type: 'geojson',
         data: geoJsonData,
+        promoteId: 'id',
       });
       addArea(map, 'book');
       addArea(map, 'map');
@@ -55,8 +58,10 @@ const Mapbox = data => {
     addImageClick(map, 'image');
     addSymbol(map, 'pass', 'mountain');
     addSymbol(map, 'residence', 'town-hall');
+    addTrackPoint(map, 'trackPoint');
     addSymbolClick(map, 'pass');
     addSymbolClick(map, 'residence');
+    addTrackPointClick(map);
   });
 
   return <div ref={mapContainer} style={{ height: "50vH", width: "100%" }} />;

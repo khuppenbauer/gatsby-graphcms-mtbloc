@@ -1,5 +1,9 @@
+import React from "react"
 import mapboxgl from "mapbox-gl"
 import slugify from "@sindresorhus/slugify"
+import { renderToString } from 'react-dom/server';
+
+import { renderMetaData } from "./track" 
 
 const assetBaseUrl = process.env.GATSBY_ASSET_BASE_URL
 
@@ -13,6 +17,7 @@ export const addControls = (map) => {
       trackUserLocation: true,
       showUserHeading: true
     }));
+    map.current.addControl(new mapboxgl.FullscreenControl())
   }
 };
 
@@ -90,13 +95,60 @@ export const addTrack = (map) => {
         'line-cap': 'round',
       },
       paint: {
-        'line-color': [
-          'get', 'color',
+        'line-width': [
+          'case',
+          ['boolean', ['feature-state', 'click'], false],
+          3,
+          2
         ],
-        'line-width': 2,
+        'line-color': [
+          'case',
+          ['boolean', ['feature-state', 'click'], false],
+          'red',
+          ['get', 'color']
+        ],
       },
       filter: ['==', 'type', 'track'],
     })
+  }
+}
+
+export const addTrackPoint = (map, type) => {
+  if (map.current) {
+    map.current.on('load', () => {
+      map.current.addLayer({
+        id: `${type}-circle`,
+        type: 'circle',
+        source: 'route',
+        paint: {
+          'circle-color': '#fff',
+          'circle-radius': 8,
+          'circle-stroke-width': 2,
+          'circle-stroke-color': [
+            'get', 'color',
+          ],
+        },
+        filter: ['==', 'type', type],
+      });
+      map.current.addLayer({
+        id: type,
+        type: 'symbol',
+        source: 'route',
+        layout: {
+          'icon-image': 'bicycle-15',
+          'icon-allow-overlap': true,
+        },
+        filter: ['==', 'type', type],
+      });
+    });
+
+    map.current.on('mouseenter', type, () => {
+      map.current.getCanvas().style.cursor = 'pointer';
+    });
+
+    map.current.on('mouseleave', type, () => {
+      map.current.getCanvas().style.cursor = '';
+    });
   }
 }
 
@@ -205,6 +257,47 @@ export const addSymbolClick = (map, type) => {
         .setLngLat(e.lngLat)
         .setHTML(html)
         .addTo(map.current);
+    });
+  }
+}
+
+export const addTrackPointClick = (map) => {
+  if (map.current) {
+    let clickedTrackId = null;
+    map.current.on('click', 'trackPoint', (e) => {
+      const { properties } = e.features[0];
+      const { name } = properties;
+      const text = (
+        <>
+          <div>
+            <span className="text-gray-500 inline-flex items-center lg:mr-auto md:mr-0 mr-auto leading-none text-sm py-1">
+              {name}
+            </span>
+          </div>
+          <div className="flex items-center flex-col">
+            {renderMetaData(properties)}
+          </div>
+        </>
+      );
+      const url = `/tracks/${slugify(name)}`;
+      const html = `<a href="${url}">${renderToString(text)}</a>`;
+      if (html) {
+        new mapboxgl.Popup()
+        .setLngLat(e.lngLat)
+        .setHTML(html)
+        .addTo(map.current);
+      }
+      if (clickedTrackId) {
+        map.current.setFeatureState(
+          { source: 'route', id: clickedTrackId },
+          { click: false }
+        );
+      }
+      clickedTrackId = properties.id;
+      map.current.setFeatureState(
+        { source: 'route', id: clickedTrackId },
+        { click: true }
+      );
     });
   }
 }
