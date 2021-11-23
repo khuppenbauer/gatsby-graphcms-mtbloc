@@ -22,9 +22,9 @@ const mapLayerFeatures = ['pass', 'residence'];
 const featureTypes = ['map', 'book', 'track', 'image', 'pass', 'residence'];
 
 const Feature = ({ 
-  type, tracks, images, minCoords, maxCoords, geoJsonFeatures, setGeoJsonFeatures 
+  id, type, tracks, images, minCoords, maxCoords, geoJsonFeatures, setGeoJsonFeatures 
 }) => {
-  const { status, data } = useFeature(minCoords, maxCoords, type);
+  const { status, data } = useFeature(id, minCoords, maxCoords, type);
   if (status === 'success' && data.length > 0) {
     if (mapLayerFeatures.includes(type)) {
       const features = data.map((item) => {
@@ -220,6 +220,7 @@ const Infos = ({ track }) => {
 
 const TrackPage = ({ data: { track } }) => {
   const {
+    id,
     name,
     collection,
     gpxFileSmallUrl,
@@ -283,8 +284,8 @@ const TrackPage = ({ data: { track } }) => {
         geometry: trackPoint,
       };
       geoJson.features.push(trackPointFeature);
-      return geoJsonFeature;
     }
+    return geoJsonFeature;
   });
   const [geoJsonFeatures, setGeoJsonFeatures] = React.useState(geoJson);
   return (
@@ -305,6 +306,7 @@ const TrackPage = ({ data: { track } }) => {
               {featureTypes.map((featureType) => {
                 return (
                   <Feature
+                    id={id}
                     key={featureType}
                     type={featureType}
                     tracks={[track]}
@@ -327,6 +329,7 @@ const TrackPage = ({ data: { track } }) => {
 export const pageQuery = graphql`
   query TrackPageQuery($name: String!) {
     track: graphCmsTrack(name: { eq: $name }) {
+      id
       name
       startCity
       startState

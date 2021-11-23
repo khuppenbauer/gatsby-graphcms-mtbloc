@@ -13,6 +13,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
         }
         allGraphCmsCollection {
           nodes {
+            id
             name
             description {
               markdown
@@ -102,12 +103,13 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
   })
 
   result.data.allGraphCmsCollection.nodes.forEach(node => {
-    const { name, collectionType, description, tracks, geoJson, minCoords, maxCoords, staticImage, subCollections } = node;
+    const { id, name, collectionType, description, tracks, geoJson, minCoords, maxCoords, staticImage, subCollections } = node;
     const slug = `${collectionType.slug}/${slugify(name)}`
     createPage({
       path: slug,
       component: path.resolve("./src/templates/collections-list.js"),
       context: { 
+        id,
         name,
         description,
         tracks,

@@ -40,6 +40,6 @@ const getFeatures = async (minCoords, maxCoords, type) => {
   return data;
 }
 
-export default function useFeatures(minCoords, maxCoords, type) {
-  return useQuery(type, () => getFeatures(minCoords, maxCoords, type));
+export default function useFeatures(id, minCoords, maxCoords, type) {
+  return useQuery([type, id], () => getFeatures(minCoords, maxCoords, type));
 }

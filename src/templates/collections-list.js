@@ -16,9 +16,9 @@ const assetBaseUrl = process.env.GATSBY_ASSET_BASE_URL
 const queryClient = new QueryClient();
 
 const Feature = ({ 
-  type, minCoords, maxCoords, tracks, teaser, mapLayer, geoJsonFeatures, setGeoJsonFeatures 
+  id, type, minCoords, maxCoords, tracks, teaser, mapLayer, geoJsonFeatures, setGeoJsonFeatures 
 }) => {
-  const { status, data } = useFeature(minCoords, maxCoords, type);
+  const { status, data } = useFeature(id, minCoords, maxCoords, type);
   if (status === 'success' && data.length > 0) {
     if (mapLayer.includes(type)) {
       const features = data.map((item) => {
@@ -49,7 +49,7 @@ const Feature = ({
 const CollectionsListTemplate = (props) => {
   const { pageContext } = props
   const { 
-    name, description, tracks, geoJson, minCoords, maxCoords, 
+    id, name, description, tracks, geoJson, minCoords, maxCoords, 
     staticImage, subCollections, mapLayer, teaser, 
   } = pageContext;
   geoJson.features.map((geoJsonFeature) => {
@@ -70,8 +70,8 @@ const CollectionsListTemplate = (props) => {
         geometry: trackPoint,
       };
       geoJson.features.push(trackPointFeature);
-      return geoJsonFeature;
     }
+    return geoJsonFeature;
   });
   const features = [...new Set([...teaser, ...mapLayer])];
   const staticImageUrl = staticImage ? `${assetBaseUrl}/${staticImage.handle}` : '';
@@ -129,6 +129,7 @@ const CollectionsListTemplate = (props) => {
               {features.map((featureItem) => {
                 return (
                   <Feature 
+                    id={id}
                     key={featureItem}
                     type={featureItem}
                     minCoords={minCoords}
