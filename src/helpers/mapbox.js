@@ -287,17 +287,19 @@ export const addTrackPointClick = (map) => {
         .setHTML(html)
         .addTo(map.current);
       }
-      if (clickedTrackId) {
+      if (properties.id) {
+        if (clickedTrackId) {
+          map.current.setFeatureState(
+            { source: 'route', id: clickedTrackId },
+            { click: false }
+          );
+        }
+        clickedTrackId = properties.id;
         map.current.setFeatureState(
           { source: 'route', id: clickedTrackId },
-          { click: false }
+          { click: true }
         );
       }
-      clickedTrackId = properties.id;
-      map.current.setFeatureState(
-        { source: 'route', id: clickedTrackId },
-        { click: true }
-      );
     });
   }
 }

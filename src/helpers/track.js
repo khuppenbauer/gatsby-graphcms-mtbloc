@@ -7,21 +7,21 @@ export const convertMetaData = (metaData) => {
   const number = new Intl.NumberFormat("de-DE").format(distance.val.toFixed(2))
   const unit = distance.unit
   const totalElevationGain = new Intl.NumberFormat("de-DE").format(
-    metaData.totalElevationGain.toFixed(2)
+    metaData.totalElevationGain
   )
   const totalElevationLoss = new Intl.NumberFormat("de-DE").format(
-    metaData.totalElevationLoss.toFixed(2)
+    metaData.totalElevationLoss
   )
   let elevLow;
   if (metaData.elevLow) {
     elevLow = new Intl.NumberFormat("de-DE").format(
-      metaData.elevLow.toFixed(2)
+      metaData.elevLow
     )    
   }
   let elevHigh;
   if (metaData.elevHigh) {
     elevHigh = new Intl.NumberFormat("de-DE").format(
-      metaData.elevHigh.toFixed(2)
+      metaData.elevHigh
     )    
   }
   return {

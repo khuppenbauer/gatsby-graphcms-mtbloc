@@ -14,6 +14,8 @@ import {
   addMapClick,
   addBookClick,
   addChartPoints,
+  addTrackPoint,
+  addTrackPointClick,
 } from "../../helpers/mapbox"
 import { TrackContext } from "../mapChart"
 
@@ -60,6 +62,12 @@ const Mapbox = data => {
     addSymbol(map, 'residence', 'town-hall');
     addSymbolClick(map, 'pass');
     addSymbolClick(map, 'residence');
+    const tracks = geoJsonData.features
+      .filter((feature) => feature.geometry.type === 'LineString');
+    if (tracks.length > 1) {
+      addTrackPoint(map, 'trackPoint');
+      addTrackPointClick(map);
+    }
   });
 
   useEffect(() => {
