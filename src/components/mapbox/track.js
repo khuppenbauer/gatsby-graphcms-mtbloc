@@ -4,6 +4,7 @@ import turf from "turf"
 import mapboxgl from "mapbox-gl"
 import "mapbox-gl/dist/mapbox-gl.css"
 
+import StyleSelector from "./styleSelector"
 import { 
   addControls, 
   addTrack, 
@@ -33,6 +34,8 @@ const Mapbox = data => {
   const map = useRef(null)
 
   useEffect(() => {
+    const tracks = geoJsonData.features
+      .filter((feature) => feature.geometry.type === 'LineString');
     if (map.current) return; // initialize map only once
     mapboxgl.accessToken = mapboxToken
     const bounds = new mapboxgl.LngLatBounds([minCoords.longitude, minCoords.latitude], [maxCoords.longitude, maxCoords.latitude]);
@@ -43,7 +46,16 @@ const Mapbox = data => {
       fitBoundsOptions: (bounds, { padding: 50 }),
     });
     addControls(map);
-    map.current.on('load', () => {
+    map.current.addControl(
+      new StyleSelector({
+        styles: [
+          'outdoors-v11',
+          'satellite-streets-v11'
+        ],
+      }),
+      'bottom-left'
+    );
+    map.current.on('style.load', () => {
       map.current.addSource('route', {
         type: 'geojson',
         data: geoJsonData,
@@ -51,21 +63,21 @@ const Mapbox = data => {
       addArea(map, 'book');
       addArea(map, 'map');
       addArea(map, 'regions');
-      addMapClick(map);
-      addBookClick(map);
       addTrack(map);
+      addSymbol(map, 'pass', 'mountain');
+      addSymbol(map, 'residence', 'town-hall');
+      addSymbol(map, 'image', 'attraction');
       addChartPoints(map);
+      if (tracks.length > 1) {
+        addTrackPoint(map, 'trackPoint');
+      }
     });
-    addSymbol(map, 'image', 'attraction');
     addImageClick(map, 'image');
-    addSymbol(map, 'pass', 'mountain');
-    addSymbol(map, 'residence', 'town-hall');
     addSymbolClick(map, 'pass');
     addSymbolClick(map, 'residence');
-    const tracks = geoJsonData.features
-      .filter((feature) => feature.geometry.type === 'LineString');
+    addMapClick(map);
+    addBookClick(map);
     if (tracks.length > 1) {
-      addTrackPoint(map, 'trackPoint');
       addTrackPointClick(map);
     }
   });

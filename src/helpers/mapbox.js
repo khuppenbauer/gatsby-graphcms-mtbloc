@@ -61,17 +61,15 @@ export const addArea = (map, type) => {
 
 export const addSymbol = (map, type, symbol) => {
   if (map.current) {
-    map.current.on('load', () => {
-      map.current.addLayer({
-        id: type,
-        type: 'symbol',
-        source: 'route',
-        layout: {
-          'icon-image': `${symbol}-15`,
-          'icon-allow-overlap': true,
-        },
-        filter: ['==', 'type', type],
-      });
+    map.current.addLayer({
+      id: type,
+      type: 'symbol',
+      source: 'route',
+      layout: {
+        'icon-image': `${symbol}-15`,
+        'icon-allow-overlap': true,
+      },
+      filter: ['==', 'type', type],
     });
 
     map.current.on('mouseenter', type, () => {
@@ -87,7 +85,7 @@ export const addSymbol = (map, type, symbol) => {
 export const addTrack = (map) => {
   if (map.current) {
     map.current.addLayer({
-      id: 'route',
+      id: 'track',
       type: 'line',
       source: 'route',
       layout: {
@@ -104,7 +102,7 @@ export const addTrack = (map) => {
         'line-color': [
           'case',
           ['boolean', ['feature-state', 'click'], false],
-          'red',
+          'green',
           ['get', 'color']
         ],
       },
@@ -115,31 +113,29 @@ export const addTrack = (map) => {
 
 export const addTrackPoint = (map, type) => {
   if (map.current) {
-    map.current.on('load', () => {
-      map.current.addLayer({
-        id: `${type}-circle`,
-        type: 'circle',
-        source: 'route',
-        paint: {
-          'circle-color': '#fff',
-          'circle-radius': 8,
-          'circle-stroke-width': 2,
-          'circle-stroke-color': [
-            'get', 'color',
-          ],
-        },
-        filter: ['==', 'type', type],
-      });
-      map.current.addLayer({
-        id: type,
-        type: 'symbol',
-        source: 'route',
-        layout: {
-          'icon-image': 'bicycle-15',
-          'icon-allow-overlap': true,
-        },
-        filter: ['==', 'type', type],
-      });
+    map.current.addLayer({
+      id: `${type}-circle`,
+      type: 'circle',
+      source: 'route',
+      paint: {
+        'circle-color': '#fff',
+        'circle-radius': 10,
+        'circle-stroke-width': 2,
+        'circle-stroke-color': [
+          'get', 'color',
+        ],
+      },
+      filter: ['==', 'type', type],
+    });
+    map.current.addLayer({
+      id: type,
+      type: 'symbol',
+      source: 'route',
+      layout: {
+        'icon-image': 'bicycle-15',
+        'icon-allow-overlap': true,
+      },
+      filter: ['==', 'type', type],
     });
 
     map.current.on('mouseenter', type, () => {

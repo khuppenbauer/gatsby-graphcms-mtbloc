@@ -3,6 +3,7 @@ import React, { useEffect, useRef } from "react"
 import mapboxgl from "mapbox-gl"
 import "mapbox-gl/dist/mapbox-gl.css"
 
+import StyleSelector from "./styleSelector"
 import { 
   addControls, 
   addTrack,
@@ -38,7 +39,16 @@ const Mapbox = data => {
       fitBoundsOptions: (bounds, { padding: 50 }),
     });
     addControls(map);
-    map.current.on('load', () => {
+    map.current.addControl(
+      new StyleSelector({
+        styles: [
+          'outdoors-v11',
+          'satellite-streets-v11'
+        ],
+      }),
+      'bottom-left'
+    );
+    map.current.on('style.load', () => {
       map.current.addSource('route', {
         type: 'geojson',
         data: geoJsonData,
@@ -47,18 +57,18 @@ const Mapbox = data => {
       addArea(map, 'book');
       addArea(map, 'map');
       addArea(map, 'regions');
-      addMapClick(map);
-      addBookClick(map);
       if (hasSubCollections) {
         addRegionClick(map);
       }
       addTrack(map);
+      addSymbol(map, 'pass', 'mountain');
+      addSymbol(map, 'residence', 'town-hall');
+      addSymbol(map, 'image', 'attraction');
+      addTrackPoint(map, 'trackPoint');
     });
-    addSymbol(map, 'image', 'attraction');
+    addMapClick(map);
+    addBookClick(map);
     addImageClick(map, 'image');
-    addSymbol(map, 'pass', 'mountain');
-    addSymbol(map, 'residence', 'town-hall');
-    addTrackPoint(map, 'trackPoint');
     addSymbolClick(map, 'pass');
     addSymbolClick(map, 'residence');
     addTrackPointClick(map);
