@@ -10,39 +10,66 @@ import Headline from "../views/headline"
 import Tracks from "../views/tracks"
 import Teaser from "../views/teaser"
 import Features from "../views/features"
-import useFeature from "../hooks/useFeature"
+import useFeatures from "../hooks/useFeatures"
 
 const assetBaseUrl = process.env.GATSBY_ASSET_BASE_URL
 const queryClient = new QueryClient();
 
-const Feature = ({ 
-  id, type, minCoords, maxCoords, tracks, teaser, mapLayer, geoJsonFeatures, setGeoJsonFeatures 
+const FeatureTeaser = ({ 
+  id, types, minCoords, maxCoords, tracks, teaser,
 }) => {
-  const { status, data } = useFeature(id, minCoords, maxCoords, type);
-  if (status === 'success' && data.length > 0) {
-    if (mapLayer.includes(type)) {
-      const features = data.map((item) => {
-        const { geoJson } = item;
-        geoJson.features[0].properties.type = type;
-        return geoJson.features[0];
-      });
-      if (geoJsonFeatures && features.length > 0) {
-        geoJsonFeatures.features.push(...features);
-        setGeoJsonFeatures(geoJsonFeatures);
+  const res = useFeatures(id, minCoords, maxCoords, types);
+  const isLoading = res.some(res => res.isLoading)
+  if (!isLoading) {
+    return res.map((item) => {
+      const { data } = item;
+      if (data.length > 0) {
+        const { type } = data[0];
+        if (teaser.includes(type)) {
+          return (
+            <Features key={type} type={type} data={data} tracks={tracks} />
+          )
+        } else {
+          return null;
+        }
+      } else {
+        return null;
       }
-    }
-    if (teaser.includes(type)) {
-      return (
-        <Features type={type} data={data} tracks={tracks} />
-      )
-    }
+    });
   } else {
-    return (
-      <></>
-    )
+    return null;
+  }
+};
+
+const FeatureMap = ({ 
+  id, types, minCoords, maxCoords, mapLayer, geoJson, 
+}) => {
+  const res = useFeatures(id, minCoords, maxCoords, types);
+  const isLoading = res.some(res => res.isLoading)
+  if (!isLoading) {
+    res.forEach((item) => {
+      const { data } = item;
+      if (data.length > 0) {
+        const { type } = data[0];
+        if (mapLayer.includes(type)) {
+          const features = data.map((item) => {
+            const { geoJson } = item;
+            geoJson.features[0].properties.type = type;
+            return geoJson.features[0];
+          });
+          if (geoJson && features.length > 0) {
+            geoJson.features.push(...features);
+          }
+        }
+      }
+    });
   }
   return (
-    <></>
+    <Mapbox
+      data={geoJson}
+      minCoords={minCoords}
+      maxCoords={maxCoords}
+    />
   );
 };
 
@@ -75,7 +102,6 @@ const CollectionsListTemplate = (props) => {
   });
   const features = [...new Set([...teaser, ...mapLayer])];
   const staticImageUrl = staticImage ? `${assetBaseUrl}/${staticImage.handle}` : '';
-  const [geoJsonFeatures, setGeoJsonFeatures] = React.useState(geoJson);
   return (
     <Layout>
       <Seo title={name} image={staticImageUrl} />
@@ -86,14 +112,16 @@ const CollectionsListTemplate = (props) => {
               <>
                 <Headline title={name} description={description} />
                 <div className="mb-10 w-full">
-                  {geoJson ? (
-                    <Mapbox
-                      data={geoJson}
+                  <QueryClientProvider client={queryClient}>
+                    <FeatureMap
+                      id={id}
+                      types={features}
                       minCoords={minCoords}
                       maxCoords={maxCoords}
-                      hasSubCollections={subCollections.length > 0} 
+                      mapLayer={mapLayer}
+                      geoJson={geoJson}
                     />
-                  ) : null}
+                  </QueryClientProvider>
                 </div>
                 {tracks.length > 0 ? (
                   <Tracks name="Touren" tracks={tracks} className="p-4 lg:w-1/2" />
@@ -126,22 +154,14 @@ const CollectionsListTemplate = (props) => {
           </div>
           <div className="lg:flex lg:flex-col lg:w-1/3 lg:pl-6">
             <QueryClientProvider client={queryClient}>
-              {features.map((featureItem) => {
-                return (
-                  <Feature 
-                    id={id}
-                    key={featureItem}
-                    type={featureItem}
-                    minCoords={minCoords}
-                    maxCoords={maxCoords}
-                    tracks={tracks}
-                    mapLayer={mapLayer}
-                    teaser={teaser}
-                    geoJsonFeatures={geoJsonFeatures}
-                    setGeoJsonFeatures={setGeoJsonFeatures}
-                  />
-                )  
-              })}
+              <FeatureTeaser
+                id={id}
+                types={features}
+                minCoords={minCoords}
+                maxCoords={maxCoords}
+                tracks={tracks}
+                teaser={teaser}
+              />
             </QueryClientProvider>
           </div>
         </div>

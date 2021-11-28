@@ -1,8 +1,10 @@
 import React, { useState } from 'react'
 import { render } from 'react-dom'
 
+const styleImages = process.env.GATSBY_MAPBOX_STYLE_IMAGES
+
 const getSrc = ({ styleID }) =>
-  `https://res.cloudinary.com/mtb-loc/image/upload/v1637866257/mapbox/${styleID}.webp`
+  `${styleImages}${styleID}.webp`
 
 const StyleSelector = ({ map, styles }) => {
   const [basemap, setBasemap] = useState(styles[0]);

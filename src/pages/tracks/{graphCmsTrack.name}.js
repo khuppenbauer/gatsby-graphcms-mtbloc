@@ -11,7 +11,7 @@ import Headline from "../../views/headline"
 import Teaser from "../../views/teaser"
 import ImageSlider from "../../views/imageSlider"
 import Features from "../../views/features"
-import useFeature from "../../hooks/useFeature"
+import useFeatures from "../../hooks/useFeatures"
 import { convertMetaData } from "../../helpers/track"
 
 const assetBaseUrl = process.env.GATSBY_ASSET_BASE_URL
@@ -21,36 +21,63 @@ const teaserFeatures = ['map', 'book', 'track', 'image'];
 const mapLayerFeatures = ['pass', 'residence'];
 const featureTypes = ['map', 'book', 'track', 'image', 'pass', 'residence'];
 
-const Feature = ({ 
-  id, type, tracks, images, minCoords, maxCoords, geoJsonFeatures, setGeoJsonFeatures 
+const FeatureTeaser = ({ 
+  id, minCoords, maxCoords, tracks,
 }) => {
-  const { status, data } = useFeature(id, minCoords, maxCoords, type);
-  if (status === 'success' && data.length > 0) {
-    if (mapLayerFeatures.includes(type)) {
-      const features = data.map((item) => {
-        const { geoJson } = item;
-        geoJson.features[0].properties.type = type;
-        return geoJson.features[0];
-      });
-      if (features.length > 0) {
-        geoJsonFeatures.features.push(...features);
-        setGeoJsonFeatures(geoJsonFeatures);
+  const res = useFeatures(id, minCoords, maxCoords, featureTypes);
+  const isLoading = res.some(res => res.isLoading)
+  if (!isLoading) {
+    return res.map((item) => {
+      const { data } = item;
+      if (data.length > 0) {
+        const { type } = data[0];
+        if (teaserFeatures.includes(type)) {
+          return (
+            <Features key={type} type={type} data={data} tracks={tracks} />
+          )
+        } else {
+          return null;
+        }
+      } else {
+        return null;
       }
-    }
-    if (teaserFeatures.includes(type)) {
-      return (
-        <Features type={type} data={data} tracks={tracks} images={images} />
-      )
-    } else {
-      return (
-        <></>
-      )
-    }
+    });
   } else {
-    return (
-      <></>
-    )
+    return null;
   }
+};
+
+const FeatureMap = ({ 
+  id, minCoords, maxCoords, geoJson, distance,
+}) => {
+  const res = useFeatures(id, minCoords, maxCoords, featureTypes);
+  const isLoading = res.some(res => res.isLoading)
+  if (!isLoading) {
+    res.forEach((item) => {
+      const { data } = item;
+      if (data.length > 0) {
+        const { type } = data[0];
+        if (mapLayerFeatures.includes(type)) {
+          const features = data.map((item) => {
+            const { geoJson } = item;
+            geoJson.features[0].properties.type = type;
+            return geoJson.features[0];
+          });
+          if (geoJson && features.length > 0) {
+            geoJson.features.push(...features);
+          }
+        }
+      }
+    });
+  }
+  return (
+    <Map 
+      data={geoJson} 
+      minCoords={minCoords} 
+      maxCoords={maxCoords} 
+      distance={distance} 
+    />
+  );
 };
 
 const Assets = ({ assets }) => (
@@ -287,7 +314,6 @@ const TrackPage = ({ data: { track } }) => {
     }
     return geoJsonFeature;
   });
-  const [geoJsonFeatures, setGeoJsonFeatures] = React.useState(geoJson);
   return (
     <Layout>
       <Seo title={name} image={previewImageUrl} />
@@ -295,7 +321,15 @@ const TrackPage = ({ data: { track } }) => {
         <div className="container lg:flex lg:flex-wrap px-5 py-5 mx-auto">
           <div className="lg:w-2/3 lg:pr-6 lg:border-r lg:border-b-0 lg:mb-0 mb-10 pb-10 border-b border-gray-800">       
             <Headline title={name} />
-            <Map data={geoJson} minCoords={minCoords} maxCoords={maxCoords} distance={track.distance} />
+            <QueryClientProvider client={queryClient}>
+              <FeatureMap
+                id={id}
+                minCoords={minCoords}
+                maxCoords={maxCoords}
+                geoJson={geoJson}
+                distance={track.distance}
+              />
+            </QueryClientProvider>
             <Assets assets={assets} />
             <Infos track={track} />
             <Downloads gpxFileUrl={gpxFileUrl} gpxFileSmallUrl={gpxFileSmallUrl} />
@@ -303,21 +337,12 @@ const TrackPage = ({ data: { track } }) => {
           </div>
           <div className="lg:flex lg:flex-col lg:w-1/3 lg:pl-6">
             <QueryClientProvider client={queryClient}>
-              {featureTypes.map((featureType) => {
-                return (
-                  <Feature
-                    id={id}
-                    key={featureType}
-                    type={featureType}
-                    tracks={[track]}
-                    images={photos}
-                    minCoords={minCoords} 
-                    maxCoords={maxCoords}
-                    geoJsonFeatures={geoJsonFeatures}
-                    setGeoJsonFeatures={setGeoJsonFeatures}
-                  />
-                )  
-              })}
+              <FeatureTeaser
+                id={id}
+                minCoords={minCoords} 
+                maxCoords={maxCoords}
+                tracks={[track]}
+              />
             </QueryClientProvider>
           </div>
         </div>

@@ -4,20 +4,8 @@ import turf from "turf"
 import mapboxgl from "mapbox-gl"
 import "mapbox-gl/dist/mapbox-gl.css"
 
-import StyleSelector from "./styleSelector"
-import { 
-  addControls, 
-  addTrack, 
-  addSymbol, 
-  addImageClick, 
-  addSymbolClick, 
-  addArea,
-  addMapClick,
-  addBookClick,
-  addChartPoints,
-  addTrackPoint,
-  addTrackPointClick,
-} from "../../helpers/mapbox"
+import mapboxHelpers from "../../helpers/mapbox" 
+
 import { TrackContext } from "../mapChart"
 
 mapboxgl.workerClass = require("worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker").default
@@ -33,9 +21,7 @@ const Mapbox = data => {
   const mapContainer = useRef(null)
   const map = useRef(null)
 
-  useEffect(() => {
-    const tracks = geoJsonData.features
-      .filter((feature) => feature.geometry.type === 'LineString');
+  useEffect(() => {  
     if (map.current) return; // initialize map only once
     mapboxgl.accessToken = mapboxToken
     const bounds = new mapboxgl.LngLatBounds([minCoords.longitude, minCoords.latitude], [maxCoords.longitude, maxCoords.latitude]);
@@ -45,41 +31,27 @@ const Mapbox = data => {
       bounds,
       fitBoundsOptions: (bounds, { padding: 50 }),
     });
-    addControls(map);
-    map.current.addControl(
-      new StyleSelector({
-        styles: [
-          'outdoors-v11',
-          'satellite-streets-v11'
-        ],
-      }),
-      'bottom-left'
-    );
+    mapboxHelpers.control.addControls(map);
     map.current.on('style.load', () => {
-      map.current.addSource('route', {
+      const trackFeatures = geoJsonData.features
+        .filter((feature) => feature.geometry.type === 'LineString');
+      trackFeatures.forEach((feature) => {
+        const id = `track-${feature.properties.name}`;
+        map.current.addSource(id, {
+          type: 'geojson',
+          data: feature,
+          promoteId: 'id',
+        });
+        mapboxHelpers.layer.addTrack(map, id, 'track');
+      });
+      map.current.addSource('features', {
         type: 'geojson',
         data: geoJsonData,
+        promoteId: 'id',
       });
-      addArea(map, 'book');
-      addArea(map, 'map');
-      addArea(map, 'regions');
-      addTrack(map);
-      addSymbol(map, 'pass', 'mountain');
-      addSymbol(map, 'residence', 'town-hall');
-      addSymbol(map, 'image', 'attraction');
-      addChartPoints(map);
-      if (tracks.length > 1) {
-        addTrackPoint(map, 'trackPoint');
-      }
+      mapboxHelpers.layer.addLayers(map, geoJsonData, 'track');
+      mapboxHelpers.chart.addChartPoints(map);
     });
-    addImageClick(map, 'image');
-    addSymbolClick(map, 'pass');
-    addSymbolClick(map, 'residence');
-    addMapClick(map);
-    addBookClick(map);
-    if (tracks.length > 1) {
-      addTrackPointClick(map);
-    }
   });
 
   useEffect(() => {
