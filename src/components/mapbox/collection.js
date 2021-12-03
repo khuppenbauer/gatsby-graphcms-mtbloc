@@ -3,7 +3,8 @@ import React, { useEffect, useRef } from "react"
 import mapboxgl from "mapbox-gl"
 import "mapbox-gl/dist/mapbox-gl.css"
 
-import mapboxHelpers from "../../helpers/mapbox" 
+import mapboxHelpers from "../../helpers/mapbox"
+import { getTracks } from "../../helpers/geoJson"
 
 mapboxgl.workerClass = require("worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker").default
 
@@ -24,30 +25,42 @@ const Mapbox = data => {
       bounds,
       fitBoundsOptions: (bounds, { padding: 50 }),
     });
-    mapboxHelpers.control.addControls(map);
     map.current.on('style.load', () => {
-      const trackFeatures = geoJsonData.features
-        .filter((feature) => feature.geometry.type === 'LineString');
+      const trackFeatures = getTracks(geoJsonData);
       trackFeatures.forEach((feature) => {
-        const id = `track-${feature.properties.name}`;
+        const { properties, geometry } = feature;
+        const id = `track-${properties.name}`;
+        const index = Math.round(geometry.coordinates.length / 2);
         map.current.addSource(id, {
           type: 'geojson',
           data: feature,
-          promoteId: 'id',
+          promoteId: 'name',
         });
         map.current.addSource(`${id}-border`, {
           type: 'geojson',
           data: feature,
-          promoteId: 'id',
+          promoteId: 'name',
         });
-        mapboxHelpers.layer.addTrack(map, id, 'collection');
+        map.current.addSource(`${id}-point`, {
+          type: 'geojson',
+          data: {
+            type: "Feature",
+            properties: feature.properties,
+            geometry: {
+              type: "Point",
+              coordinates: geometry.coordinates[index],
+            },
+          },
+          promoteId: 'name',
+        });
       });
       map.current.addSource('features', {
         type: 'geojson',
         data: geoJsonData,
         promoteId: 'id',
       });
-      mapboxHelpers.layer.addLayers(map, geoJsonData, 'collection');
+      mapboxHelpers.layer.addLayers(map.current, geoJsonData, 'collection');
+      mapboxHelpers.control.addControls(map.current, geoJsonData, 'collection');
     });
   });
 

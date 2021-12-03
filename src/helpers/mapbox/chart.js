@@ -1,13 +1,13 @@
 export const addChartPoints = (map) => {
-  if (map.current) {
-    map.current.addSource("chart-point-source", {
+  if (map) {
+    map.addSource("chart-point-source", {
       type: "geojson",
       data: {
         type: "FeatureCollection",
         features: []
       }
     });
-    map.current.addLayer({
+    map.addLayer({
       id: "chart-point",
       type: "circle",
       source: "chart-point-source",

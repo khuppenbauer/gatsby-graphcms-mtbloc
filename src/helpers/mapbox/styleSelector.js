@@ -19,8 +19,8 @@ const StyleSelector = ({ map, styles }) => {
     <img 
       alt={nextBasemap} 
       src={getSrc({ styleID: nextBasemap })} 
-      width="32"
-      height="32"
+      width="29"
+      height="29"
       onClick={() => handleBasemapClick(nextBasemap)}
       aria-hidden="true"
     />

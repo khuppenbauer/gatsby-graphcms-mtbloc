@@ -63,14 +63,16 @@ const FeatureMap = ({
         }
       }
     });
+    return (
+      <Mapbox
+        data={geoJson}
+        minCoords={minCoords}
+        maxCoords={maxCoords}
+      />
+    );
+  } else {
+    return null;
   }
-  return (
-    <Mapbox
-      data={geoJson}
-      minCoords={minCoords}
-      maxCoords={maxCoords}
-    />
-  );
 };
 
 const CollectionsListTemplate = (props) => {

@@ -4,43 +4,41 @@ import slugify from "@sindresorhus/slugify"
 import { renderToString } from 'react-dom/server';
 
 import { renderMetaData } from "../track" 
+import { getFeatures, getTracks } from "../geoJson"
 
 const assetBaseUrl = process.env.GATSBY_ASSET_BASE_URL
 
-export const addLayers = (map, geoJsonData, mapType) => {
-  const trackFeatures = geoJsonData.features
-    .filter((feature) => feature.geometry.type === 'LineString');
-  const features = geoJsonData.features.reduce((acc, current) => {
-    const { geometry, properties } = current;
-    const type = properties.type === 'trackPoint' ? 'TrackPoint' : geometry.type;
-    acc[type] = acc[type] || [];
-    if (!acc[type].includes(properties.type)) {
-      acc[type].push(properties.type);
-    }
-    return acc;
-  }, {});
-  const { Point: symbols, LineString: tracks, Polygon: areas, TrackPoint: trackPoints } = features;
+export const addLayers = (map, geoJson, mapType) => {
+  const features = getFeatures(geoJson);
+  const tracks = getTracks(geoJson);
+  const { Point: symbols, Polygon: areas } = features;
   if (areas) {
     areas.forEach((area) => {
       addArea(map, area);
     })
   }
-  if (mapType !== 'collection' && tracks) {
-    addTrack(map);
+  if (tracks) {
+    tracks.forEach((track) => {
+      const source = `track-${track.properties.name}`;
+      addTrack(map, source, mapType);
+    })
+    if (tracks.length > 1) {
+      tracks.forEach((track) => {
+        const source = `track-${track.properties.name}-point`;
+        addTrackPoint(map, source, mapType);
+      })
+    }
   }
   if (symbols) {
     symbols.forEach((symbol) => {
       addSymbol(map, symbol);
     });
   }
-  if (trackFeatures.length > 1 && trackPoints) {
-    addTrackPoint(map, mapType);
-  }
 }
 
 export const addArea = (map, type) => {
-  if (map.current) {
-    map.current.addLayer({
+  if (map) {
+    map.addLayer({
       id: `${type}-fill`,
       type: 'fill',
       source: 'features',
@@ -50,10 +48,13 @@ export const addArea = (map, type) => {
         ],
         'fill-opacity': 0.07,
       },
+      layout: {
+        'visibility': 'none',
+      },
       filter: ['==', '$type', 'Polygon'],
     });
       
-    map.current.addLayer({
+    map.addLayer({
       id: `${type}-outline`,
       type: 'line',
       source: 'features',
@@ -63,18 +64,21 @@ export const addArea = (map, type) => {
         ],  
         'line-width': 1,
       },
+      layout: {
+        'visibility': 'none',
+      },
       filter: ['==', '$type', 'Polygon'],
     });
 
-    map.current.on('mouseenter', `${type}-fill`, () => {
-      map.current.getCanvas().style.cursor = 'pointer';
+    map.on('mouseenter', `${type}-fill`, () => {
+      map.getCanvas().style.cursor = 'pointer';
     });
 
-    map.current.on('mouseleave', `${type}-fill`, () => {
-      map.current.getCanvas().style.cursor = '';
+    map.on('mouseleave', `${type}-fill`, () => {
+      map.getCanvas().style.cursor = '';
     });
 
-    map.current.on('click', `${type}-fill`, (e) => {
+    map.on('click', `${type}-fill`, (e) => {
       const { properties } = e.features[0];
       let html;
       if (type === 'book') {
@@ -102,14 +106,14 @@ export const addArea = (map, type) => {
         new mapboxgl.Popup()
         .setLngLat(e.lngLat)
         .setHTML(html)
-        .addTo(map.current);
+        .addTo(map);
       }
     });
   }
 }
 
 export const addSymbol = (map, type) => {
-  if (map.current) {
+  if (map) {
     let icon;
     if (type === 'image') {
       icon = 'attraction';
@@ -120,28 +124,28 @@ export const addSymbol = (map, type) => {
     if (type === 'residence') {
       icon = 'town-hall';
     }
-    console.log([type, icon]);
-    map.current.addLayer({
+    map.addLayer({
       id: type,
       type: 'symbol',
       source: 'features',
       layout: {
         'icon-image': `${icon}-15`,
         'icon-allow-overlap': true,
+        'visibility': 'none',
       },
       filter: ['==', 'type', type],
     });
 
-    map.current.on('mouseenter', type, () => {
-      map.current.getCanvas().style.cursor = 'pointer';
+    map.on('mouseenter', type, () => {
+      map.getCanvas().style.cursor = 'pointer';
     });
 
-    map.current.on('mouseleave', type, () => {
-      map.current.getCanvas().style.cursor = '';
+    map.on('mouseleave', type, () => {
+      map.getCanvas().style.cursor = '';
     });
 
     if (type === 'image') {
-      map.current.on('click', type, (e) => {
+      map.on('click', type, (e) => {
         const { properties } = e.features[0];
         const { handle, orientation, url, imageWidth, imageHeight } = properties;
         let width = imageWidth;
@@ -157,13 +161,13 @@ export const addSymbol = (map, type) => {
         const html = `<img src="${src}" width="${width}" height="${height}" />`;
         if (html) {
           new mapboxgl.Popup({ anchor: 'center' })
-            .setLngLat(map.current.getCenter())
+            .setLngLat(map.getCenter())
             .setHTML(html)
-            .addTo(map.current);
+            .addTo(map);
         }
       });
     } else {
-      map.current.on('click', type, (e) => {
+      map.on('click', type, (e) => {
         const { properties } = e.features[0];
         const {
           name,
@@ -182,22 +186,23 @@ export const addSymbol = (map, type) => {
         new mapboxgl.Popup()
           .setLngLat(e.lngLat)
           .setHTML(html)
-          .addTo(map.current);
+          .addTo(map);
       });
     }
   }
 }
 
 export const addTrack = (map, source, mapType) => {
-  if (map.current) {
+  if (map) {
     if (mapType === 'collection') {
-      map.current.addLayer({
+      map.addLayer({
         id: `${source}-border`,
         type: 'line',
         source: `${source}-border`,
         layout: {
           'line-join': 'round',
           'line-cap': 'round',
+          'visibility': 'visible',
         },
         paint: {
           'line-width': [
@@ -210,13 +215,14 @@ export const addTrack = (map, source, mapType) => {
         },
       })
     }
-    map.current.addLayer({
+    map.addLayer({
       id: source,
       type: 'line',
       source,
       layout: {
         'line-join': 'round',
         'line-cap': 'round',
+        'visibility': 'visible',
       },
       paint: {
         'line-width': 3,
@@ -226,13 +232,12 @@ export const addTrack = (map, source, mapType) => {
   }
 }
 
-export const addTrackPoint = (map, mapType) => {
-  if (map.current) {
-    const type = 'trackPoint';
-    map.current.addLayer({
-      id: `${type}-circle`,
+export const addTrackPoint = (map, source, mapType) => {
+  if (map) {
+    map.addLayer({
+      id: `${source}-circle`,
       type: 'circle',
-      source: 'features',
+      source,
       paint: {
         'circle-color': '#fff',
         'circle-radius': 10,
@@ -241,29 +246,30 @@ export const addTrackPoint = (map, mapType) => {
           'get', 'color',
         ],
       },
-      filter: ['==', 'type', type],
+      layout: {
+        'visibility': 'visible',
+      },
     });
-    map.current.addLayer({
-      id: type,
+    map.addLayer({
+      id: source,
       type: 'symbol',
-      source: 'features',
+      source,
       layout: {
         'icon-image': 'bicycle-15',
         'icon-allow-overlap': true,
+        'visibility': 'visible',
       },
-      filter: ['==', 'type', type],
     });
 
-    map.current.on('mouseenter', type, () => {
-      map.current.getCanvas().style.cursor = 'pointer';
+    map.on('mouseenter', source, () => {
+      map.getCanvas().style.cursor = 'pointer';
     });
 
-    map.current.on('mouseleave', type, () => {
-      map.current.getCanvas().style.cursor = '';
+    map.on('mouseleave', source, () => {
+      map.getCanvas().style.cursor = '';
     });
 
-    let clickedTrackId = null;
-    map.current.on('click', 'trackPoint', (e) => {
+    map.on('click', source, (e) => {
       const { properties } = e.features[0];
       const { name } = properties;
       const text = (
@@ -290,29 +296,51 @@ export const addTrackPoint = (map, mapType) => {
         new mapboxgl.Popup()
         .setLngLat(e.lngLat)
         .setHTML(html)
-        .addTo(map.current);
+        .addTo(map);
       }
       if (mapType === 'collection' && properties.id) {   
-        const allLayers = map.current.getStyle().layers;     
-        const layers = allLayers.filter((layer) => layer.id.startsWith('track-'));
-        const before = layers[layers.length - 1];
-        const beforeIndex = allLayers.findIndex(i => i.id === before.id);
-        if (clickedTrackId) {
-          layers.forEach((layer) => {
-            map.current.setFeatureState(
-              { source: `${layer.id}`, id: clickedTrackId },
-              { click: false }
-            );
-          })
-        }
-        clickedTrackId = properties.id;
-        map.current.setFeatureState(
-          { source: `track-${name}-border`, id: clickedTrackId },
-          { click: true }
-        );
-        map.current.moveLayer(`track-${name}-border`, allLayers[beforeIndex + 1].id);
-        map.current.moveLayer(`track-${name}`, allLayers[beforeIndex + 1].id);
+        unselectAllTracks(map);
+        selectTrack(map, name, properties.name);
       }
     });
   }
+}
+
+export const selectTrack = (map, name, id) => {
+  const allLayers = map.getStyle().layers;     
+  const layers = allLayers.filter((layer) => layer.id.startsWith('track-'));
+  const before = layers[layers.length - 1];
+  const beforeIndex = allLayers.findIndex(i => i.id === before.id);
+  map.setFeatureState(
+    { source: `track-${name}-border`, id },
+    { click: true }
+  );
+  const moveLayer = allLayers[beforeIndex + 1] ? allLayers[beforeIndex + 1].id : null;
+  map.moveLayer(`track-${name}-border`, moveLayer);
+  map.moveLayer(`track-${name}`, moveLayer);
+  layers.forEach((layer) => {
+    if (layer.id.includes('-point')) {
+      map.moveLayer(layer.id, moveLayer);  
+    }
+  })
+}
+
+export const unselectAllTracks = (map) => {
+  const allLayers = map.getStyle().layers;     
+  const layers = allLayers.filter((layer) => layer.id.startsWith('track-'));
+  layers.forEach((layer) => {
+    if (layer.id.endsWith('-border')) {
+      map.setFeatureState(
+        { source: layer.id, id: layer.id.replace(/track-|-border/g,'') },
+        { click: false }
+      );
+    }
+  })
+}
+
+export const setTrackVisibility = (map, track, visibility) => {
+  map.setLayoutProperty(`track-${track}`, 'visibility', visibility);
+  map.setLayoutProperty(`track-${track}-border`, 'visibility', visibility);
+  map.setLayoutProperty(`track-${track}-point`, 'visibility', visibility);
+  map.setLayoutProperty(`track-${track}-point-circle`, 'visibility', visibility);
 }
