@@ -60,7 +60,9 @@ const Mapbox = data => {
         promoteId: 'id',
       });
       mapboxHelpers.layer.addLayers(map.current, geoJsonData, 'collection');
-      mapboxHelpers.control.addControls(map.current, geoJsonData, 'collection');
+    });
+    map.current.once('style.load', () => {
+      mapboxHelpers.control.addControls(map.current, geoJsonData);
     });
   });
 

@@ -32,7 +32,6 @@ const Mapbox = data => {
       bounds,
       fitBoundsOptions: (bounds, { padding: 50 }),
     });
-    mapboxHelpers.control.addControls(map.current, geoJsonData, 'track');
     map.current.on('style.load', () => {
       const trackFeatures = getTracks(geoJsonData);
       trackFeatures.forEach((feature) => {
@@ -64,6 +63,9 @@ const Mapbox = data => {
       });
       mapboxHelpers.layer.addLayers(map.current, geoJsonData, 'track');
       mapboxHelpers.chart.addChartPoints(map.current);
+    });
+    map.current.once('style.load', () => {
+      mapboxHelpers.control.addControls(map.current, geoJsonData);
     });
   });
 

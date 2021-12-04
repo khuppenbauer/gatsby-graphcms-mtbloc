@@ -1,10 +1,12 @@
 import mapboxgl from "mapbox-gl"
+import ImageLayerSelector from "./imageLayerSelector"
+import LayerSelector from "./layerSelector"
 import StyleSelector from "./styleSelector"
 import TrackSelector from "./trackSelector"
 
-import { getFeatures, getTracks } from "../geoJson" 
+import { getMapLayerFeatures, getImages, getTracks } from "../geoJson" 
 
-export const addControls = (map, geoJson, mapType) => {
+export const addControls = (map, geoJson) => {
   if (map) {
     map.addControl(new mapboxgl.NavigationControl(), 'top-right')
     map.addControl(new mapboxgl.GeolocateControl({
@@ -16,18 +18,32 @@ export const addControls = (map, geoJson, mapType) => {
     }));
     map.addControl(new mapboxgl.FullscreenControl());
     map.addControl(
+      new TrackSelector({
+        tracks: getTracks(geoJson),
+      }),
+      'top-left'
+    );
+    const layers = getMapLayerFeatures(geoJson);
+    if (Object.keys(layers).length > 0) {
+      map.addControl(
+        new LayerSelector({
+          layers,
+        }),
+        'top-left'
+      );
+    }
+    if (getImages(geoJson).length > 1) {
+      map.addControl(
+        new ImageLayerSelector({}),
+        'top-left'
+      );
+    }
+    map.addControl(
       new StyleSelector({
         styles: [
           'outdoors-v11',
           'satellite-streets-v11'
         ],
-      }),
-      'bottom-left'
-    );
-    const tracks = mapType === 'collection' ? getTracks(geoJson) : [];
-    map.addControl(
-      new TrackSelector({
-        tracks,
       }),
       'bottom-left'
     );

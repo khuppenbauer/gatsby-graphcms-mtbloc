@@ -2,6 +2,10 @@ export const getTracks = (geoJson) => {
   return geoJson.features.filter((feature) => feature.geometry.type === 'LineString');
 }
 
+export const getImages = (geoJson) => {
+  return geoJson.features.filter((feature) => feature.properties.type === 'image');
+}
+
 export const getFeatures = (geoJson) => {
   return geoJson.features.reduce((acc, current) => {
     const { geometry, properties } = current;
@@ -14,19 +18,16 @@ export const getFeatures = (geoJson) => {
     }, {});
 }
 
-export const getFeatureTypes = (geoJson) => {
+export const getMapLayerFeatures = (geoJson) => {
   return geoJson.features.reduce((acc, current) => {
-    const { properties, geometry } = current;
-      if (geometry.type === 'Polygon') {
-        if (!acc.includes(`${properties.type}-fill`)) {
-          acc.push(`${properties.type}-fill`);
-          acc.push(`${properties.type}-outline`);
-        }
-      } else {
-        if (!acc.includes(properties.type)) {
-          acc.push(properties.type);
-        }
+    const { geometry, properties } = current;
+    const type = geometry.type;
+    if (type !== 'LineString' && properties.type !== 'trackPoint' && properties.type !== 'image') {
+      acc[type] = acc[type] || [];
+      if (!acc[type].includes(properties.type)) {
+        acc[type].push(properties.type);
       }
+    }
     return acc;
-    }, []);
+    }, {});
 }
