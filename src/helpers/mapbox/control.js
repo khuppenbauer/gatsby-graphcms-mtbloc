@@ -23,18 +23,18 @@ export const addControls = (map, geoJson) => {
       }),
       'top-left'
     );
+    if (getImages(geoJson).length > 1) {
+      map.addControl(
+        new ImageLayerSelector({}),
+        'top-left'
+      );
+    }
     const layers = getMapLayerFeatures(geoJson);
     if (Object.keys(layers).length > 0) {
       map.addControl(
         new LayerSelector({
           layers,
         }),
-        'top-left'
-      );
-    }
-    if (getImages(geoJson).length > 1) {
-      map.addControl(
-        new ImageLayerSelector({}),
         'top-left'
       );
     }

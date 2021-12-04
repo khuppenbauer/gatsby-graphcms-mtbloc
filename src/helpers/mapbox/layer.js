@@ -344,3 +344,16 @@ export const setTrackVisibility = (map, track, visibility) => {
   map.setLayoutProperty(`track-${track}-point`, 'visibility', visibility);
   map.setLayoutProperty(`track-${track}-point-circle`, 'visibility', visibility);
 }
+
+export const flyTo = (map, track) => {
+  const { geometry, properties } = track;
+  const { name } = properties;
+  const { coordinates } = geometry;
+  const index = Math.round(coordinates.length / 2);
+  unselectAllTracks(map);
+  selectTrack(map, name, name);
+  map.flyTo({
+    center: coordinates[index],
+    zoom: 9
+  });
+}
