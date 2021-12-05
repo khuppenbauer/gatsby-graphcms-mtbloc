@@ -2,6 +2,9 @@ import React from "react"
 import mapboxgl from "mapbox-gl"
 import slugify from "@sindresorhus/slugify"
 import { renderToString } from 'react-dom/server';
+import { getBounds } from "geolib";
+
+import geoViewport from '@mapbox/geo-viewport';
 
 import { renderMetaData } from "../track" 
 import { getFeatures, getTracks } from "../geoJson"
@@ -350,11 +353,18 @@ export const flyTo = (map, track) => {
   const { geometry, properties } = track;
   const { name } = properties;
   const { coordinates } = geometry;
-  const index = Math.round(coordinates.length / 2);
+  const bounds = getBounds(coordinates);
+  const { width, height } = map._canvas;
+  const { center, zoom } = geoViewport.viewport([
+    bounds.minLng,
+    bounds.minLat,
+    bounds.maxLng,
+    bounds.maxLat,
+  ], [width, height]);
   unselectAllTracks(map);
   selectTrack(map, name, name);
   map.flyTo({
-    center: coordinates[index],
-    zoom: 9
+    center,
+    zoom: zoom - 1,
   });
 }
