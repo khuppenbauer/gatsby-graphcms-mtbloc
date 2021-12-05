@@ -20,9 +20,10 @@ export const getFeatures = (geoJson) => {
 
 export const getMapLayerFeatures = (geoJson) => {
   return geoJson.features.reduce((acc, current) => {
+    const excludeTypes = ['trackPoint', 'image', 'regions'];
     const { geometry, properties } = current;
     const type = geometry.type;
-    if (type !== 'LineString' && properties.type !== 'trackPoint' && properties.type !== 'image') {
+    if (type !== 'LineString' && !excludeTypes.includes(properties.type)) {
       acc[type] = acc[type] || [];
       if (!acc[type].includes(properties.type)) {
         acc[type].push(properties.type);

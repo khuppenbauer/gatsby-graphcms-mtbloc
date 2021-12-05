@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { render } from 'react-dom'
 
 const labels = {
@@ -6,6 +6,7 @@ const labels = {
   residence: 'Hütten',
   map: 'Karten',
   book: 'Bücher',
+  regions: 'Regionen',
 };
 
 const Button = () => {
@@ -70,20 +71,36 @@ const LayerList = ({ layerItems }) => {
 
 const LayerSelector = ({ map, layers }) => {
   const { Point: point, Polygon: polygon } = layers;
+  let state = [];
+  if (point) {
+    point.forEach((layer) => {
+      state.push(map.getLayoutProperty(layer, 'visibility') === 'visible');
+    })
+  }
+  if (polygon) {
+    polygon.forEach((layer) => {
+      state.push(map.getLayoutProperty(`${layer}-fill`, 'visibility') === 'visible');
+    })
+  }
+  const [checkedState, setCheckedState] = useState(state);
 
-  const handleSwitchLayer = (layer, type) => {
+  const handleSwitchLayer = (layer, layerIndex, type) => {
+    const updatedCheckedState = checkedState.map((item, index) =>
+      index === layerIndex ? !item : item
+    );
+    setCheckedState(updatedCheckedState);
+    const visibility = updatedCheckedState[layerIndex] ? 'visible' : 'none';
+
     if (type === 'point') {
-      const visibility = map.getLayoutProperty(`${layer}`, 'visibility') === 'visible' ? 'none' : 'visible';
       map.setLayoutProperty(layer, 'visibility', visibility);
     }
     if (type === 'polygon') {
-      const visibility = map.getLayoutProperty(`${layer}-fill`, 'visibility') === 'visible' ? 'none' : 'visible';
       map.setLayoutProperty(`${layer}-fill`, 'visibility', visibility);
       map.setLayoutProperty(`${layer}-outline`, 'visibility', visibility);
     }
   }
 
-  const LayerItem = ({ layer, type }) => (
+  const LayerItem = ({ layer, index, type }) => (
     <div key={layer} className="flex items-start">
       <div className="flex items-center h-5">
         <input
@@ -91,8 +108,9 @@ const LayerSelector = ({ map, layers }) => {
           name={layer}
           value={layer}
           type="checkbox"
+          checked={checkedState[index]}
           className="h-4 w-4 text-blue-600 border-gray-300 rounded"
-          onChange={() => handleSwitchLayer(layer, type)}
+          onChange={() => handleSwitchLayer(layer, index, type)}
         />
       </div>
       <div className="ml-2 text-sm">
@@ -107,14 +125,14 @@ const LayerSelector = ({ map, layers }) => {
     <div className="bg-white space-y-6">
       <fieldset>
         <div className="mt-1">
-          {point && point.map((layer) => {
+          {point && point.map((layer, index) => {
             return (
-              <LayerItem key={layer} layer={layer} type="point" />
+              <LayerItem key={layer} layer={layer} index={index} type="point" />
             )
           })}
-          {polygon && polygon.map((layer) => {
+          {polygon && polygon.map((layer, index) => {
             return (
-              <LayerItem key={layer} layer={layer} type="polygon" />
+              <LayerItem key={layer} layer={layer} index={index} type="polygon" />
             )
           })}
         </div>

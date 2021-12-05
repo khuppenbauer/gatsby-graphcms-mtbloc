@@ -37,6 +37,7 @@ export const addLayers = (map, geoJson, mapType) => {
 }
 
 export const addArea = (map, type) => {
+  const visibility = type === 'regions' ? 'visible' : 'none';
   if (map) {
     map.addLayer({
       id: `${type}-fill`,
@@ -49,7 +50,7 @@ export const addArea = (map, type) => {
         'fill-opacity': 0.07,
       },
       layout: {
-        'visibility': 'none',
+        visibility,
       },
       filter: ['==', '$type', 'Polygon'],
     });
@@ -65,7 +66,7 @@ export const addArea = (map, type) => {
         'line-width': 1,
       },
       layout: {
-        'visibility': 'none',
+        visibility,
       },
       filter: ['==', '$type', 'Polygon'],
     });
@@ -180,7 +181,7 @@ export const addSymbol = (map, type) => {
           html = `${html} (${JSON.parse(coord)[2]} m)`;
         }
         if (desc && cmt) {
-          html = `${html}<br />${desc}<br />${cmt.replace(/\r\n/g, '<br />')}`;
+          html = `<div style="width: 200px; height: 200px; overflow-y: auto;">${html}<br />${desc}<br />${cmt.replace(/\r\n/g, '<br /></div>')}`;
         }
   
         new mapboxgl.Popup()

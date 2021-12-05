@@ -71,7 +71,13 @@ const FeatureMap = ({
       />
     );
   } else {
-    return null;
+    return (
+      <Mapbox
+        data={geoJson}
+        minCoords={minCoords}
+        maxCoords={maxCoords}
+      />
+    );
   }
 };
 
