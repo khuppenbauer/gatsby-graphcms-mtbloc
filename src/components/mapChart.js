@@ -23,12 +23,12 @@ const reducer = (state, action) => {
   }
 };
 
-const Map = ({ data, minCoords, maxCoords, distance }) => {
+const Map = ({ data, minCoords, maxCoords, distance, layers }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
   return (
     <TrackContext.Provider value={{ state, dispatch }}>
       <div className="mb-10 w-full">
-        <Mapbox data={data} minCoords={minCoords} maxCoords={maxCoords} />
+        <Mapbox data={data} minCoords={minCoords} maxCoords={maxCoords} layers={layers} />
       </div>
       <div className="mb-10">
         <Charts data={data} distance={distance} />

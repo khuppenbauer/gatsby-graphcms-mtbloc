@@ -11,81 +11,54 @@ import Headline from "../../views/headline"
 import Teaser from "../../views/teaser"
 import ImageSlider from "../../views/imageSlider"
 import Features from "../../views/features"
-import useFeatures from "../../hooks/useFeatures"
+import useAlgoliaFeatures from "../../hooks/useAlgoliaFeatures"
+import useAlgoliaLayers from "../../hooks/useAlgoliaLayers"
 import { convertMetaData } from "../../helpers/track"
 
 const assetBaseUrl = process.env.GATSBY_ASSET_BASE_URL
 const queryClient = new QueryClient();
 
-const teaserFeatures = ['map', 'book', 'track', 'image'];
-const mapLayerFeatures = ['pass', 'residence'];
-const featureTypes = ['map', 'book', 'track', 'image', 'pass', 'residence'];
+const teaser = ['map', 'book', 'track', 'image'];
 
 const FeatureTeaser = ({ 
   id, minCoords, maxCoords, tracks,
 }) => {
-  const res = useFeatures(id, minCoords, maxCoords, featureTypes);
-  const isLoading = res.some(res => res.isLoading)
-  if (!isLoading) {
-    return res.map((item) => {
-      const { data } = item;
-      if (data.length > 0) {
-        const { type } = data[0];
-        if (teaserFeatures.includes(type)) {
-          return (
-            <Features key={type} type={type} data={data} tracks={tracks} />
-          )
-        } else {
-          return null;
-        }
+  const { status, data } = useAlgoliaFeatures(id, minCoords, maxCoords, teaser);
+  if (status === 'success') {
+    const { hits } = data;
+    return teaser.map((item) => {
+      const items = hits.filter((feature) => feature.type === item);
+      if (items.length > 0) {
+        return (
+          <Features key={item} type={item} data={items} tracks={tracks} />
+        );
       } else {
         return null;
       }
     });
-  } else {
-    return null;
   }
+  return null;
 };
 
 const FeatureMap = ({ 
   id, minCoords, maxCoords, geoJson, distance,
 }) => {
-  const res = useFeatures(id, minCoords, maxCoords, featureTypes);
-  const isLoading = res.some(res => res.isLoading)
-  if (!isLoading) {
-    res.forEach((item) => {
-      const { data } = item;
-      if (data.length > 0) {
-        const { type } = data[0];
-        if (mapLayerFeatures.includes(type)) {
-          const features = data.map((item) => {
-            const { geoJson } = item;
-            geoJson.features[0].properties.type = type;
-            return geoJson.features[0];
-          });
-          if (geoJson && features.length > 0) {
-            geoJson.features.push(...features);
-          }
-        }
-      }
-    });
+  const { status, data } = useAlgoliaLayers(id, minCoords, maxCoords);
+  if (status === 'success') {
+    const { facets } = data;
+    const layers = Object.keys(facets.type);
     return (
-      <Map 
-        data={geoJson} 
-        minCoords={minCoords} 
-        maxCoords={maxCoords} 
-        distance={distance} 
+      <Map
+        id={id}
+        data={geoJson}
+        minCoords={minCoords}
+        maxCoords={maxCoords}
+        distance={distance}
+        layers={layers}
       />
     );
   }
-  return (
-    <Map 
-      data={geoJson} 
-      minCoords={minCoords} 
-      maxCoords={maxCoords} 
-      distance={distance} 
-    />
-  );
+  return null;
 };
 
 const Assets = ({ assets }) => (

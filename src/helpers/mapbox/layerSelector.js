@@ -1,6 +1,10 @@
 import React, { useState } from 'react'
 import { render } from 'react-dom'
 
+import { addSymbol, addArea } from './layer'
+import { getAlgoliaFeatures } from '../features'
+import { parseAlgoliaHits } from '../geoJson'
+
 const labels = {
   pass: 'Pässe',
   residence: 'Hütten',
@@ -69,76 +73,79 @@ const LayerList = ({ layerItems }) => {
   );
 }
 
-const LayerSelector = ({ map, layers }) => {
-  const { Point: point, Polygon: polygon } = layers;
-  let state = [];
-  if (point) {
-    point.forEach((layer) => {
-      state.push(map.getLayoutProperty(layer, 'visibility') === 'visible');
-    })
-  }
-  if (polygon) {
-    polygon.forEach((layer) => {
-      state.push(map.getLayoutProperty(`${layer}-fill`, 'visibility') === 'visible');
-    })
-  }
+const LayerSelector = ({ map, minCoords, maxCoords, layers }) => {
+  const state = layers.map(() => false);
   const [checkedState, setCheckedState] = useState(state);
 
-  const handleSwitchLayer = (layer, layerIndex, type) => {
+  const handleSwitchLayer = async (layer, layerIndex) => {
     const updatedCheckedState = checkedState.map((item, index) =>
       index === layerIndex ? !item : item
     );
     setCheckedState(updatedCheckedState);
-    const visibility = updatedCheckedState[layerIndex] ? 'visible' : 'none';
-
-    if (type === 'point') {
-      map.setLayoutProperty(layer, 'visibility', visibility);
-    }
-    if (type === 'polygon') {
-      map.setLayoutProperty(`${layer}-fill`, 'visibility', visibility);
-      map.setLayoutProperty(`${layer}-outline`, 'visibility', visibility);
+    if (!map.getSource(layer)) {
+      const { hits } = await getAlgoliaFeatures(minCoords, maxCoords, [layer]);
+      const geoJson = parseAlgoliaHits(hits, layer);
+      if (geoJson) {
+        const type = geoJson.features[0].geometry.type;
+        map.addSource(layer, {
+          type: 'geojson',
+          data: geoJson,
+        });
+        if (type === 'Point') {
+          addSymbol(map, layer, layer);
+        }
+        if (type === 'Polygon') {
+          addArea(map, layer, layer);
+        }
+      }
+    } else {
+      const visibility = updatedCheckedState[layerIndex] ? 'visible' : 'none';
+      const mapLayers = map.getStyle().layers.filter((mapLayer) => mapLayer.source === layer);      
+      mapLayers.forEach((mapLayer) => {
+        map.setLayoutProperty(mapLayer.id, 'visibility', visibility);
+      });
     }
   }
 
-  const LayerItem = ({ layer, index, type }) => (
-    <div key={layer} className="flex items-start">
-      <div className="flex items-center h-5">
-        <input
-          id={layer}
-          name={layer}
-          value={layer}
-          type="checkbox"
-          checked={checkedState[index]}
-          className="h-4 w-4 text-blue-600 border-gray-300 rounded"
-          onChange={() => handleSwitchLayer(layer, index, type)}
-        />
-      </div>
-      <div className="ml-2 text-sm">
-        <label htmlFor={layer} className="text-gray-500">
-          {labels[layer]}
-        </label>
-      </div>
-    </div>
-  );
+  const LayerItem = ({ layer, index }) => {
+    if (labels[layer]) {
+      return (
+        <div key={layer} className="flex items-start">
+          <div className="flex items-center h-5">
+            <input
+              id={layer}
+              name={layer}
+              value={layer}
+              type="checkbox"
+              checked={checkedState[index]}
+              className="h-4 w-4 text-blue-600 border-gray-300 rounded"
+              onChange={() => handleSwitchLayer(layer, index)}
+            />
+          </div>
+          <div className="ml-2 text-sm">
+            <label htmlFor={layer} className="text-gray-500">
+              {labels[layer]}
+            </label>
+          </div>
+        </div>
+      )
+    }
+    return null;
+  };
 
-  const layerItems = point || polygon ? (
+  const layerItems = (
     <div className="bg-white space-y-6">
       <fieldset>
         <div className="mt-1">
-          {point && point.map((layer, index) => {
+          {layers.map((layer, index) => {
             return (
-              <LayerItem key={layer} layer={layer} index={index} type="point" />
-            )
-          })}
-          {polygon && polygon.map((layer, index) => {
-            return (
-              <LayerItem key={layer} layer={layer} index={index} type="polygon" />
-            )
-          })}
+              <LayerItem key={layer} layer={layer} index={index} />
+            )                
+          })}          
         </div>
       </fieldset>
     </div>
-  ) : null;
+  )
 
   return (
     <>
@@ -150,20 +157,29 @@ const LayerSelector = ({ map, layers }) => {
 
 // Wrap in a Mapbox GL plugin so that we can construct the above React element on map init
 class Plugin {
-  constructor({ layers, position }) {
+  constructor({ minCoords, maxCoords, layers, position }) {
+    this.minCoords = minCoords;
+    this.maxCoords = maxCoords;
     this.layers = layers;
     this.position = position;
   }
 
   onAdd(map) {
-    const { layers } = this;
     this.map = map;
     this.container = document.createElement('div');
     this.container.classList.add('mapboxgl-ctrl');
     this.container.classList.add('mapboxgl-ctrl-group');
     this.container.style.float = 'none !important';
     this.container.style.cursor = 'pointer';
-    render(<LayerSelector map={map} layers={layers} />, this.container);
+    render(
+      <LayerSelector
+        map={map}
+        minCoords={this.minCoords}
+        maxCoords={this.maxCoords}
+        layers={this.layers}
+      />,
+      this.container
+    );
     return this.container;
   }
 

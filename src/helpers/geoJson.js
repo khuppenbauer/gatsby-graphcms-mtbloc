@@ -2,6 +2,10 @@ export const getTracks = (geoJson) => {
   return geoJson.features.filter((feature) => feature.geometry.type === 'LineString');
 }
 
+export const getRegions = (geoJson) => {
+  return geoJson.features.filter((feature) => feature.properties.type === 'regions');
+}
+
 export const getImages = (geoJson) => {
   return geoJson.features.filter((feature) => feature.properties.type === 'image');
 }
@@ -32,3 +36,20 @@ export const getMapLayerFeatures = (geoJson) => {
     return acc;
     }, {});
 }
+
+export const parseAlgoliaHits = (data, layer) => {
+  const features = data
+    .filter((hit) => hit.type === layer)
+    .map((feature) => {
+      const { geometry, meta } = feature;
+      return {
+        type: 'Feature',
+        properties: meta,
+        geometry,
+      }
+    });
+  return {
+    type: 'FeatureCollection',
+    features
+  };
+};

@@ -4,14 +4,59 @@ import mapboxgl from "mapbox-gl"
 import "mapbox-gl/dist/mapbox-gl.css"
 
 import mapboxHelpers from "../../helpers/mapbox"
-import { getTracks } from "../../helpers/geoJson"
+import { getTracks, getRegions } from "../../helpers/geoJson"
 
 mapboxgl.workerClass = require("worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker").default
 
 const mapboxToken = process.env.GATSBY_MAPBOX_ACCESS_TOKEN
 
+const addRegionSource = (map, geoJsonData) => {
+  const regions = getRegions(geoJsonData);
+  if (regions.length > 0) {
+    map.addSource('regions', {
+      type: 'geojson',
+      data: {
+        type: 'FeatureCollection',
+        features: regions,
+      },
+    });
+    mapboxHelpers.layer.addArea(map, 'regions', 'regions');
+  }
+}
+
+const addTrackSource = (map, geoJsonData) => {
+  const trackFeatures = getTracks(geoJsonData);
+  trackFeatures.forEach((feature) => {
+    const { properties, geometry } = feature;
+    const id = `track-${properties.name}`;
+    const index = Math.round(geometry.coordinates.length / 2);
+    map.addSource(id, {
+      type: 'geojson',
+      data: feature,
+      promoteId: 'name',
+    });
+    map.addSource(`${id}-border`, {
+      type: 'geojson',
+      data: feature,
+      promoteId: 'name',
+    });
+    map.addSource(`${id}-point`, {
+      type: 'geojson',
+      data: {
+        type: "Feature",
+        properties: feature.properties,
+        geometry: {
+          type: "Point",
+          coordinates: geometry.coordinates[index],
+        },
+      },
+      promoteId: 'name',
+    });
+  });
+}
+
 const Mapbox = data => {
-  const { data: geoJson, url, minCoords, maxCoords } = data
+  const { data: geoJson, url, minCoords, maxCoords, layers, subCollections } = data
   const geoJsonData = geoJson ? geoJson : url;
   const mapContainer = useRef(null)
   const map = useRef(null)
@@ -26,44 +71,18 @@ const Mapbox = data => {
       fitBoundsOptions: (bounds, { padding: 50 }),
     });
     map.current.on('style.load', () => {
-      const trackFeatures = getTracks(geoJsonData);
-      trackFeatures.forEach((feature) => {
-        const { properties, geometry } = feature;
-        const id = `track-${properties.name}`;
-        const index = Math.round(geometry.coordinates.length / 2);
-        map.current.addSource(id, {
-          type: 'geojson',
-          data: feature,
-          promoteId: 'name',
-        });
-        map.current.addSource(`${id}-border`, {
-          type: 'geojson',
-          data: feature,
-          promoteId: 'name',
-        });
-        map.current.addSource(`${id}-point`, {
-          type: 'geojson',
-          data: {
-            type: "Feature",
-            properties: feature.properties,
-            geometry: {
-              type: "Point",
-              coordinates: geometry.coordinates[index],
-            },
-          },
-          promoteId: 'name',
-        });
-      });
-      map.current.addSource('features', {
-        type: 'geojson',
-        data: geoJsonData,
-        promoteId: 'id',
-      });
+      if (subCollections) {
+        addRegionSource(map.current, geoJsonData);
+      } else {
+        addTrackSource(map.current, geoJsonData);
+      }
       mapboxHelpers.layer.addLayers(map.current, geoJsonData, 'collection');
     });
-    map.current.once('style.load', () => {
-      mapboxHelpers.control.addControls(map.current, geoJsonData);
-    });
+    if (layers) {
+      map.current.once('style.load', () => {
+        mapboxHelpers.control.addControls(map.current, geoJsonData, minCoords, maxCoords, layers, 'collection');
+      });
+    }
   });
 
   return <div ref={mapContainer} style={{ height: "50vH", width: "100%" }} />;

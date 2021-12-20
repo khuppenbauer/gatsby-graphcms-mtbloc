@@ -1,10 +1,33 @@
 import React from 'react'
 import { render } from 'react-dom'
 
-const ImageLayerSelector = ({ map }) => {
-  const handleSwitchLayer = (layer) => {
-    const visibility = map.getLayoutProperty(layer, 'visibility') === 'visible' ? 'none' : 'visible';
-    map.setLayoutProperty(layer, 'visibility', visibility);
+import { addSymbol } from './layer'
+import { getAlgoliaFeatures } from '../features'
+import { parseAlgoliaHits } from '../geoJson'
+
+const ImageLayerSelector = ({ map, minCoords, maxCoords, images }) => {
+  const handleSwitchLayer = async (layer) => {
+    if (!map.getLayer(layer)) {
+      let geoJson = {};
+      if (images) {
+        geoJson = {
+          type: 'FeatureCollection',
+          features: images
+        };
+      } else {
+        const { hits } = await getAlgoliaFeatures(minCoords, maxCoords, [layer]);
+        geoJson = parseAlgoliaHits(hits, layer);
+      }
+
+      map.addSource(layer, {
+        type: 'geojson',
+        data: geoJson,
+      });
+      addSymbol(map, layer, layer);
+    } else {
+      const visibility = map.getLayoutProperty(layer, 'visibility') === 'visible' ? 'none' : 'visible';
+      map.setLayoutProperty(layer, 'visibility', visibility);
+    }
   }
 
   return (
@@ -34,8 +57,11 @@ const ImageLayerSelector = ({ map }) => {
 
 // Wrap in a Mapbox GL plugin so that we can construct the above React element on map init
 class Plugin {
-  constructor({ position }) {
+  constructor({ position, minCoords, maxCoords, images }) {
     this.position = position;
+    this.minCoords = minCoords;
+    this.maxCoords = maxCoords;
+    this.images = images;
   }
 
   onAdd(map) {
@@ -45,7 +71,15 @@ class Plugin {
     this.container.classList.add('mapboxgl-ctrl-group');
     this.container.style.float = 'none !important';
     this.container.style.cursor = 'pointer';
-    render(<ImageLayerSelector map={map} />, this.container);
+    render(
+      <ImageLayerSelector 
+        map={map}
+        minCoords={this.minCoords}
+        maxCoords={this.maxCoords}
+        images={this.images}
+      />,
+      this.container
+    );
     return this.container;
   }
 

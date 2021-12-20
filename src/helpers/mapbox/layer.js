@@ -7,19 +7,12 @@ import { getBounds } from "geolib";
 import geoViewport from '@mapbox/geo-viewport';
 
 import { renderMetaData } from "../track" 
-import { getFeatures, getTracks } from "../geoJson"
+import { getTracks } from "../geoJson"
 
 const assetBaseUrl = process.env.GATSBY_ASSET_BASE_URL
 
 export const addLayers = (map, geoJson, mapType) => {
-  const features = getFeatures(geoJson);
   const tracks = getTracks(geoJson);
-  const { Point: symbols, Polygon: areas } = features;
-  if (areas) {
-    areas.forEach((area) => {
-      addArea(map, area);
-    })
-  }
   if (tracks) {
     tracks.forEach((track) => {
       const source = `track-${track.properties.name}`;
@@ -32,20 +25,14 @@ export const addLayers = (map, geoJson, mapType) => {
       })
     }
   }
-  if (symbols) {
-    symbols.forEach((symbol) => {
-      addSymbol(map, symbol);
-    });
-  }
 }
 
-export const addArea = (map, type) => {
-  const visibility = type === 'regions' ? 'visible' : 'none';
+export const addArea = (map, type, source) => {
   if (map) {
     map.addLayer({
       id: `${type}-fill`,
       type: 'fill',
-      source: 'features',
+      source,
       paint: {
         'fill-color': [
           'get', 'color',
@@ -53,7 +40,7 @@ export const addArea = (map, type) => {
         'fill-opacity': 0.07,
       },
       layout: {
-        visibility,
+        visibility: 'visible',
       },
       filter: ['==', '$type', 'Polygon'],
     });
@@ -61,7 +48,7 @@ export const addArea = (map, type) => {
     map.addLayer({
       id: `${type}-outline`,
       type: 'line',
-      source: 'features',
+      source,
       paint: {
         'line-color': [
           'get', 'color',
@@ -69,7 +56,7 @@ export const addArea = (map, type) => {
         'line-width': 1,
       },
       layout: {
-        visibility,
+        visibility: 'visible',
       },
       filter: ['==', '$type', 'Polygon'],
     });
@@ -116,7 +103,7 @@ export const addArea = (map, type) => {
   }
 }
 
-export const addSymbol = (map, type) => {
+export const addSymbol = (map, type, source) => {
   if (map) {
     let icon;
     if (type === 'image') {
@@ -131,11 +118,11 @@ export const addSymbol = (map, type) => {
     map.addLayer({
       id: type,
       type: 'symbol',
-      source: 'features',
+      source,
       layout: {
         'icon-image': `${icon}-15`,
         'icon-allow-overlap': true,
-        'visibility': 'none',
+        visibility: 'visible',
       },
       filter: ['==', 'type', type],
     });
@@ -206,7 +193,7 @@ export const addTrack = (map, source, mapType) => {
         layout: {
           'line-join': 'round',
           'line-cap': 'round',
-          'visibility': 'visible',
+          visibility: 'visible',
         },
         paint: {
           'line-width': [
@@ -226,7 +213,7 @@ export const addTrack = (map, source, mapType) => {
       layout: {
         'line-join': 'round',
         'line-cap': 'round',
-        'visibility': 'visible',
+        visibility: 'visible',
       },
       paint: {
         'line-width': 3,
@@ -251,7 +238,7 @@ export const addTrackPoint = (map, source, mapType) => {
         ],
       },
       layout: {
-        'visibility': 'visible',
+        visibility: 'visible',
       },
     });
     map.addLayer({
@@ -261,7 +248,7 @@ export const addTrackPoint = (map, source, mapType) => {
       layout: {
         'icon-image': 'bicycle-15',
         'icon-allow-overlap': true,
-        'visibility': 'visible',
+        visibility: 'visible',
       },
     });
 

@@ -16,7 +16,7 @@ const mapboxToken = process.env.GATSBY_MAPBOX_ACCESS_TOKEN
 const Mapbox = data => {
   const { state } = useContext(TrackContext);
 
-  const { data: geoJson, url, minCoords, maxCoords } = data
+  const { data: geoJson, url, minCoords, maxCoords, layers } = data
   const geoJsonData = geoJson ? geoJson : url;
 
   const mapContainer = useRef(null)
@@ -56,16 +56,11 @@ const Mapbox = data => {
           promoteId: 'name',
         });
       });
-      map.current.addSource('features', {
-        type: 'geojson',
-        data: geoJsonData,
-        promoteId: 'name',
-      });
       mapboxHelpers.layer.addLayers(map.current, geoJsonData, 'track');
       mapboxHelpers.chart.addChartPoints(map.current);
     });
     map.current.once('style.load', () => {
-      mapboxHelpers.control.addControls(map.current, geoJsonData);
+      mapboxHelpers.control.addControls(map.current, geoJsonData, minCoords, maxCoords, layers, 'track');
     });
   });
 

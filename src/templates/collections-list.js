@@ -10,82 +10,57 @@ import Headline from "../views/headline"
 import Tracks from "../views/tracks"
 import Teaser from "../views/teaser"
 import Features from "../views/features"
-import useFeatures from "../hooks/useFeatures"
+import useAlgoliaFeatures from "../hooks/useAlgoliaFeatures"
+import useAlgoliaLayers from "../hooks/useAlgoliaLayers"
 
 const assetBaseUrl = process.env.GATSBY_ASSET_BASE_URL
 const queryClient = new QueryClient();
 
 const FeatureTeaser = ({ 
-  id, types, minCoords, maxCoords, tracks, teaser,
+  id, minCoords, maxCoords, tracks, teaser,
 }) => {
-  const res = useFeatures(id, minCoords, maxCoords, types);
-  const isLoading = res.some(res => res.isLoading)
-  if (!isLoading) {
-    return res.map((item) => {
-      const { data } = item;
-      if (data.length > 0) {
-        const { type } = data[0];
-        if (teaser.includes(type)) {
-          return (
-            <Features key={type} type={type} data={data} tracks={tracks} />
-          )
-        } else {
-          return null;
-        }
+  const { status, data } = useAlgoliaFeatures(id, minCoords, maxCoords, teaser);
+  if (status === 'success') {
+    const { hits } = data;
+    return teaser.map((item) => {
+      const items = hits.filter((feature) => feature.type === item);
+      if (items.length > 0) {
+        return (
+          <Features key={item} type={item} data={items} tracks={tracks} />
+        );
       } else {
         return null;
       }
     });
-  } else {
-    return null;
   }
+  return null;
 };
 
 const FeatureMap = ({ 
-  id, types, minCoords, maxCoords, mapLayer, geoJson, 
+  id, geoJson, minCoords, maxCoords,
 }) => {
-  const res = useFeatures(id, minCoords, maxCoords, types);
-  const isLoading = res.some(res => res.isLoading)
-  if (!isLoading) {
-    res.forEach((item) => {
-      const { data } = item;
-      if (data.length > 0) {
-        const { type } = data[0];
-        if (mapLayer.includes(type)) {
-          const features = data.map((item) => {
-            const { geoJson } = item;
-            geoJson.features[0].properties.type = type;
-            return geoJson.features[0];
-          });
-          if (geoJson && features.length > 0) {
-            geoJson.features.push(...features);
-          }
-        }
-      }
-    });
+  const { status, data } = useAlgoliaLayers(id, minCoords, maxCoords);
+  if (status === 'success') {
+    const { facets } = data;
+    const layers = Object.keys(facets.type);
     return (
       <Mapbox
+        id={id}
         data={geoJson}
         minCoords={minCoords}
         maxCoords={maxCoords}
-      />
-    );
-  } else {
-    return (
-      <Mapbox
-        data={geoJson}
-        minCoords={minCoords}
-        maxCoords={maxCoords}
+        layers={layers}
       />
     );
   }
+  return null;
 };
 
 const CollectionsListTemplate = (props) => {
   const { pageContext } = props
   const { 
     id, name, description, tracks, geoJson, minCoords, maxCoords, 
-    staticImage, subCollections, mapLayer, teaser, 
+    staticImage, subCollections, teaser, 
   } = pageContext;
   geoJson.features.map((geoJsonFeature) => {
     const { geometry, properties } = geoJsonFeature;
@@ -108,7 +83,6 @@ const CollectionsListTemplate = (props) => {
     }
     return geoJsonFeature;
   });
-  const features = [...new Set([...teaser, ...mapLayer])];
   const staticImageUrl = staticImage ? `${assetBaseUrl}/${staticImage.handle}` : '';
   return (
     <Layout>
@@ -120,16 +94,24 @@ const CollectionsListTemplate = (props) => {
               <>
                 <Headline title={name} description={description} />
                 <div className="mb-10 w-full">
-                  <QueryClientProvider client={queryClient}>
-                    <FeatureMap
+                  {subCollections.length > 0 ? (
+                    <Mapbox
                       id={id}
-                      types={features}
+                      data={geoJson}
                       minCoords={minCoords}
                       maxCoords={maxCoords}
-                      mapLayer={mapLayer}
-                      geoJson={geoJson}
+                      subCollections={subCollections}
                     />
-                  </QueryClientProvider>
+                  ) : (
+                    <QueryClientProvider client={queryClient}>
+                      <FeatureMap
+                        id={id}
+                        geoJson={geoJson}
+                        minCoords={minCoords}
+                        maxCoords={maxCoords}
+                      />
+                    </QueryClientProvider>
+                  )}
                 </div>
                 {tracks.length > 0 ? (
                   <Tracks name="Touren" tracks={tracks} className="p-4 lg:w-1/2" />
@@ -164,7 +146,6 @@ const CollectionsListTemplate = (props) => {
             <QueryClientProvider client={queryClient}>
               <FeatureTeaser
                 id={id}
-                types={features}
                 minCoords={minCoords}
                 maxCoords={maxCoords}
                 tracks={tracks}

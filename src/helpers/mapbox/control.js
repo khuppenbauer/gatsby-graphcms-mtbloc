@@ -4,10 +4,18 @@ import LayerSelector from "./layerSelector"
 import StyleSelector from "./styleSelector"
 import TrackSelector from "./trackSelector"
 
-import { getMapLayerFeatures, getImages, getTracks } from "../geoJson" 
+import { getTracks, getImages } from "../geoJson" 
 
-export const addControls = (map, geoJson) => {
+export const addControls = (map, geoJson, minCoords, maxCoords, layers, type) => {
   if (map) {
+    let images = [];
+    if (type === 'collection') {
+      images = layers.filter((item) => item === 'image');
+    }
+    if (type === 'track') {
+      images = getImages(geoJson);
+    }
+    const mapLayers = layers.filter((item) => item !== 'image' && item !== 'track');
     map.addControl(new mapboxgl.NavigationControl(), 'top-right')
     map.addControl(new mapboxgl.GeolocateControl({
       positionOptions: {
@@ -23,17 +31,22 @@ export const addControls = (map, geoJson) => {
       }),
       'top-left'
     );
-    if (getImages(geoJson).length > 1) {
+    if (images.length > 0) {
       map.addControl(
-        new ImageLayerSelector({}),
+        new ImageLayerSelector({
+          minCoords,
+          maxCoords,
+          images: type === 'track' ? images : null,
+        }),
         'top-left'
       );
     }
-    const layers = getMapLayerFeatures(geoJson);
-    if (Object.keys(layers).length > 0) {
+    if (mapLayers.length > 0) {
       map.addControl(
         new LayerSelector({
-          layers,
+          minCoords,
+          maxCoords,
+          layers: mapLayers,
         }),
         'top-left'
       );

@@ -70,7 +70,10 @@ const TrackSelector = ({ map, tracks }) => {
     new Array(tracks.length).fill(true)
   );
 
-  const handleSelectTrack = (track) => {
+  const handleSelectTrack = (track, index) => {
+    if (!checkedState[index]) {
+      handleToggleTracks(index);
+    }
     flyTo(map, track);
   }
 
@@ -153,8 +156,8 @@ const TrackSelector = ({ map, tracks }) => {
                   <button
                     href="#"
                     className="text-blue-500"
-                    onClick={() => handleSelectTrack(track)}
-                    onKeyDown={() => handleSelectTrack(track)}
+                    onClick={() => handleSelectTrack(track, index)}
+                    onKeyDown={() => handleSelectTrack(track, index)}
                     style={{ width: '100%', height: '100%', textAlign: 'left'}}
                   >
                     {name}
