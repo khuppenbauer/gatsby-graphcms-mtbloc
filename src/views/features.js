@@ -5,6 +5,9 @@ import { renderToString } from 'react-dom/server';
 import TeaserSlider from "./teaserSlider"
 import { renderMetaData } from "../helpers/track"
 
+const cloudinaryBaseUrl = process.env.GATSBY_CLOUDINARY_BASE_URL
+const cloudinaryAppId = process.env.GATSBY_CLOUDINARY_APP_ID
+
 const getMapItems = (data) => data
   .filter(item => item.type === 'map')
   .map(mapItem => {
@@ -50,6 +53,11 @@ const getTrackItems = (data, tracks) => data
     const { _id: id, foreignKey: key, name: trackName, meta } = trackItem;
     const { previewImageUrl: img, distance, totalElevationGain, totalElevationLoss } = meta;
     const text = renderMetaData({ distance, totalElevationGain, totalElevationLoss });
+    const preview = img.split('/preview/');
+    let previewImage = img;
+    if(preview[1]) {
+      previewImage = `${cloudinaryBaseUrl}/q_auto:eco/${cloudinaryAppId}/preview/${preview[1].replace(/.jpg/g, '.webp')}`;
+    }
     return {
       id,
       key,
@@ -58,7 +66,7 @@ const getTrackItems = (data, tracks) => data
       title: trackName,
       url: `/tracks/${slugify(trackName)}`,
       urlType: 'internal',
-      img,
+      img: previewImage,
       imgClassName: 'w-full object-cover object-center'
     };
   });

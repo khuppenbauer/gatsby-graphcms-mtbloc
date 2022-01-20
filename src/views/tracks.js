@@ -8,6 +8,9 @@ import Headline from "./headline"
 import Image from "./image"
 import { renderMetaData } from "../helpers/track"
 
+const cloudinaryBaseUrl = process.env.GATSBY_CLOUDINARY_BASE_URL
+const cloudinaryAppId = process.env.GATSBY_CLOUDINARY_APP_ID
+
 const Track = ({ track, className }) => {
   let geoDistance
   let geoDistanceNumber
@@ -36,20 +39,30 @@ const Track = ({ track, className }) => {
 
   let assets = [];
   if (previewImageUrl) {
+    const preview = previewImageUrl.split('/preview/');
+    let previewImage = previewImageUrl;
+    if(preview[1]) {
+      previewImage = `${cloudinaryBaseUrl}/q_auto:eco/${cloudinaryAppId}/preview/${preview[1].replace(/.jpg/g, '.webp')}`;
+    }
     assets.push({
-      key: previewImageUrl,
+      key: previewImage,
       id: slugify(`preview-${id}`),
-      src: previewImageUrl,
-      title: previewImageUrl,
+      src: previewImage,
+      title: previewImage,
       button: 'map-pin',
     });
   }
   if (overviewImageUrl) {
+    const overview = overviewImageUrl.split('/preview/');
+    let overviewImage = overviewImageUrl;
+    if(overview[1]) {
+      overviewImage = `${cloudinaryBaseUrl}/q_auto:eco/${cloudinaryAppId}/overview/${overview[1].replace(/.png/g, '.webp')}`;
+    }
     assets.push({
-      key: overviewImageUrl,
+      key: overviewImage,
       id: slugify(`overview-${id}`),
-      src: overviewImageUrl,
-      title: overviewImageUrl,
+      src: overviewImage,
+      title: overviewImage,
       button: 'map'
     });
   }
