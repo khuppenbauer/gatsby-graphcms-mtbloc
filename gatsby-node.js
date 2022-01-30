@@ -17,6 +17,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
             name
             description {
               markdown
+              html
             }
             collectionType {
               name
