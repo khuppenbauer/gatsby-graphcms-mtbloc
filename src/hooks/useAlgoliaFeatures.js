@@ -19,7 +19,7 @@ const getFeatures = async (minCoords, maxCoords, facets) => {
     facetFilters: [
       facets
     ],
-    hitsPerPage: 1000,
+    hitsPerPage: 10000,
   }
   const body = {
     index: "feature",

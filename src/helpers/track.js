@@ -37,15 +37,15 @@ export const renderMetaData = (metaData) => {
   const { distance, totalElevationGain, totalElevationLoss } = convertMetaData(metaData);
   return (
     <>
-      <span className="text-gray-500 inline-flex items-center lg:mr-auto md:mr-0 mr-auto leading-none text-sm py-1">
+      <span className="text-gray-500 inline-flex items-center whitespace-nowrap lg:mr-auto md:mr-0 mr-auto leading-none text-sm py-1">
         <ArrowRightCircle className="w-4 h-4 mr-1" />
         {distance}
       </span>
-      <span className="text-gray-500 inline-flex items-center lg:mr-auto md:mr-0 mr-auto leading-none text-sm py-1">
+      <span className="text-gray-500 inline-flex items-center whitespace-nowrap lg:mr-auto md:mr-0 mr-auto leading-none text-sm py-1">
         <ArrowUpCircle className="w-4 h-4 mr-1" />
         {totalElevationGain}
       </span>
-      <span className="text-gray-500 inline-flex items-center lg:mr-auto md:mr-0 mr-auto leading-none text-sm py-1">
+      <span className="text-gray-500 inline-flex items-center whitespace-nowrap lg:mr-auto md:mr-0 mr-auto leading-none text-sm py-1">
         <ArrowDownCircle className="w-4 h-4 mr-1" />
         {totalElevationLoss}
       </span>
