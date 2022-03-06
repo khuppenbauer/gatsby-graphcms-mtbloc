@@ -1,7 +1,8 @@
 import * as React from "react"
 import slugify from '@sindresorhus/slugify';
 import { QueryClient, QueryClientProvider } from "react-query";
-
+import { Tab } from '@headlessui/react'
+import { Grid, Map, Menu } from 'react-feather';
 
 import Layout from "../components/layout"
 import Seo from "../components/seo"
@@ -9,6 +10,7 @@ import Mapbox from "../components/mapbox/collection"
 import Headline from "../views/headline"
 import Tracks from "../views/tracks"
 import Teaser from "../views/teaser"
+import TrackTable from "../views/trackTable"
 import Features from "../views/features"
 import useAlgoliaFeatures from "../hooks/useAlgoliaFeatures"
 import useAlgoliaLayers from "../hooks/useAlgoliaLayers"
@@ -84,6 +86,7 @@ const CollectionsListTemplate = (props) => {
     return geoJsonFeature;
   });
   const staticImageUrl = staticImage ? `${assetBaseUrl}/${staticImage.handle}` : '';
+  const buttonClass = 'relative inline-flex items-center px-2 py-2 border-gray-800 text-sm font-medium text-gray-400 hover:bg-gray-800';
   return (
     <Layout>
       <Seo title={name} image={staticImageUrl} />
@@ -93,28 +96,65 @@ const CollectionsListTemplate = (props) => {
             {geoJson && minCoords && maxCoords ? (
               <>
                 <Headline title={name} description={description} />
-                <div className="mb-10 w-full">
-                  {subCollections.length > 0 ? (
-                    <Mapbox
-                      id={id}
-                      data={geoJson}
-                      minCoords={minCoords}
-                      maxCoords={maxCoords}
-                      subCollections={subCollections}
-                    />
-                  ) : (
-                    <QueryClientProvider client={queryClient}>
-                      <FeatureMap
-                        id={id}
-                        geoJson={geoJson}
-                        minCoords={minCoords}
-                        maxCoords={maxCoords}
-                      />
-                    </QueryClientProvider>
-                  )}
-                </div>
                 {tracks.length > 0 ? (
-                  <Tracks name="Touren" tracks={tracks} className="p-4 lg:w-1/2" />
+                  <Tab.Group>
+                    <div className="flex justify-between">
+                      <Headline title="Touren" />
+                      <Tab.List>
+                        <Tab
+                          className={({ selected }) =>
+                            selected ? `bg-gray-800 ${buttonClass}` : `border ${buttonClass}`
+                          }
+                        >
+                          <Grid className="h-5 w-5" />
+                        </Tab>
+                        <Tab
+                          className={({ selected }) =>
+                            selected ? `bg-gray-800 ${buttonClass}` : `border ${buttonClass}`
+                          }
+                        >
+                          <Menu className="h-5 w-5" />
+                        </Tab>
+                        <Tab
+                          className={({ selected }) =>
+                            selected ? `bg-gray-800 ${buttonClass}` : `border ${buttonClass}`
+                          }
+                        >
+                          <Map className="h-5 w-5" />
+                        </Tab>
+                      </Tab.List>
+                    </div>
+                    <Tab.Panels>
+                      <Tab.Panel>
+                        <Tracks tracks={tracks} className="p-4 lg:w-1/2" />
+                      </Tab.Panel>
+                      <Tab.Panel>
+                        <TrackTable tracks={tracks} />
+                      </Tab.Panel>
+                      <Tab.Panel>
+                        <div className="mb-10 w-full">
+                          {subCollections.length > 0 ? (
+                            <Mapbox
+                              id={id}
+                              data={geoJson}
+                              minCoords={minCoords}
+                              maxCoords={maxCoords}
+                              subCollections={subCollections}
+                            />
+                          ) : (
+                            <QueryClientProvider client={queryClient}>
+                              <FeatureMap
+                                id={id}
+                                geoJson={geoJson}
+                                minCoords={minCoords}
+                                maxCoords={maxCoords}
+                              />
+                            </QueryClientProvider>
+                          )}
+                        </div>
+                      </Tab.Panel>
+                    </Tab.Panels>
+                  </Tab.Group>
                 ) : (
                   subCollections.length > 0 ? (
                     <>

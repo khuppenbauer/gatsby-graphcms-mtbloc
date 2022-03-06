@@ -40,6 +40,9 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
               overviewImageUrl
               totalElevationGain
               totalElevationLoss
+              difficulty
+              fitness
+              experience
             }
             geoJson
             minCoords {
