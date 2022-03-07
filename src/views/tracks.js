@@ -4,7 +4,7 @@ import convert from "convert-units"
 import { PlayCircle, StopCircle, Navigation } from "react-feather"
 import slugify from '@sindresorhus/slugify';
 
-import Headline from "./headline"
+import Header from "./header"
 import Image from "./image"
 import { renderMetaData } from "../helpers/track"
 
@@ -113,7 +113,7 @@ const Tracks = ({ name, description, tracks, className }) => {
   return (
     <>
       {name || description ? (
-        <Headline title={name} description={description} />
+        <Header title={name} description={description} />
       ) : null}
       <div className="flex flex-wrap -m-4">
         {tracks ? tracks.map(track => {

@@ -5,14 +5,14 @@ import Layout from "../components/layout"
 import Seo from "../components/seo"
 import Section from "../components/section"
 import Teaser from "../views/teaser"
-import Headline from "../views/headline"
+import Header from "../views/header"
 
 const CollectionsPage = ({ data: { collectionTypes }}) => {
   return (
     <Layout>
       <Seo title="Sammlungen" />
       <Section>
-        <Headline title="Sammlungen" />
+        <Header title="Sammlungen" />
         <div className="flex flex-wrap -m-4 mb-10">
           {collectionTypes.nodes.map(collectionType => {
             const { id, name, slug, collections, image } = collectionType;

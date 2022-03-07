@@ -7,6 +7,7 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import Layout from "../../components/layout"
 import Seo from "../../components/seo"
 import Map from "../../components/mapChart"
+import Header from "../../views/header"
 import Headline from "../../views/headline"
 import Teaser from "../../views/teaser"
 import ImageSlider from "../../views/imageSlider"
@@ -280,7 +281,7 @@ const TrackPage = ({ data: { track } }) => {
       <section className="text-gray-400 bg-gray-900 body-font">
         <div className="container lg:flex lg:flex-wrap px-5 py-5 mx-auto">
           <div className="lg:w-2/3 lg:pr-6 lg:border-r lg:border-b-0 lg:mb-0 mb-10 pb-10 border-b border-gray-800">       
-            <Headline title={name} />
+            <Header title={name} />
             <QueryClientProvider client={queryClient}>
               <FeatureMap
                 id={id}

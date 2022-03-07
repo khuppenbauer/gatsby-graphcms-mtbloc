@@ -121,7 +121,8 @@ const IndexPage = ({ data: { tracks, trackStatistic }}) => {
           <Statistic data={trackStatistic.nodes} />
         </div>
         <div className="container px-5 py-12 mx-auto">
-          <Tracks tracks={tracks.nodes} name="Letzte Touren" />
+          <Headline title="Letzte Touren" />
+          <Tracks tracks={tracks.nodes} />
         </div>
       </section>
     </Layout>

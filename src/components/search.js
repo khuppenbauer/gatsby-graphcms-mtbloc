@@ -15,6 +15,7 @@ import CustomPoweredBy from "./algolia/poweredBy"
 import CustomStats from "./algolia/stats"
 import CustomSortBy from "./algolia/sortBy"
 
+import Header from "../views/header"
 import Headline from "../views/headline"
 
 const indexName = "tracks";
@@ -46,7 +47,7 @@ const Search = () => {
             />        	
           </div>
           <div className="md:flex md:flex-col md:w-3/4 md:pl-12">
-            <Headline title="Suche" />
+            <Header title="Suche" />
             <CustomPlaces />
             <div className="flex flex-wrap">
               <div className="w:1/5">

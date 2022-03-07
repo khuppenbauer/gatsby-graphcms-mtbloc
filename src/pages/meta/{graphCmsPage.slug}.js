@@ -5,7 +5,7 @@ import { graphql } from "gatsby"
 import Layout from "../../components/layout"
 import Seo from "../../components/seo"
 import Section from "../../components/section"
-import Headline from "../../views/headline"
+import Header from "../../views/header"
 import Form from "../../views/form"
 
 const MetaPage = ({ data: { page } }) => {
@@ -14,7 +14,7 @@ const MetaPage = ({ data: { page } }) => {
     <Layout>
       <Seo title={title} />
       <Section>
-        <Headline title={title} />
+        <Header title={title} />
         <div className="flex flex-wrap w-full mb-10">
           <ReactMarkdown className="leading-relaxed text-base">
             {content.markdown}

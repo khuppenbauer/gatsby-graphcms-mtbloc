@@ -6,6 +6,7 @@ import Layout from "../components/layout"
 import Seo from "../components/seo"
 import Section from "../components/section"
 import Teaser from "../views/teaser"
+import Header from "../views/header"
 import Headline from "../views/headline"
 
 const CollectionTypePage = ({ data: { collectionType }}) => {
@@ -43,6 +44,7 @@ const CollectionTypePage = ({ data: { collectionType }}) => {
     <Layout>
       <Seo title={name} />
       <Section>
+        <Header title={name} />
         {items.length > 0 ? (
           items.map(item => {
             const { name: country, collections } = item;

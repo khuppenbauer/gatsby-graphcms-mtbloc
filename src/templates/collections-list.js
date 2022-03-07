@@ -7,6 +7,7 @@ import { Grid, Map, Menu } from 'react-feather';
 import Layout from "../components/layout"
 import Seo from "../components/seo"
 import Mapbox from "../components/mapbox/collection"
+import Header from "../views/header"
 import Headline from "../views/headline"
 import Tracks from "../views/tracks"
 import Teaser from "../views/teaser"
@@ -95,7 +96,7 @@ const CollectionsListTemplate = (props) => {
           <div className="lg:w-2/3 lg:pr-6 lg:border-r lg:border-b-0 lg:mb-0 mb-10 pb-10 border-b border-gray-800">
             {geoJson && minCoords && maxCoords ? (
               <>
-                <Headline title={name} description={description} />
+                <Header title={name} description={description} />
                 {tracks.length > 0 ? (
                   <Tab.Group>
                     <div className="flex justify-between">

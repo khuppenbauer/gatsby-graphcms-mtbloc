@@ -1,6 +1,6 @@
 import React from "react"
 
-const Headline = ({ title, description }) => (
+const Headline = ({ title }) => (
   <div className="flex flex-wrap mb-6">
     <div className="w-full">
       <h2 className="text-xl font-medium title-font mb-2 text-white">
@@ -8,14 +8,6 @@ const Headline = ({ title, description }) => (
       </h2>
       <div className="h-1 w-20 bg-blue-500 rounded"></div>
     </div>
-    {description ? (
-      <>
-        <div 
-          className="w-full mb-t lg:mt-0 leading-relaxed text-gray-400 text-opacity-90 pt-4"
-          dangerouslySetInnerHTML={{__html: description.html}} 
-        />
-      </>
-    ) : null}
   </div>
 )
 
