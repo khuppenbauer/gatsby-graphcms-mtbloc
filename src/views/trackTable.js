@@ -3,7 +3,10 @@ import { useTable, useSortBy, useFilters } from "react-table";
 import convert from "convert-units"
 import slugify from "@sindresorhus/slugify";
 import { Link } from "gatsby"
-import { ArrowUpRight, ChevronUp, ChevronDown } from 'react-feather';
+import { 
+  ChevronUp, ChevronDown, 
+  ArrowUpCircle, ArrowDownCircle, ArrowRightCircle 
+} from 'react-feather';
 import { matchSorter } from 'match-sorter'
 
 const InputColumnFilter = ({
@@ -83,7 +86,7 @@ const TrackTable = ({ tracks }) => {
     }
     const distance = convert(track.distance).from("m").toBest();
     return {
-      name,
+      name: <Link to={`/tracks/${slugify(name)}`} className="text-blue-400">{name}</Link>,
       distance: new Intl.NumberFormat("en-US").format(distance.val.toFixed(2)),
       totalElevationGain,
       totalElevationLoss,
@@ -91,7 +94,6 @@ const TrackTable = ({ tracks }) => {
       fitness,
       experience,
       startCity,
-      link: <Link to={`/tracks/${slugify(name)}`} className="text-blue-400"><ArrowUpRight className="h-5 w-5" /></Link>,
     }
   });
 
@@ -122,15 +124,15 @@ const TrackTable = ({ tracks }) => {
         filter: 'fuzzyText',
       },
       {
-        Header: 'Länge',
+        Header: <ArrowRightCircle className="h-5 w-5" />,
         accessor: 'distance',
       },
       {
-        Header: 'Höhenmeter',
+        Header: <ArrowUpCircle className="h-5 w-5" />,
         accessor: 'totalElevationGain',
       },
       {
-        Header: 'Tiefenmeter',
+        Header: <ArrowDownCircle className="h-5 w-5" />,
         accessor: 'totalElevationLoss',
       },
       {
@@ -150,12 +152,7 @@ const TrackTable = ({ tracks }) => {
         accessor: 'experience',
         Filter: SelectColumnFilter,
         filter: 'equals',
-      },
-      {
-        Header: '',
-        accessor: 'link',
-        canSort: false,
-      }                                                  
+      },                                                 
     ],
     []
   )
