@@ -232,6 +232,7 @@ const TrackPage = ({ data: { track } }) => {
     id,
     title,
     collection,
+    downloadGpx,
     gpxFileSmallUrl,
     gpxFileUrl,
     geoJson,
@@ -293,7 +294,7 @@ const TrackPage = ({ data: { track } }) => {
             </QueryClientProvider>
             <Assets assets={assets} />
             <Infos track={track} />
-            <Downloads gpxFileUrl={gpxFileUrl} gpxFileSmallUrl={gpxFileSmallUrl} />
+            { downloadGpx === false ? null : <Downloads gpxFileUrl={gpxFileUrl} gpxFileSmallUrl={gpxFileSmallUrl} /> }
             <Collections collections={collection} />
           </div>
           <div className="lg:flex lg:flex-col lg:w-1/3 lg:pl-6">
@@ -368,6 +369,7 @@ export const pageQuery = graphql`
           }
         }
       }
+      downloadGpx
       gpxFileSmallUrl
       gpxFileUrl
       geoJson
