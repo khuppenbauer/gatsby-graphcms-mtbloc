@@ -66,7 +66,6 @@ const CollectionTypePage = ({ data: { collectionType }}) => {
         ) : (
           <div className="flex flex-wrap -m-4 mb-10">
             <>
-              <Headline title={name} />
               {collections.map(collection => {
                 const { id, name, image, staticImage } = collection
                 return (
