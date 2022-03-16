@@ -262,12 +262,12 @@ export const addTrackPoint = (map, source, mapType) => {
 
     map.on('click', source, (e) => {
       const { properties } = e.features[0];
-      const { name } = properties;
+      const { name, slug, title } = properties;
       const text = (
         <>
           <div>
             <span className="text-gray-500 inline-flex items-center lg:mr-auto md:mr-0 mr-auto leading-none text-sm py-1">
-              {name}
+              {title || name}
             </span>
           </div>
           <div className="flex items-center flex-col">
@@ -277,7 +277,7 @@ export const addTrackPoint = (map, source, mapType) => {
       );
       let html;
       if (mapType === 'collection') {
-        const url = `/tracks/${slugify(name)}`;
+        const url = `/tracks/${slug}`;
         html = `<a href="${url}">${renderToString(text)}</a>`;
       } else {
         html = renderToString(text);

@@ -134,12 +134,13 @@ export const pageQuery = graphql`
     tracks: allGraphCmsTrack(sort: { fields: date, order: DESC }, limit: 3) {
       nodes {
         id
-        gatsbyPath(filePath: "/tracks/{graphCmsTrack.name}")
+        gatsbyPath(filePath: "/tracks/{graphCmsTrack.slug}")
         distance
         endCity
         endCountry
         endState
-        name
+        title
+        slug
         startCity
         startCountry
         startState

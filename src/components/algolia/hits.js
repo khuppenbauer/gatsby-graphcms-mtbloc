@@ -1,6 +1,5 @@
 import { default as React } from "react"
 import { connectHits } from 'react-instantsearch-dom';
-import slugify from '@sindresorhus/slugify';
 
 import Tracks from "../../views/tracks"
 
@@ -9,7 +8,7 @@ const hits = connectHits((Hits) => {
   const tracks = hits.map((hit) => {
     let geoDistance;
     const { 
-      objectID: id, name, _rankingInfo,
+      objectID: id, title, slug, _rankingInfo,
       endCity, endState, 
       startCity, startState, startCountry, 
       distance, totalElevationGain, totalElevationLoss, 
@@ -18,10 +17,10 @@ const hits = connectHits((Hits) => {
     if (_rankingInfo && _rankingInfo.geoDistance) {
       geoDistance = _rankingInfo.geoDistance;
     }
-    const gatsbyPath = `/tracks/${slugify(name)}`;
+    const gatsbyPath = `/tracks/${slug}`;
     const track = {
       id,
-      name,
+      title,
       gatsbyPath,
       endCity,
       endState,

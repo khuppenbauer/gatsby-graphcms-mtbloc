@@ -230,7 +230,7 @@ const Infos = ({ track }) => {
 const TrackPage = ({ data: { track } }) => {
   const {
     id,
-    name,
+    title,
     collection,
     gpxFileSmallUrl,
     gpxFileUrl,
@@ -277,11 +277,11 @@ const TrackPage = ({ data: { track } }) => {
   }
   return (
     <Layout>
-      <Seo title={name} image={previewImageUrl} />
+      <Seo title={title} image={previewImageUrl} />
       <section className="text-gray-400 bg-gray-900 body-font">
         <div className="container lg:flex lg:flex-wrap px-5 py-5 mx-auto">
           <div className="lg:w-2/3 lg:pr-6 lg:border-r lg:border-b-0 lg:mb-0 mb-10 pb-10 border-b border-gray-800">       
-            <Header title={name} />
+            <Header title={title} />
             <QueryClientProvider client={queryClient}>
               <FeatureMap
                 id={id}
@@ -313,10 +313,12 @@ const TrackPage = ({ data: { track } }) => {
 }
 
 export const pageQuery = graphql`
-  query TrackPageQuery($name: String!) {
-    track: graphCmsTrack(name: { eq: $name }) {
+  query TrackPageQuery($slug: String!) {
+    track: graphCmsTrack(slug: { eq: $slug }) {
       id
       name
+      title
+      slug
       startCity
       startState
       startCountry

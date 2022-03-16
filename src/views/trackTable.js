@@ -1,11 +1,10 @@
 import React from "react";
 import { useTable, useSortBy, useFilters } from "react-table";
 import convert from "convert-units"
-import slugify from "@sindresorhus/slugify";
 import { Link } from "gatsby"
 import { 
   ChevronUp, ChevronDown, 
-  ArrowUpCircle, ArrowDownCircle, ArrowRightCircle 
+  ArrowUpCircle, ArrowDownCircle, ArrowRightCircle, ArrowUpRight,
 } from 'react-feather';
 import { matchSorter } from 'match-sorter'
 
@@ -67,7 +66,8 @@ const TrackTable = ({ tracks }) => {
   let hasDifficulty = false;
   const tableRows = tracks.map((track) => {
     const {
-      name,
+      title,
+      slug,
       totalElevationGain,
       totalElevationLoss,
       difficulty,
@@ -85,8 +85,10 @@ const TrackTable = ({ tracks }) => {
       hasExperience = true;
     }
     const distance = convert(track.distance).from("m").toBest();
+    const link = <Link to={`/tracks/${slug}`} className="text-blue-400"><ArrowUpRight className="h-5 w-5" /></Link>;
     return {
-      name: <Link to={`/tracks/${slugify(name)}`} className="text-blue-400">{name}</Link>,
+      link,
+      title,
       distance: new Intl.NumberFormat("en-US").format(distance.val.toFixed(2)),
       totalElevationGain,
       totalElevationLoss,
@@ -112,8 +114,12 @@ const TrackTable = ({ tracks }) => {
   const columns = React.useMemo(
     () => [
       {
+        Header: '',
+        accessor: 'link',
+      },
+      {
         Header: 'Name',
-        accessor: 'name',
+        accessor: 'title',
         Filter: InputColumnFilter,
         filter: 'fuzzyText',
       },

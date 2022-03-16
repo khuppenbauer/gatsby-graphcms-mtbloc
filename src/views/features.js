@@ -1,5 +1,4 @@
 import React from "react"
-import slugify from '@sindresorhus/slugify';
 import { renderToString } from 'react-dom/server';
 
 import TeaserSlider from "./teaserSlider"
@@ -50,8 +49,8 @@ const getTrackItems = (data, tracks) => data
     return item.type === 'track' && existingTracks.length === 0
   })
   .map(trackItem => {
-    const { _id: id, foreignKey: key, name: trackName, meta } = trackItem;
-    const { previewImageUrl: img, distance, totalElevationGain, totalElevationLoss } = meta;
+    const { _id: id, foreignKey: key, meta } = trackItem;
+    const { title, slug, previewImageUrl: img, distance, totalElevationGain, totalElevationLoss } = meta;
     const text = renderMetaData({ distance, totalElevationGain, totalElevationLoss });
     const preview = img.split('/preview/');
     let previewImage = img;
@@ -63,8 +62,8 @@ const getTrackItems = (data, tracks) => data
       key,
       text: renderToString(text),
       category: 'Touren in der Nähe',
-      title: trackName,
-      url: `/tracks/${slugify(trackName)}`,
+      title,
+      url: `/tracks/${slug}`,
       urlType: 'internal',
       img: previewImage,
       imgClassName: 'w-full object-cover object-center'

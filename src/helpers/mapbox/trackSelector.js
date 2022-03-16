@@ -137,7 +137,7 @@ const TrackSelector = ({ map, tracks }) => {
           </div>
           {tracks && tracks.map((track, index) => {
             const { properties } = track;
-            const { name } = properties;
+            const { name, title } = properties;
             const trackName = `track-${properties.name}`;
             return (
               <div key={name} className="flex items-start">
@@ -160,7 +160,7 @@ const TrackSelector = ({ map, tracks }) => {
                     onKeyDown={() => handleSelectTrack(track, index)}
                     style={{ width: '100%', height: '100%', textAlign: 'left'}}
                   >
-                    {name}
+                    {title || name}
                   </button>
                 </div>
               </div>

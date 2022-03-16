@@ -17,7 +17,7 @@ const Track = ({ track, className }) => {
   let geoDistanceUnit
   const {
     id,
-    name,
+    title,
     gatsbyPath,
     endCity,
     endState,
@@ -79,7 +79,7 @@ const Track = ({ track, className }) => {
               {startCountry}
             </h2>
             <h1 className="title-font text-lg font-medium text-white mb-3">
-              {name}
+              {title}
             </h1>
             <div className="my-4">
               <span className="text-gray-500 inline-flex items-center lg:mr-auto md:mr-0 mr-auto leading-none text-sm">
