@@ -55,6 +55,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
               latitude
               longitude
             }
+            private
             staticImage {
               handle
             }
@@ -77,6 +78,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
                 name
                 slug
               }
+              private
             }
           }
         }
@@ -109,7 +111,9 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
   })
 
   result.data.allGraphCmsCollection.nodes.forEach(node => {
-    const { id, name, collectionType, description, tracks, geoJson, minCoords, maxCoords, staticImage, subCollections } = node;
+    const { 
+      id, name, collectionType, description, tracks, geoJson, minCoords, maxCoords, staticImage, subCollections, private: privateCollection 
+    } = node;
     const slug = `${collectionType.slug}/${slugify(name)}`
     createPage({
       path: slug,
@@ -124,6 +128,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
         maxCoords,
         staticImage,
         subCollections,
+        privateCollection,
         mapLayer: collectionType.mapLayer,
         teaser: collectionType.teaser,
       },

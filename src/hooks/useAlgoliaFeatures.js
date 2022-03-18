@@ -17,7 +17,8 @@ const getFeatures = async (minCoords, maxCoords, facets) => {
       ]
     ],
     facetFilters: [
-      facets
+      facets,
+      "meta.private:-true",
     ],
     hitsPerPage: 1000,
   }

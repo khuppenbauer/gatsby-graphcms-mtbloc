@@ -131,7 +131,11 @@ const IndexPage = ({ data: { tracks, trackStatistic }}) => {
 
 export const pageQuery = graphql`
   {
-    tracks: allGraphCmsTrack(sort: { fields: date, order: DESC }, limit: 3) {
+    tracks: allGraphCmsTrack(
+      filter: { private: { ne: true }},
+      sort: { fields: date, order: DESC },
+      limit: 3
+    ) {
       nodes {
         id
         gatsbyPath(filePath: "/tracks/{graphCmsTrack.slug}")
@@ -150,7 +154,7 @@ export const pageQuery = graphql`
         totalElevationLoss
       }
     }
-    trackStatistic: allGraphCmsTrack {
+    trackStatistic: allGraphCmsTrack(filter: { private: { ne: true }}) {
       nodes {
         distance,
         totalElevationGain,

@@ -10,7 +10,7 @@ import PropTypes from "prop-types"
 import { Helmet } from "react-helmet"
 import { useStaticQuery, graphql } from "gatsby"
 
-function Seo({ description, lang, title, image }) {
+function Seo({ description, lang, title, image, noIndex }) {
   const { site } = useStaticQuery(
     graphql`
       query {
@@ -53,6 +53,9 @@ function Seo({ description, lang, title, image }) {
       {image && (
         <meta property="twitter:image" content={image} />
       )}
+      {noIndex && (
+        <meta name="robots" content="noindex, nofollow, noimageindex" data-no-index="true" />
+      )}
     </Helmet>
   )
 }
@@ -62,6 +65,7 @@ Seo.defaultProps = {
   meta: [],
   description: ``,
   image: null,
+  noIndex: false,
 }
 
 Seo.propTypes = {
@@ -70,6 +74,7 @@ Seo.propTypes = {
   meta: PropTypes.arrayOf(PropTypes.object),
   title: PropTypes.string.isRequired,
   image: PropTypes.string,
+  noIndex: PropTypes.bool,
 }
 
 export default Seo

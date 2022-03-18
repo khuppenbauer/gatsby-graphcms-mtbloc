@@ -14,6 +14,9 @@ const CollectionTypePage = ({ data: { collectionType }}) => {
   const res = [];
   collections.map(collection => {
     const { tracks } = collection;
+    if (collection.private === true) {
+      return null;
+    }
     tracks.map(track => {
       const { startCountry, endCountry } = track;
       if (!res[startCountry]) {
@@ -88,6 +91,7 @@ export const pageQuery = graphql`
       collections {
         id
         name
+        private
         tracks {
           id
           startCountry

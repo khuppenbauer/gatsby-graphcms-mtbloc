@@ -38,6 +38,7 @@ export const pageQuery = graphql`
     $sort: [GraphCMS_TrackFieldsEnum]
   ) {
     tracks: allGraphCmsTrack(
+      filter: { private: { ne: true }},
       sort: { fields: $sort, order: $order }
       limit: $limit
       skip: $skip

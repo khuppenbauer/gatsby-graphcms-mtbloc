@@ -63,7 +63,7 @@ const CollectionsListTemplate = (props) => {
   const { pageContext } = props
   const { 
     id, name, description, tracks, geoJson, minCoords, maxCoords, 
-    staticImage, subCollections, teaser, 
+    staticImage, subCollections, teaser, privateCollection,
   } = pageContext;
   geoJson.features.map((geoJsonFeature) => {
     const { geometry, properties } = geoJsonFeature;
@@ -90,7 +90,7 @@ const CollectionsListTemplate = (props) => {
   const buttonClass = 'relative inline-flex items-center px-2 py-2 border-gray-800 text-sm font-medium text-gray-400 hover:bg-gray-800';
   return (
     <Layout>
-      <Seo title={name} image={staticImageUrl} />
+      <Seo title={name} image={staticImageUrl} noIndex={privateCollection} />
       <section className="text-gray-400 bg-gray-900 body-font">
         <div className="container lg:flex lg:flex-wrap px-5 py-5 mx-auto">
           <div className="lg:w-2/3 lg:pr-6 lg:border-r lg:border-b-0 lg:mb-0 mb-10 pb-10 border-b border-gray-800">
@@ -169,10 +169,11 @@ const CollectionsListTemplate = (props) => {
                             image,
                             tracks,
                             collectionType,
+                            private: privateCollection,
                           } = collectionItem;
                           const { slug } = collectionType;
                           const tracksCount = tracks.length;
-                          return <Teaser key={collectionId} id={collectionName} slug={`/${slug}/${slugify(collectionName)}`} title={`${collectionName} (${tracksCount})`} image={image} staticImage={staticImage} className="p-4 md:w-1/2 w-full" />
+                          return privateCollection === true ? null : <Teaser key={collectionId} id={collectionName} slug={`/${slug}/${slugify(collectionName)}`} title={`${collectionName} (${tracksCount})`} image={image} staticImage={staticImage} className="p-4 md:w-1/2 w-full" />
                         })}
                       </div>
                     </>

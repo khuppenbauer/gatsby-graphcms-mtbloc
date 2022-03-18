@@ -34,7 +34,7 @@ const Search = () => {
     <section className="text-gray-400 body-font bg-gray-900">
       <div className="container md:flex md:flex-wrap px-5 py-5 mx-auto">
         <InstantSearch indexName={indexName} searchClient={searchClient}>
-          <Configure />
+          <Configure filters="NOT private:true" />
           <div className="md:w-1/4 md:pr-12 md:border-r md:border-b-0 md:mb-0 mb-10 pb-10 border-b border-gray-800">       
             <Headline title="Filter" />
             <CustomCurrentRefinements />
