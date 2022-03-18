@@ -69,8 +69,8 @@ const Search = () => {
               defaultRefinement={indexName}
               items={[
                 { value: `${indexName}`, label: 'Standard' },
-                { value: `${indexName}_name_asc`, label: 'Name', dir: 'asc' },
-                { value: `${indexName}_name_desc`, label: 'Name', dir: 'desc' },
+                { value: `${indexName}_title_asc`, label: 'Name', dir: 'asc' },
+                { value: `${indexName}_title_desc`, label: 'Name', dir: 'desc' },
                 { value: `${indexName}_distance_asc`, label: 'Länge', dir: 'asc' },
                 { value: `${indexName}_distance_desc`, label: 'Länge', dir: 'desc' },
                 { value: `${indexName}_elevation_asc`, label: 'Höhenmeter', dir: 'asc' },
