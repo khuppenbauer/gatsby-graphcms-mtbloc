@@ -1,4 +1,5 @@
 import mapboxgl from "mapbox-gl"
+import ClusterSelector from "./clusterSelector"
 import ImageLayerSelector from "./imageLayerSelector"
 import LayerSelector from "./layerSelector"
 import StyleSelector from "./styleSelector"
@@ -6,7 +7,7 @@ import TrackSelector from "./trackSelector"
 
 import { getTracks, getImages } from "../geoJson" 
 
-export const addControls = (map, geoJson, minCoords, maxCoords, layers, type) => {
+export const addControls = (map, geoJson, minCoords, maxCoords, layers, type, mapSource) => {
   if (map) {
     let images = [];
     if (type === 'collection') {
@@ -25,6 +26,16 @@ export const addControls = (map, geoJson, minCoords, maxCoords, layers, type) =>
       showUserHeading: true
     }));
     map.addControl(new mapboxgl.FullscreenControl());
+    if (type === 'collection') {
+      const types = mapSource === 'track' ? ['track', 'cluster'] : ['cluster', 'track'];
+      map.addControl(
+        new ClusterSelector({
+          tracks: getTracks(geoJson),
+          types,
+        }),
+        'top-left'
+      );
+    }
     map.addControl(
       new TrackSelector({
         tracks: getTracks(geoJson),

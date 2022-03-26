@@ -22,8 +22,8 @@ const Button = () => {
         height="19"
         viewBox="0 0 24 24"
         fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
+        stroke="#000000"
+        strokeWidth="3"
         strokeLinecap="round"
         strokeLinejoin="round"
       >
@@ -137,7 +137,7 @@ const TrackSelector = ({ map, tracks }) => {
           </div>
           {tracks && tracks.map((track, index) => {
             const { properties } = track;
-            const { name, title } = properties;
+            const { name, title, color } = properties;
             const trackName = `track-${properties.name}`;
             return (
               <div key={name} className="flex items-start">
@@ -147,7 +147,7 @@ const TrackSelector = ({ map, tracks }) => {
                     name={trackName}
                     value={trackName}
                     type="checkbox"
-                    className="h-4 w-4 text-blue-600 border-gray-300 rounded"
+                    className="h-4 w-4 border-gray-300 rounded"
                     checked={checkedState[index]}
                     onChange={() => handleToggleTracks(index)}
                   />
@@ -158,7 +158,7 @@ const TrackSelector = ({ map, tracks }) => {
                     className="text-blue-500"
                     onClick={() => handleSelectTrack(track, index)}
                     onKeyDown={() => handleSelectTrack(track, index)}
-                    style={{ width: '100%', height: '100%', textAlign: 'left'}}
+                    style={{ width: '100%', height: '100%', textAlign: 'left', borderLeft: `10px solid ${color}`, margin: '2px 0px', paddingLeft: '10px' }}
                   >
                     {title || name}
                   </button>

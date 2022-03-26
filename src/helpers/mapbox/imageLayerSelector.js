@@ -43,8 +43,8 @@ const ImageLayerSelector = ({ map, minCoords, maxCoords, images }) => {
         height="19"
         viewBox="0 0 24 24"
         fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
+        stroke="#000000"
+        strokeWidth="3"
         strokeLinecap="round"
         strokeLinejoin="round"
       >

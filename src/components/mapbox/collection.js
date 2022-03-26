@@ -4,7 +4,7 @@ import mapboxgl from "mapbox-gl"
 import "mapbox-gl/dist/mapbox-gl.css"
 
 import mapboxHelpers from "../../helpers/mapbox"
-import { getTracks, getRegions } from "../../helpers/geoJson"
+import { getTracks, getTrackPoints, getRegions } from "../../helpers/geoJson"
 
 mapboxgl.workerClass = require("worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker").default
 
@@ -55,8 +55,19 @@ const addTrackSource = (map, geoJsonData) => {
   });
 }
 
+const addClusterSource = (map, geoJsonData) => {
+  const trackPoints = getTrackPoints(geoJsonData);
+  map.addSource('cluster', {
+    type: 'geojson',
+    data: trackPoints,
+    cluster: true,
+    clusterMaxZoom: 14,
+    clusterRadius: 50,
+  });
+}
+
 const Mapbox = data => {
-  const { data: geoJson, url, minCoords, maxCoords, layers, subCollections } = data
+  const { data: geoJson, url, minCoords, maxCoords, layers, subCollections, tracksCount } = data
   const geoJsonData = geoJson ? geoJson : url;
   const mapContainer = useRef(null)
   const map = useRef(null)
@@ -70,17 +81,23 @@ const Mapbox = data => {
       bounds,
       fitBoundsOptions: (bounds, { padding: 50 }),
     });
+    let mapSource = 'track';
     map.current.on('style.load', () => {
       if (subCollections) {
         addRegionSource(map.current, geoJsonData);
       } else {
+        if (tracksCount > 10) {
+          mapSource = 'cluster';
+        }
         addTrackSource(map.current, geoJsonData);
+        addClusterSource(map.current, geoJsonData);
+        mapboxHelpers.layer.addCluster(map.current, mapSource);
       }
-      mapboxHelpers.layer.addLayers(map.current, geoJsonData, 'collection');
+      mapboxHelpers.layer.addLayers(map.current, geoJsonData, 'collection', mapSource);
     });
     if (layers) {
       map.current.once('style.load', () => {
-        mapboxHelpers.control.addControls(map.current, geoJsonData, minCoords, maxCoords, layers, 'collection');
+        mapboxHelpers.control.addControls(map.current, geoJsonData, minCoords, maxCoords, layers, 'collection', mapSource);
       });
     }
   });

@@ -40,7 +40,7 @@ const FeatureTeaser = ({
 };
 
 const FeatureMap = ({ 
-  id, geoJson, minCoords, maxCoords,
+  id, geoJson, minCoords, maxCoords, tracksCount,
 }) => {
   const { status, data } = useAlgoliaLayers(id, minCoords, maxCoords);
   if (status === 'success') {
@@ -53,6 +53,7 @@ const FeatureMap = ({
         minCoords={minCoords}
         maxCoords={maxCoords}
         layers={layers}
+        tracksCount={tracksCount}
       />
     );
   }
@@ -88,6 +89,7 @@ const CollectionsListTemplate = (props) => {
   });
   const staticImageUrl = staticImage ? `${assetBaseUrl}/${staticImage.handle}` : '';
   const buttonClass = 'relative inline-flex items-center px-2 py-2 border-gray-800 text-sm font-medium text-gray-400 hover:bg-gray-800';
+  const tracksCount = tracks.length;
   return (
     <Layout>
       <Seo title={name} image={staticImageUrl} noIndex={privateCollection} />
@@ -107,6 +109,13 @@ const CollectionsListTemplate = (props) => {
                             selected ? `bg-gray-800 ${buttonClass}` : `border ${buttonClass}`
                           }
                         >
+                          <Map className="h-5 w-5" />
+                        </Tab>                        
+                        <Tab
+                          className={({ selected }) =>
+                            selected ? `bg-gray-800 ${buttonClass}` : `border ${buttonClass}`
+                          }
+                        >
                           <Grid className="h-5 w-5" />
                         </Tab>
                         <Tab
@@ -116,22 +125,9 @@ const CollectionsListTemplate = (props) => {
                         >
                           <Menu className="h-5 w-5" />
                         </Tab>
-                        <Tab
-                          className={({ selected }) =>
-                            selected ? `bg-gray-800 ${buttonClass}` : `border ${buttonClass}`
-                          }
-                        >
-                          <Map className="h-5 w-5" />
-                        </Tab>
                       </Tab.List>
                     </div>
                     <Tab.Panels>
-                      <Tab.Panel>
-                        <Tracks tracks={tracks} className="p-4 lg:w-1/2" />
-                      </Tab.Panel>
-                      <Tab.Panel>
-                        <TrackTable tracks={tracks} />
-                      </Tab.Panel>
                       <Tab.Panel>
                         <div className="mb-10 w-full">
                           {subCollections.length > 0 ? (
@@ -141,6 +137,7 @@ const CollectionsListTemplate = (props) => {
                               minCoords={minCoords}
                               maxCoords={maxCoords}
                               subCollections={subCollections}
+                              tracksCount={tracksCount}
                             />
                           ) : (
                             <QueryClientProvider client={queryClient}>
@@ -149,10 +146,17 @@ const CollectionsListTemplate = (props) => {
                                 geoJson={geoJson}
                                 minCoords={minCoords}
                                 maxCoords={maxCoords}
+                                tracksCount={tracksCount}
                               />
                             </QueryClientProvider>
                           )}
                         </div>
+                      </Tab.Panel>
+                      <Tab.Panel>
+                        <Tracks tracks={tracks} className="p-4 lg:w-1/2" />
+                      </Tab.Panel>
+                      <Tab.Panel>
+                        <TrackTable tracks={tracks} />
                       </Tab.Panel>
                     </Tab.Panels>
                   </Tab.Group>
@@ -167,13 +171,12 @@ const CollectionsListTemplate = (props) => {
                             name: collectionName, 
                             staticImage,
                             image,
-                            tracks,
                             collectionType,
+                            tracks,
                             private: privateCollection,
                           } = collectionItem;
                           const { slug } = collectionType;
-                          const tracksCount = tracks.length;
-                          return privateCollection === true ? null : <Teaser key={collectionId} id={collectionName} slug={`/${slug}/${slugify(collectionName)}`} title={`${collectionName} (${tracksCount})`} image={image} staticImage={staticImage} className="p-4 md:w-1/2 w-full" />
+                          return privateCollection === true ? null : <Teaser key={collectionId} id={collectionName} slug={`/${slug}/${slugify(collectionName)}`} title={`${collectionName} (${tracks.length})`} image={image} staticImage={staticImage} className="p-4 md:w-1/2 w-full" />
                         })}
                       </div>
                     </>

@@ -6,22 +6,22 @@ import { getBounds } from "geolib";
 
 import geoViewport from '@mapbox/geo-viewport';
 
-import { renderMetaData } from "../track" 
+import { renderMetaData, convertMetaData } from "../track" 
 import { getTracks } from "../geoJson"
 
 const assetBaseUrl = process.env.GATSBY_ASSET_BASE_URL
 
-export const addLayers = (map, geoJson, mapType) => {
+export const addLayers = (map, geoJson, mapType, mapSource) => {
   const tracks = getTracks(geoJson);
   if (tracks) {
     tracks.forEach((track) => {
       const source = `track-${track.properties.name}`;
-      addTrack(map, source, mapType);
+      addTrack(map, source, mapType, mapSource);
     })
     if (tracks.length > 1) {
       tracks.forEach((track) => {
         const source = `track-${track.properties.name}-point`;
-        addTrackPoint(map, source, mapType);
+        addTrackPoint(map, source, mapType, mapSource);
       })
     }
   }
@@ -99,6 +99,177 @@ export const addArea = (map, type, source) => {
         .setHTML(html)
         .addTo(map);
       }
+    });
+  }
+}
+
+export const addCluster = (map, mapSource) => {
+  if (map) {
+    const visibility = mapSource === 'cluster' ? 'visible' : 'none';
+    map.addLayer({
+      id: 'cluster',
+      type: 'circle',
+      source: 'cluster',
+      filter: ['has', 'point_count'],
+      paint: {
+        'circle-color': [
+          'step',
+          ['get', 'point_count'],
+          '#51bbd6',
+          15,
+          '#f1f075',
+          30,
+          '#f28cb1'
+        ],
+        'circle-radius': [
+          'step',
+          ['get', 'point_count'],
+          20,
+          15,
+          30,
+          30,
+          40
+        ]
+      },
+      layout: {
+        visibility,
+      },
+    });
+
+    map.addLayer({
+      id: 'cluster-count',
+      type: 'symbol',
+      source: 'cluster',
+      filter: ['has', 'point_count'],
+      layout: {
+        'text-field': '{point_count_abbreviated}',
+        'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
+        'text-size': 12,
+        visibility,
+      }
+    });
+        
+    map.addLayer({
+      id: 'unclustered-point-circle',
+      type: 'circle',
+      source: 'cluster',
+      filter: ['!', ['has', 'point_count']],
+      paint: {
+        'circle-color': '#fff',
+        'circle-radius': 10,
+        'circle-stroke-width': 2,
+        'circle-stroke-color': [
+          'get', 'color',
+        ],
+      },
+      layout: {
+        visibility,
+      },
+    });
+
+    map.addLayer({
+      id: 'unclustered-point',
+      type: 'symbol',
+      source: 'cluster',
+      filter: ['!', ['has', 'point_count']],
+      layout: {
+        'icon-image': 'bicycle-15',
+        'icon-allow-overlap': true,
+        visibility,
+      },
+    });
+
+    map.on('click', 'cluster', (e) => {
+      const features = map.queryRenderedFeatures(e.point, {
+        layers: ['cluster']
+      });
+      const clusterId = features[0].properties.cluster_id;
+      map.getSource('cluster').getClusterExpansionZoom(
+        clusterId,
+        (err, zoom) => {
+          if (err) return;         
+          map.easeTo({
+            center: features[0].geometry.coordinates,
+            zoom: zoom + 1,
+          });
+        }
+      );
+    });
+
+    // show tooltip for clusters
+    const tooltip = new mapboxgl.Popup({
+      closeButton: false,
+      closeOnClick: false,
+      anchor: 'left',
+      offset: 20,
+    })
+
+    map.on('mouseenter', 'cluster', ({ features: [feature] }) => {
+      map.getCanvas().style.cursor = 'pointer'
+
+      const clusterId = feature.properties.cluster_id
+
+      map
+        .getSource('cluster')
+        .getClusterLeaves(clusterId, Infinity, 0, (err, children) => {
+          if (err) return
+          let names = children
+            .slice(0, 6)
+            .map(({ properties }) => {
+              const { name, title } = properties;
+              const { distance, totalElevationGain, totalElevationLoss } = convertMetaData(properties);
+              const text = (
+                <span className="text-gray-500 inline-flex items-center lg:mr-auto md:mr-0 mr-auto leading-none text-sm py-1">
+                  {title || name}<br />({`${distance} | ${totalElevationGain} | ${totalElevationLoss}`})
+                </span>
+              );
+              return renderToString(text);
+            })
+            .join('<br/>')
+            if (children.length > 6) {
+              names += `<br/>and ${children.length - 6} more...`
+            }
+          tooltip
+            .setLngLat(feature.geometry.coordinates)
+            .setHTML(names)
+            .addTo(map)
+        })
+    })
+
+    map.on('mouseleave', 'cluster', () => {
+      map.getCanvas().style.cursor = '';
+      tooltip.remove();
+    });
+
+    map.on('click', 'unclustered-point', (e) => {
+      const track = {
+        properties: e.features[0].properties,
+        geometry: e.features[0].geometry,
+      };
+      const name = track.properties.name;
+      setTrackVisibility(map, name, 'visible');
+      const bounds = JSON.parse(track.properties.bounds);
+      const { width, height } = map._canvas;
+      const { center, zoom } = geoViewport.viewport([
+        bounds.minLng,
+        bounds.minLat,
+        bounds.maxLng,
+        bounds.maxLat,
+      ], [width, height]);
+      unselectAllTracks(map);
+      selectTrack(map, name, name);
+      map.flyTo({
+        center,
+        zoom: zoom - 2,
+      });
+    });
+
+    map.on('mouseenter', 'unclustered-point', () => {
+      map.getCanvas().style.cursor = 'pointer';
+    });
+
+    map.on('mouseleave', 'unclustered-point', () => {
+      map.getCanvas().style.cursor = '';
     });
   }
 }
@@ -183,8 +354,9 @@ export const addSymbol = (map, type, source) => {
   }
 }
 
-export const addTrack = (map, source, mapType) => {
+export const addTrack = (map, source, mapType, mapSource) => {
   if (map) {
+    const visibility = mapSource === 'track' ? 'visible' : 'none';
     if (mapType === 'collection') {
       map.addLayer({
         id: `${source}-border`,
@@ -193,7 +365,7 @@ export const addTrack = (map, source, mapType) => {
         layout: {
           'line-join': 'round',
           'line-cap': 'round',
-          visibility: 'visible',
+          visibility,
         },
         paint: {
           'line-width': [
@@ -213,7 +385,7 @@ export const addTrack = (map, source, mapType) => {
       layout: {
         'line-join': 'round',
         'line-cap': 'round',
-        visibility: 'visible',
+        visibility,
       },
       paint: {
         'line-width': 3,
@@ -223,8 +395,9 @@ export const addTrack = (map, source, mapType) => {
   }
 }
 
-export const addTrackPoint = (map, source, mapType) => {
+export const addTrackPoint = (map, source, mapType, mapSource) => {
   if (map) {
+    const visibility = mapSource === 'track' ? 'visible' : 'none';
     map.addLayer({
       id: `${source}-circle`,
       type: 'circle',
@@ -238,7 +411,7 @@ export const addTrackPoint = (map, source, mapType) => {
         ],
       },
       layout: {
-        visibility: 'visible',
+        visibility,
       },
     });
     map.addLayer({
@@ -248,7 +421,7 @@ export const addTrackPoint = (map, source, mapType) => {
       layout: {
         'icon-image': 'bicycle-15',
         'icon-allow-overlap': true,
-        visibility: 'visible',
+        visibility,
       },
     });
 
@@ -334,6 +507,13 @@ export const setTrackVisibility = (map, track, visibility) => {
   map.setLayoutProperty(`track-${track}-border`, 'visibility', visibility);
   map.setLayoutProperty(`track-${track}-point`, 'visibility', visibility);
   map.setLayoutProperty(`track-${track}-point-circle`, 'visibility', visibility);
+}
+
+export const setClusterVisibility = (map, visibility) => {
+  map.setLayoutProperty('cluster', 'visibility', visibility);
+  map.setLayoutProperty('cluster-count', 'visibility', visibility);
+  map.setLayoutProperty('unclustered-point', 'visibility', visibility);
+  map.setLayoutProperty('unclustered-point-circle', 'visibility', visibility);
 }
 
 export const flyTo = (map, track) => {

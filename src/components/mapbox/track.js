@@ -56,11 +56,11 @@ const Mapbox = data => {
           promoteId: 'name',
         });
       });
-      mapboxHelpers.layer.addLayers(map.current, geoJsonData, 'track');
+      mapboxHelpers.layer.addLayers(map.current, geoJsonData, 'track', 'track');
       mapboxHelpers.chart.addChartPoints(map.current);
     });
     map.current.once('style.load', () => {
-      mapboxHelpers.control.addControls(map.current, geoJsonData, minCoords, maxCoords, layers, 'track');
+      mapboxHelpers.control.addControls(map.current, geoJsonData, minCoords, maxCoords, layers, 'track', 'track');
     });
   });
 

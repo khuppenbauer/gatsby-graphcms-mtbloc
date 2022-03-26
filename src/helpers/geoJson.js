@@ -1,5 +1,31 @@
+import { getBounds } from "geolib";
+
 export const getTracks = (geoJson) => {
   return geoJson.features.filter((feature) => feature.geometry.type === 'LineString');
+}
+
+export const getTrackPoints = (geoJson) => {
+  const features = geoJson.features
+    .filter((feature) => feature.geometry.type === 'LineString')
+    .map((track) => {
+      const { geometry, properties } = track;
+      const index = Math.round(geometry.coordinates.length / 2);
+      return {
+        type: 'Feature',
+        properties: {
+          ...properties,
+          bounds: getBounds(geometry.coordinates),
+        },
+        geometry: {
+          type: 'Point',
+          coordinates: geometry.coordinates[index],
+        },
+      }
+    });
+  return {
+    type: 'FeatureCollection',
+    features
+  };
 }
 
 export const getRegions = (geoJson) => {
