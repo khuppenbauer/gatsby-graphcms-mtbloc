@@ -19,7 +19,7 @@ const InputColumnFilter = ({
       onChange={e => {
         setFilter(e.target.value || undefined)
       }}
-      className="rounded-md text-xs px-3 py-2 border bg-gray-800 border-gray-500 placeholder-gray-500 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10"
+      className="rounded-md text-xs px-3 py-2 border bg-gray-800 border-gray-500 placeholder-gray-500 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 w-32"
       placeholder={`Suche ${count} Touren...`}
     />
   )
@@ -60,12 +60,22 @@ const fuzzyTextFilterFn = (rows, id, filterValue) => {
 
 fuzzyTextFilterFn.autoRemove = val => !val
 
-const TrackTable = ({ tracks }) => {
+const TrackTable = ({ tracks, subCollections }) => {
   let hasFitness = false;
   let hasExperience = false;
   let hasDifficulty = false;
+  let hasCollection = false;
+  if (tracks.length === 0 && subCollections.length > 0) {
+    hasCollection = true;
+    subCollections.forEach((collectionItem) => {
+    collectionItem.tracks.forEach((track) => {
+      tracks.push({...track, collection: collectionItem.name});
+    })
+  })
+  }
   const tableRows = tracks.map((track) => {
     const {
+      collection,
       title,
       slug,
       totalElevationGain,
@@ -87,6 +97,7 @@ const TrackTable = ({ tracks }) => {
     const distance = convert(track.distance).from("m").toBest();
     const link = <Link to={`/tracks/${slug}`} className="text-blue-400"><ArrowUpRight className="h-5 w-5" /></Link>;
     return {
+      collection,
       link,
       title,
       distance: new Intl.NumberFormat("en-US").format(distance.val.toFixed(2)),
@@ -113,6 +124,12 @@ const TrackTable = ({ tracks }) => {
 
   const columns = React.useMemo(
     () => [
+      {
+        Header: 'Sammlung',
+        accessor: 'collection',
+        Filter: InputColumnFilter,
+        filter: 'fuzzyText',
+      },
       {
         Header: '',
         accessor: 'link',
@@ -182,7 +199,8 @@ const TrackTable = ({ tracks }) => {
                 const { id } = column;
                 if ((id === 'difficulty' && !hasDifficulty) ||
                 (id === 'fitness' && !hasFitness) ||
-                (id === 'experience' && !hasExperience)) {
+                (id === 'experience' && !hasExperience) || 
+                (id === 'collection' && !hasCollection)) {
                   return null;
                 }
                 return (
@@ -223,7 +241,8 @@ const TrackTable = ({ tracks }) => {
                   const { id } = cell.column;
                   if ((id === 'difficulty' && !hasDifficulty) ||
                   (id === 'fitness' && !hasFitness) ||
-                  (id === 'experience' && !hasExperience)) {
+                  (id === 'experience' && !hasExperience) ||
+                  (id === 'collection' && !hasCollection)) {
                     return null;
                   }
                   return (

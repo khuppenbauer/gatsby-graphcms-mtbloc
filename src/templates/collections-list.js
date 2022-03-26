@@ -90,114 +90,115 @@ const CollectionsListTemplate = (props) => {
   const staticImageUrl = staticImage ? `${assetBaseUrl}/${staticImage.handle}` : '';
   const buttonClass = 'relative inline-flex items-center px-2 py-2 border-gray-800 text-sm font-medium text-gray-400 hover:bg-gray-800';
   const tracksCount = tracks.length;
+  const headline = tracksCount > 0 ? 'Touren' : 'Sammlungen';
+  const width = tracksCount > 0 ? 'lg:w-2/3' : 'w-full';
   return (
     <Layout>
       <Seo title={name} image={staticImageUrl} noIndex={privateCollection} />
       <section className="text-gray-400 bg-gray-900 body-font">
         <div className="container lg:flex lg:flex-wrap px-5 py-5 mx-auto">
-          <div className="lg:w-2/3 lg:pr-6 lg:border-r lg:border-b-0 lg:mb-0 mb-10 pb-10 border-b border-gray-800">
+          <div className={`${width} lg:pr-6 lg:border-r lg:border-b-0 lg:mb-0 mb-10 pb-10 border-b border-gray-800`}>
             {geoJson && minCoords && maxCoords ? (
               <>
                 <Header title={name} description={description} />
-                {tracks.length > 0 ? (
-                  <Tab.Group>
-                    <div className="flex justify-between">
-                      <Headline title="Touren" />
-                      <Tab.List>
-                        <Tab
-                          className={({ selected }) =>
-                            selected ? `bg-gray-800 ${buttonClass}` : `border ${buttonClass}`
-                          }
-                        >
-                          <Map className="h-5 w-5" />
-                        </Tab>                        
-                        <Tab
-                          className={({ selected }) =>
-                            selected ? `bg-gray-800 ${buttonClass}` : `border ${buttonClass}`
-                          }
-                        >
-                          <Grid className="h-5 w-5" />
-                        </Tab>
-                        <Tab
-                          className={({ selected }) =>
-                            selected ? `bg-gray-800 ${buttonClass}` : `border ${buttonClass}`
-                          }
-                        >
-                          <Menu className="h-5 w-5" />
-                        </Tab>
-                      </Tab.List>
-                    </div>
-                    <Tab.Panels>
-                      <Tab.Panel>
-                        <div className="mb-10 w-full">
-                          {subCollections.length > 0 ? (
+                <Tab.Group>
+                  <div className="flex justify-between">
+                    <Headline title={headline} />
+                    <Tab.List>
+                      <Tab
+                        className={({ selected }) =>
+                          selected ? `bg-gray-800 ${buttonClass}` : `border ${buttonClass}`
+                        }
+                      >
+                        <Map className="h-5 w-5" />
+                      </Tab>                        
+                      <Tab
+                        className={({ selected }) =>
+                          selected ? `bg-gray-800 ${buttonClass}` : `border ${buttonClass}`
+                        }
+                      >
+                        <Grid className="h-5 w-5" />
+                      </Tab>
+                      <Tab
+                        className={({ selected }) =>
+                          selected ? `bg-gray-800 ${buttonClass}` : `border ${buttonClass}`
+                        }
+                      >
+                        <Menu className="h-5 w-5" />
+                      </Tab>
+                    </Tab.List>
+                  </div>
+                  <Tab.Panels>
+                    <Tab.Panel>
+                      <div className="mb-10 w-full">
+                        {subCollections.length > 0 ? (
                             <Mapbox
+                            id={id}
+                            data={geoJson}
+                            minCoords={minCoords}
+                            maxCoords={maxCoords}
+                            subCollections={subCollections}
+                            tracksCount={tracksCount}
+                          />
+                        ) : (
+                          <QueryClientProvider client={queryClient}>
+                            <FeatureMap
                               id={id}
-                              data={geoJson}
+                              geoJson={geoJson}
                               minCoords={minCoords}
                               maxCoords={maxCoords}
-                              subCollections={subCollections}
                               tracksCount={tracksCount}
                             />
-                          ) : (
-                            <QueryClientProvider client={queryClient}>
-                              <FeatureMap
-                                id={id}
-                                geoJson={geoJson}
-                                minCoords={minCoords}
-                                maxCoords={maxCoords}
-                                tracksCount={tracksCount}
-                              />
-                            </QueryClientProvider>
-                          )}
-                        </div>
-                      </Tab.Panel>
-                      <Tab.Panel>
-                        <Tracks tracks={tracks} className="p-4 lg:w-1/2" />
-                      </Tab.Panel>
-                      <Tab.Panel>
-                        <TrackTable tracks={tracks} />
-                      </Tab.Panel>
-                    </Tab.Panels>
-                  </Tab.Group>
-                ) : (
-                  subCollections.length > 0 ? (
-                    <>
-                      <Headline title="Sammlungen" />
-                      <div className="flex flex-wrap -m-4 mb-10">
-                        {subCollections.map(collectionItem => {
-                          const { 
-                            id: collectionId, 
-                            name: collectionName, 
-                            staticImage,
-                            image,
-                            collectionType,
-                            tracks,
-                            private: privateCollection,
-                          } = collectionItem;
-                          const { slug } = collectionType;
-                          return privateCollection === true ? null : <Teaser key={collectionId} id={collectionName} slug={`/${slug}/${slugify(collectionName)}`} title={`${collectionName} (${tracks.length})`} image={image} staticImage={staticImage} className="p-4 md:w-1/2 w-full" />
-                        })}
+                          </QueryClientProvider>
+                        )}
                       </div>
-                    </>
-                  ) : null
-                )}
+                    </Tab.Panel>
+                    <Tab.Panel>
+                      {tracksCount > 0 ? (
+                        <Tracks tracks={tracks} className="p-4 lg:w-1/2" />
+                      ) : (
+                        subCollections.length > 0 ? (
+                          <div className="flex flex-wrap -m-4 mb-10">
+                            {subCollections.map(collectionItem => {
+                              const { 
+                                id: collectionId, 
+                                name: collectionName, 
+                                staticImage,
+                                image,
+                                tracks,
+                                collectionType,
+                              } = collectionItem;
+                              const { slug } = collectionType;
+                              const tracksCount = tracks.length;
+                              return <Teaser key={collectionId} id={collectionName} slug={`/${slug}/${slugify(collectionName)}`} title={`${collectionName} (${tracksCount})`} image={image} staticImage={staticImage} className="p-4 md:w-1/3 w-full" />
+                            })}
+                          </div>
+                        ) : null
+                      )}
+                    </Tab.Panel>
+                    <Tab.Panel>
+                      <TrackTable tracks={tracks} subCollections={subCollections} />
+                    </Tab.Panel>
+                  </Tab.Panels>
+                </Tab.Group>               
               </>
             ) :
               <Tracks name={name} description={description} tracks={tracks} className="p-4 lg:w-1/2" />
             }
           </div>
-          <div className="lg:flex lg:flex-col lg:w-1/3 lg:pl-6">
-            <QueryClientProvider client={queryClient}>
-              <FeatureTeaser
-                id={id}
-                minCoords={minCoords}
-                maxCoords={maxCoords}
-                tracks={tracks}
-                teaser={teaser}
-              />
-            </QueryClientProvider>
-          </div>
+          {tracksCount > 0 ? (
+            <div className="lg:flex lg:flex-col lg:w-1/3 lg:pl-6">
+              <QueryClientProvider client={queryClient}>
+                <FeatureTeaser
+                  id={id}
+                  minCoords={minCoords}
+                  maxCoords={maxCoords}
+                  tracks={tracks}
+                  teaser={teaser}
+                />
+              </QueryClientProvider>
+            </div>
+          ) : null}
         </div>
       </section>
     </Layout>

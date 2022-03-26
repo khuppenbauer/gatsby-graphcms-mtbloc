@@ -64,6 +64,16 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
               name
               tracks {
                 id
+                gatsbyPath(filePath: "/tracks/{graphCmsTrack.slug}")
+                distance
+                title
+                slug
+                startCity
+                totalElevationGain
+                totalElevationLoss
+                difficulty
+                fitness
+                experience
               }
               image {
                 id
