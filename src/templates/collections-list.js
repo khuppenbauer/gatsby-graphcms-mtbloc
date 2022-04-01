@@ -40,7 +40,7 @@ const FeatureTeaser = ({
 };
 
 const FeatureMap = ({ 
-  id, geoJson, minCoords, maxCoords, tracksCount,
+  id, geoJson, minCoords, maxCoords, tracksCount, colorScheme,
 }) => {
   const { status, data } = useAlgoliaLayers(id, minCoords, maxCoords);
   if (status === 'success') {
@@ -54,6 +54,7 @@ const FeatureMap = ({
         maxCoords={maxCoords}
         layers={layers}
         tracksCount={tracksCount}
+        colorScheme={colorScheme}
       />
     );
   }
@@ -64,8 +65,9 @@ const CollectionsListTemplate = (props) => {
   const { pageContext } = props
   const { 
     id, name, description, tracks, geoJson, minCoords, maxCoords, 
-    staticImage, subCollections, teaser, privateCollection,
+    staticImage, subCollections, privateCollection, collectionType,
   } = pageContext;
+  const { colorScheme, teaser, name: collectionTypeName, slug: collectionTypeSlug } = collectionType;
   geoJson.features.map((geoJsonFeature) => {
     const { geometry, properties } = geoJsonFeature;
     const { type, coordinates } = geometry;
@@ -92,6 +94,11 @@ const CollectionsListTemplate = (props) => {
   const tracksCount = tracks.length;
   const headline = tracksCount > 0 ? 'Touren' : 'Sammlungen';
   const width = tracksCount > 0 ? 'lg:w-2/3' : 'w-full';
+  const additionLink = {
+    to: `/${collectionTypeSlug}`,
+    title: collectionTypeName,
+  };
+
   return (
     <Layout>
       <Seo title={name} image={staticImageUrl} noIndex={privateCollection} />
@@ -100,7 +107,7 @@ const CollectionsListTemplate = (props) => {
           <div className={`${width} lg:pr-6 lg:border-r lg:border-b-0 lg:mb-0 mb-10 pb-10 border-b border-gray-800`}>
             {geoJson && minCoords && maxCoords ? (
               <>
-                <Header title={name} description={description} />
+                <Header title={name} description={description} additionalLink={additionLink} />
                 <Tab.Group>
                   <div className="flex justify-between">
                     <Headline title={headline} />
@@ -132,13 +139,14 @@ const CollectionsListTemplate = (props) => {
                     <Tab.Panel>
                       <div className="mb-10 w-full">
                         {subCollections.length > 0 ? (
-                            <Mapbox
+                          <Mapbox
                             id={id}
                             data={geoJson}
                             minCoords={minCoords}
                             maxCoords={maxCoords}
                             subCollections={subCollections}
                             tracksCount={tracksCount}
+                            colorScheme={colorScheme}
                           />
                         ) : (
                           <QueryClientProvider client={queryClient}>
@@ -148,6 +156,7 @@ const CollectionsListTemplate = (props) => {
                               minCoords={minCoords}
                               maxCoords={maxCoords}
                               tracksCount={tracksCount}
+                              colorScheme={colorScheme}
                             />
                           </QueryClientProvider>
                         )}
@@ -166,9 +175,8 @@ const CollectionsListTemplate = (props) => {
                                 staticImage,
                                 image,
                                 tracks,
-                                collectionType,
                               } = collectionItem;
-                              const { slug } = collectionType;
+                              const { slug } = collectionItem.collectionType;
                               const tracksCount = tracks.length;
                               return <Teaser key={collectionId} id={collectionName} slug={`/${slug}/${slugify(collectionName)}`} title={`${collectionName} (${tracksCount})`} image={image} staticImage={staticImage} className="p-4 md:w-1/3 w-full" />
                             })}

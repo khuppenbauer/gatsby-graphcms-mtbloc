@@ -24,6 +24,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
               slug
               mapLayer
               teaser
+              colorScheme
             }
             tracks {
               id
@@ -139,8 +140,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
         staticImage,
         subCollections,
         privateCollection,
-        mapLayer: collectionType.mapLayer,
-        teaser: collectionType.teaser,
+        collectionType,
       },
     })
   })

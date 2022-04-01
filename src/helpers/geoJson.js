@@ -1,7 +1,9 @@
 import { getBounds } from "geolib";
 
 export const getTracks = (geoJson) => {
-  return geoJson.features.filter((feature) => feature.geometry.type === 'LineString');
+  return geoJson.features
+    .filter((feature) => feature.geometry.type === 'LineString')
+    .sort((a, b) => (a.properties.title > b.properties.title) ? 1 : -1);
 }
 
 export const getTrackPoints = (geoJson) => {

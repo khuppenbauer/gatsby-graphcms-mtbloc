@@ -5,6 +5,7 @@ import "mapbox-gl/dist/mapbox-gl.css"
 
 import mapboxHelpers from "../../helpers/mapbox"
 import { getTracks, getTrackPoints, getRegions } from "../../helpers/geoJson"
+import { colorbrewer } from "../../config/colorbrewer"
 
 mapboxgl.workerClass = require("worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker").default
 
@@ -24,12 +25,35 @@ const addRegionSource = (map, geoJsonData) => {
   }
 }
 
-const addTrackSource = (map, geoJsonData) => {
+const addTrackSource = (map, geoJsonData, colorScheme) => {
   const trackFeatures = getTracks(geoJsonData);
-  trackFeatures.forEach((feature) => {
+  const tracksCount = trackFeatures.length;
+  const colors = [];
+  const colorSchemes = colorScheme.map((colorSchemeItem) => {
+    return colorbrewer[colorSchemeItem];
+  });
+  colorScheme.forEach((colorSchemeItem, index) => {
+    const colorBrewerScheme = colorbrewer[colorSchemeItem];
+    Object.values(colorBrewerScheme).forEach((item) => {
+      if (index > 0) {
+        let i = 0;
+        let arr = [];
+        while (i < index) {
+          const schemeIndex = Object.keys(colorSchemes[i]).length;
+          arr = arr.concat(colorSchemes[i][schemeIndex]);
+          i++;
+        }
+        colors.push([...new Set([...arr,...item])]);
+      } else {
+        colors.push(item);
+      }
+    });
+  });
+  trackFeatures.forEach((feature, index) => {
     const { properties, geometry } = feature;
+    feature.properties.color = colors[tracksCount][index];
     const id = `track-${properties.name}`;
-    const index = Math.round(geometry.coordinates.length / 2);
+    const center = Math.round(geometry.coordinates.length / 2);
     map.addSource(id, {
       type: 'geojson',
       data: feature,
@@ -47,7 +71,7 @@ const addTrackSource = (map, geoJsonData) => {
         properties: feature.properties,
         geometry: {
           type: "Point",
-          coordinates: geometry.coordinates[index],
+          coordinates: geometry.coordinates[center],
         },
       },
       promoteId: 'name',
@@ -67,7 +91,7 @@ const addClusterSource = (map, geoJsonData) => {
 }
 
 const Mapbox = data => {
-  const { data: geoJson, url, minCoords, maxCoords, layers, subCollections, tracksCount } = data
+  const { data: geoJson, url, minCoords, maxCoords, layers, subCollections, tracksCount, colorScheme } = data
   const geoJsonData = geoJson ? geoJson : url;
   const mapContainer = useRef(null)
   const map = useRef(null)
@@ -89,7 +113,7 @@ const Mapbox = data => {
         if (tracksCount > 10) {
           mapSource = 'cluster';
         }
-        addTrackSource(map.current, geoJsonData);
+        addTrackSource(map.current, geoJsonData, colorScheme);
         addClusterSource(map.current, geoJsonData);
         mapboxHelpers.layer.addCluster(map.current, mapSource);
       }

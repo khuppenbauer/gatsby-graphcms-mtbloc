@@ -188,15 +188,14 @@ class Plugin {
 
   onAdd(map) {
     const { tracks } = this;
-    const trackItems = tracks.sort((a, b) => (a.properties.name > b.properties.name) ? 1 : -1)
     this.map = map;
     this.container = document.createElement('div');
     this.container.classList.add('mapboxgl-ctrl');
     this.container.classList.add('mapboxgl-ctrl-group');
     this.container.style.float = 'none !important';
     this.container.style.cursor = 'pointer';
-    if (trackItems.length > 1) {
-      render(<TrackSelector map={map} tracks={trackItems} />, this.container);
+    if (tracks.length > 1) {
+      render(<TrackSelector map={map} tracks={tracks} />, this.container);
     }
     return this.container;
   }
