@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useContext } from "react"
 import turf from "turf"
+import { colorbrewer } from "../../config/colorbrewer"
 
 import mapboxgl from "mapbox-gl"
 import "mapbox-gl/dist/mapbox-gl.css"
@@ -12,6 +13,7 @@ import { TrackContext } from "../mapChart"
 mapboxgl.workerClass = require("worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker").default
 
 const mapboxToken = process.env.GATSBY_MAPBOX_ACCESS_TOKEN
+const colorScheme = 'Set1_9';
 
 const Mapbox = data => {
   const { state } = useContext(TrackContext);
@@ -34,10 +36,12 @@ const Mapbox = data => {
     });
     map.current.on('style.load', () => {
       const trackFeatures = getTracks(geoJsonData);
-      trackFeatures.forEach((feature) => {
+      const tracksCount = trackFeatures.length;
+      trackFeatures.forEach((feature, index) => {
+        feature.properties.color = colorbrewer[colorScheme][tracksCount][index]
         const { properties, geometry } = feature;
         const id = `track-${properties.name}`;
-        const index = Math.round(geometry.coordinates.length / 2);
+        const center = Math.round(geometry.coordinates.length / 2);
         map.current.addSource(id, {
           type: 'geojson',
           data: feature,
@@ -50,7 +54,7 @@ const Mapbox = data => {
             properties: feature.properties,
             geometry: {
               type: "Point",
-              coordinates: geometry.coordinates[index],
+              coordinates: geometry.coordinates[center],
             },
           },
           promoteId: 'name',
