@@ -1,6 +1,11 @@
 import React from "react"
 import { graphql } from "gatsby"
-import { Play, Square, ArrowUpRight, ArrowDownRight, ArrowRight, ChevronUp, ChevronDown, Download } from "react-feather"
+import { 
+  Play, Square, 
+  ArrowUpRight, ArrowDownRight, ArrowRight, 
+  ChevronUp, ChevronDown, Download,
+  ArrowRightCircle, ArrowUpCircle, ArrowDownCircle,
+} from "react-feather"
 import slugify from '@sindresorhus/slugify';
 import { QueryClient, QueryClientProvider } from "react-query";
 
@@ -152,15 +157,12 @@ const Infos = ({ track }) => {
     endCity,
     endState,
     endCountry,
-  } = track;
-
-  const { 
     distance,
     totalElevationGain,
     totalElevationLoss,
     elevLow,
     elevHigh,
-  } = convertMetaData(track);
+  } = track;
 
   return (
     <>
@@ -240,6 +242,12 @@ const TrackPage = ({ data: { track } }) => {
     maxCoords,
     photos,
     previewImageUrl,
+    startCity,
+    startState,
+    startCountry,
+    endCity,
+    endState,
+    endCountry,
   } = track
   const assets = [];
   const features = photos.map((photo) => {
@@ -276,6 +284,29 @@ const TrackPage = ({ data: { track } }) => {
   if (features) {
     geoJson.features.push(...features);
   }
+
+  const { 
+    distance,
+    totalElevationGain,
+    totalElevationLoss,
+    elevLow,
+    elevHigh,
+  } = convertMetaData(track);
+
+  const trackInfo = {
+    startCity,
+    startState,
+    startCountry,
+    endCity,
+    endState,
+    endCountry,
+    distance,
+    totalElevationGain,
+    totalElevationLoss,
+    elevLow,
+    elevHigh,
+  };
+
   return (
     <Layout>
       <Seo title={title} image={previewImageUrl} noIndex={track.private} />
@@ -283,6 +314,20 @@ const TrackPage = ({ data: { track } }) => {
         <div className="container lg:flex lg:flex-wrap px-5 py-5 mx-auto">
           <div className="lg:w-2/3 lg:pr-6 lg:border-r lg:border-b-0 lg:mb-0 mb-10 pb-10 border-b border-gray-800">       
             <Header title={title} />
+            <div className="flex mb-4 -mt-4">
+              <span className="text-gray-500 inline-flex items-center lg:mr-2 md:mr-0 mr-2 leading-none py-1">
+                <ArrowRightCircle className="w-4 h-4 mr-1" />
+                {distance}
+              </span>
+              <span className="text-gray-500 inline-flex items-center lg:mr-2 md:mr-0 mr-2 leading-none py-1">
+                <ArrowUpCircle className="w-4 h-4 mr-1" />
+                {totalElevationGain}
+              </span>
+              <span className="text-gray-500 inline-flex items-center lg:mr-2 md:mr-0 mr-2 leading-none py-1">
+                <ArrowDownCircle className="w-4 h-4 mr-1" />
+                {totalElevationLoss}
+              </span>
+            </div>
             <QueryClientProvider client={queryClient}>
               <FeatureMap
                 id={id}
@@ -293,7 +338,7 @@ const TrackPage = ({ data: { track } }) => {
               />
             </QueryClientProvider>
             <Assets assets={assets} />
-            <Infos track={track} />
+            <Infos track={trackInfo} />
             { downloadGpx === false ? null : <Downloads gpxFileUrl={gpxFileUrl} gpxFileSmallUrl={gpxFileSmallUrl} /> }
             <Collections collections={collection} />
           </div>
