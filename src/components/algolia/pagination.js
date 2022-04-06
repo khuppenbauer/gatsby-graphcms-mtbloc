@@ -6,7 +6,7 @@ import {
 
 const pagination = connectPagination((Pagination) => {
   const { currentRefinement: currentPage, nbPages: numPages, refine, createURL } = Pagination;
-  const previous = currentPage > 2 ? currentPage - 1 : ""
+  const previous = currentPage > 2 ? currentPage - 1 : 1
   const next = currentPage < numPages ? currentPage + 1 : numPages
   let paginationLength = 7
   let startPage = currentPage - 3
