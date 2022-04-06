@@ -72,7 +72,7 @@ const getTrackItems = (data, tracks) => data
 
 const getImageItems = (data, images = []) => data
   .filter(item => {
-    const existingImages = images.filter(image => image.fileName === item.name);
+    const existingImages = images.filter(image => image.title === item.name);
     return item.type === 'image' && existingImages.length === 0
   })
   .map(imageItem => {

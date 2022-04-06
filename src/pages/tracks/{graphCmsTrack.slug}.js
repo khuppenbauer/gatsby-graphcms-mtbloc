@@ -22,7 +22,7 @@ const queryClient = new QueryClient();
 const teaser = ['map', 'book', 'track', 'image'];
 
 const FeatureTeaser = ({ 
-  id, minCoords, maxCoords, tracks,
+  id, minCoords, maxCoords, tracks, images,
 }) => {
   const { status, data } = useAlgoliaFeatures(id, minCoords, maxCoords, teaser);
   if (status === 'success') {
@@ -31,7 +31,7 @@ const FeatureTeaser = ({
       const items = hits.filter((feature) => feature.type === item);
       if (items.length > 0) {
         return (
-          <Features key={item} type={item} data={items} tracks={tracks} />
+          <Features key={item} type={item} data={items} tracks={tracks} images={images} />
         );
       } else {
         return null;
@@ -304,6 +304,7 @@ const TrackPage = ({ data: { track } }) => {
                 minCoords={minCoords} 
                 maxCoords={maxCoords}
                 tracks={[track]}
+                images={assets}
               />
             </QueryClientProvider>
           </div>
