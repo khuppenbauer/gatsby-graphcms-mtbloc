@@ -19,6 +19,8 @@ const Mapbox = data => {
   const { state } = useContext(TrackContext);
 
   const { data: geoJson, url, minCoords, maxCoords, layers } = data
+  const width = data.width || '100%';
+  const height = data.height || '50vH'
   const geoJsonData = geoJson ? geoJson : url;
 
   const mapContainer = useRef(null)
@@ -78,7 +80,7 @@ const Mapbox = data => {
     }
   });
 
-  return <div ref={mapContainer} style={{ height: "50vH", width: "100%" }} />;
+  return <div ref={mapContainer} style={{ height, width }} />;
 }
 
 export default Mapbox

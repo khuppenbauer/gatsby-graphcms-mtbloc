@@ -8,6 +8,7 @@ import {
 } from "react-feather"
 import slugify from '@sindresorhus/slugify';
 import { QueryClient, QueryClientProvider } from "react-query";
+import { useLocation } from "@reach/router"
 
 import Layout from "../../components/layout"
 import Seo from "../../components/seo"
@@ -47,7 +48,7 @@ const FeatureTeaser = ({
 };
 
 const FeatureMap = ({ 
-  id, minCoords, maxCoords, geoJson, distance,
+  id, minCoords, maxCoords, geoJson, distance, width, height
 }) => {
   const { status, data } = useAlgoliaLayers(id, minCoords, maxCoords);
   if (status === 'success') {
@@ -61,6 +62,8 @@ const FeatureMap = ({
         maxCoords={maxCoords}
         distance={distance}
         layers={layers}
+        width={width}
+        height={height}
       />
     );
   }
@@ -307,6 +310,23 @@ const TrackPage = ({ data: { track } }) => {
     elevHigh,
   };
 
+  const location = useLocation();
+  const { hash } = location;
+  if (hash && hash === '#map') {
+    return (
+      <QueryClientProvider client={queryClient}>
+        <FeatureMap
+          id={id}
+          minCoords={minCoords}
+          maxCoords={maxCoords}
+          geoJson={geoJson}
+          distance={track.distance}
+          width="100%"
+          height="70vH"
+        />
+      </QueryClientProvider>
+    );
+  }
   return (
     <Layout>
       <Seo title={title} image={previewImageUrl} noIndex={track.private} />
@@ -335,6 +355,8 @@ const TrackPage = ({ data: { track } }) => {
                 maxCoords={maxCoords}
                 geoJson={geoJson}
                 distance={track.distance}
+                width="100%"
+                height="50vH"
               />
             </QueryClientProvider>
             <Assets assets={assets} />

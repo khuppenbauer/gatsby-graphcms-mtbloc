@@ -3,6 +3,7 @@ import slugify from '@sindresorhus/slugify';
 import { QueryClient, QueryClientProvider } from "react-query";
 import { Tab } from '@headlessui/react'
 import { Grid, Map, Menu } from 'react-feather';
+import { useLocation } from "@reach/router"
 
 import Layout from "../components/layout"
 import Seo from "../components/seo"
@@ -40,7 +41,7 @@ const FeatureTeaser = ({
 };
 
 const FeatureMap = ({ 
-  id, geoJson, minCoords, maxCoords, tracksCount, colorScheme,
+  id, geoJson, minCoords, maxCoords, tracksCount, colorScheme, width, height,
 }) => {
   const { status, data } = useAlgoliaLayers(id, minCoords, maxCoords);
   if (status === 'success') {
@@ -55,6 +56,8 @@ const FeatureMap = ({
         layers={layers}
         tracksCount={tracksCount}
         colorScheme={colorScheme}
+        width={width}
+        height={height}
       />
     );
   }
@@ -99,6 +102,38 @@ const CollectionsListTemplate = (props) => {
     title: collectionTypeName,
   };
 
+  const location = useLocation();
+  const { hash } = location;
+  if (hash && hash === '#map') {
+    return (
+      subCollections.length > 0 ? (
+        <Mapbox
+          id={id}
+          data={geoJson}
+          minCoords={minCoords}
+          maxCoords={maxCoords}
+          subCollections={subCollections}
+          tracksCount={tracksCount}
+          colorScheme={colorScheme}
+          width="100%"
+          height="100vH"
+        />
+      ) : (
+        <QueryClientProvider client={queryClient}>
+          <FeatureMap
+            id={id}
+            geoJson={geoJson}
+            minCoords={minCoords}
+            maxCoords={maxCoords}
+            tracksCount={tracksCount}
+            colorScheme={colorScheme}
+            width="100%"
+            height="100vH"
+          />
+        </QueryClientProvider>
+      )
+    )
+  }
   return (
     <Layout>
       <Seo title={name} image={staticImageUrl} noIndex={privateCollection} />
@@ -147,6 +182,8 @@ const CollectionsListTemplate = (props) => {
                             subCollections={subCollections}
                             tracksCount={tracksCount}
                             colorScheme={colorScheme}
+                            width="100%"
+                            height="50vH"
                           />
                         ) : (
                           <QueryClientProvider client={queryClient}>
@@ -157,6 +194,8 @@ const CollectionsListTemplate = (props) => {
                               maxCoords={maxCoords}
                               tracksCount={tracksCount}
                               colorScheme={colorScheme}
+                              width="100%"
+                              height="50vH"
                             />
                           </QueryClientProvider>
                         )}

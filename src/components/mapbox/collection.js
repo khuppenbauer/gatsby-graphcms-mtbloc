@@ -91,7 +91,9 @@ const addClusterSource = (map, geoJsonData) => {
 }
 
 const Mapbox = data => {
-  const { data: geoJson, url, minCoords, maxCoords, layers, subCollections, tracksCount, colorScheme } = data
+  const { 
+    data: geoJson, url, minCoords, maxCoords, layers, subCollections, tracksCount, colorScheme, width, height,
+  } = data
   const geoJsonData = geoJson ? geoJson : url;
   const mapContainer = useRef(null)
   const map = useRef(null)
@@ -126,7 +128,7 @@ const Mapbox = data => {
     }
   });
 
-  return <div ref={mapContainer} style={{ height: "50vH", width: "100%" }} />;
+  return <div ref={mapContainer} style={{ height, width }} />;
 }
 
 export default Mapbox
