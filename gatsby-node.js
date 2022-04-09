@@ -19,7 +19,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
               markdown
               html
             }
-            collectionType {
+            collectionTypes {
               name
               slug
               mapLayer
@@ -84,7 +84,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
                 id
                 handle
               }
-              collectionType {
+              collectionTypes {
                 id
                 name
                 slug
@@ -123,25 +123,27 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
 
   result.data.allGraphCmsCollection.nodes.forEach(node => {
     const { 
-      id, name, collectionType, description, tracks, geoJson, minCoords, maxCoords, staticImage, subCollections, private: privateCollection 
+      id, name, collectionTypes, description, tracks, geoJson, minCoords, maxCoords, staticImage, subCollections, private: privateCollection 
     } = node;
-    const slug = `${collectionType.slug}/${slugify(name)}`
-    createPage({
-      path: slug,
-      component: path.resolve("./src/templates/collections-list.js"),
-      context: { 
-        id,
-        name,
-        description,
-        tracks,
-        geoJson,
-        minCoords,
-        maxCoords,
-        staticImage,
-        subCollections,
-        privateCollection,
-        collectionType,
-      },
+    collectionTypes.forEach((collectionType) => {
+      const slug = `${collectionType.slug}/${slugify(name)}`
+      createPage({
+        path: slug,
+        component: path.resolve("./src/templates/collections-list.js"),
+        context: { 
+          id,
+          name,
+          description,
+          tracks,
+          geoJson,
+          minCoords,
+          maxCoords,
+          staticImage,
+          subCollections,
+          privateCollection,
+          collectionType,
+        },
+      })
     })
   })
 }
