@@ -95,29 +95,31 @@ const Collections = ({collections}) => (
             staticImage,
             image,
             tracks,
-            collectionType,
+            collectionTypes,
             subCollection,
           } = collectionItem;
-          const { slug } = collectionType;
-          const tracksCount = tracks.length;
-          const subCollectionTeaser = subCollection && subCollection.length > 0 && subCollection.map((subCollectionItem) => {
-            const {
-              id: subCollectionId,
-              name: subCollectionName,
-              staticImage: subCollectionStaticImage,
-              image: subCollectionImage,
-            } = subCollectionItem;
-            const subCollectionSlug = `/${subCollectionItem.collectionType.slug}/${subCollectionItem.slug}`;
+          return collectionTypes.map((collectionType) => {
+            const { id: collectionTypeId, slug } = collectionType;
+            const tracksCount = tracks.length;
+            const subCollectionTeaser = subCollection && subCollection.length > 0 && subCollection.map((subCollectionItem) => {
+              const {
+                id: subCollectionId,
+                name: subCollectionName,
+                staticImage: subCollectionStaticImage,
+                image: subCollectionImage,
+              } = subCollectionItem;
+              const subCollectionSlug = `/${subCollectionItem.collectionType.slug}/${subCollectionItem.slug}`;
+              return (
+                <Teaser key={subCollectionId} id={subCollectionName} slug={subCollectionSlug} title={subCollectionName} subtitle={subCollectionItem.collectionType.name} image={subCollectionImage} staticImage={subCollectionStaticImage} className="p-4 md:w-1/2 w-full" />
+              );
+            });
             return (
-              <Teaser key={subCollectionId} id={subCollectionName} slug={subCollectionSlug} title={subCollectionName} subtitle={subCollectionItem.collectionType.name} image={subCollectionImage} staticImage={subCollectionStaticImage} className="p-4 md:w-1/2 w-full" />
-            );
+              <React.Fragment key={`${collectionId}-${collectionTypeId}`}>
+                {subCollectionTeaser}
+                <Teaser key={collectionId} id={collectionName} slug={`/${slug}/${slugify(collectionName)}`} title={`${collectionName} (${tracksCount})`} subtitle={collectionType.name} image={image} staticImage={staticImage} className="p-4 md:w-1/2 w-full" />
+              </React.Fragment>
+            )
           });
-          return (
-            <React.Fragment key={`t-${collectionId}`}>
-              {subCollectionTeaser}
-              <Teaser key={collectionId} id={collectionName} slug={`/${slug}/${slugify(collectionName)}`} title={`${collectionName} (${tracksCount})`} subtitle={collectionType.name} image={image} staticImage={staticImage} className="p-4 md:w-1/2 w-full" />
-            </React.Fragment>
-          )
         })}
       </div>
     </>
@@ -413,7 +415,7 @@ export const pageQuery = graphql`
           id
           handle
         }
-        collectionType {
+        collectionTypes {
           id
           name
           slug
@@ -422,7 +424,7 @@ export const pageQuery = graphql`
           id
           name
           slug
-          collectionType {
+          collectionTypes {
             name
             slug
             id
