@@ -64,11 +64,26 @@ const TrackList = ({ map, tracks }) => {
 }
 
 const TrackSelector = ({ map, tracks }) => {
-  const [checkedAllState, setCheckedAllState] = useState(true);
-  const [checkedSomeState, setCheckedSomeState] = useState(false);
   const [checkedState, setCheckedState] = useState(
     new Array(tracks.length).fill(true)
   );
+
+  map.once('idle', () => {
+    const checked = tracks.map((track) => {
+      const name = track.properties.name;
+      const visibility = map.getLayoutProperty(
+        `track-${name}`,
+        'visibility'
+      );
+      return visibility !== 'none';
+    })
+    setCheckedState(checked);
+  });
+
+  const hasActiveState = checkedState.filter((item) => item === true);
+  const activeTracksCount = hasActiveState.length;
+  const checkedAllState = activeTracksCount > 0;
+  const checkedSomeState = activeTracksCount > 0 && activeTracksCount < tracks.length
 
   const handleSelectTrack = (track, index) => {
     if (!checkedState[index]) {
@@ -78,34 +93,12 @@ const TrackSelector = ({ map, tracks }) => {
   }
 
   const handleToggleTracks = (trackIndex) => {
-    const updatedCheckedState = checkedState.map((item, index) =>
-      index === trackIndex ? !item : item
-    );
-    setCheckedState(updatedCheckedState);
-
-    const hasActiveState = updatedCheckedState.filter((item) => item === true);
-    if (hasActiveState.length === 0) {
-      setCheckedAllState(false);
-    }
-    if (hasActiveState.length > 0) {
-      setCheckedAllState(true);
-    }
-    if (hasActiveState.length > 0 && hasActiveState.length < tracks.length) {
-      setCheckedSomeState(true);
-    } else {
-      setCheckedSomeState(false);
-    }
-
     const track = tracks[trackIndex].properties.name;
-    const visibility = updatedCheckedState[trackIndex] ? 'visible' : 'none';
+    const visibility = checkedState[trackIndex] ? 'none' : 'visible';
     setTrackVisibility(map, track, visibility);
   };
 
   const handleToggleAllTracks = () => {   
-    setCheckedAllState(!checkedAllState);
-    setCheckedState(new Array(tracks.length).fill(!checkedAllState));
-    setCheckedSomeState(false);
-
     tracks.forEach((trackItem) => {
       const track = trackItem.properties.name;
       const visibility = checkedAllState ? 'none' : 'visible';
