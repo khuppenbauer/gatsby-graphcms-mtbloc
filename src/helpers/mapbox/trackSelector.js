@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { render } from 'react-dom'
 
+import { convertMetaData } from '../track' 
 import { flyTo, unselectAllTracks, setTrackVisibility } from './layer'
 
 const Button = () => {
@@ -132,6 +133,7 @@ const TrackSelector = ({ map, tracks }) => {
             const { properties } = track;
             const { name, title, color } = properties;
             const trackName = `track-${properties.name}`;
+            const { distance, totalElevationGain, totalElevationLoss } = convertMetaData(properties);
             return (
               <div key={name} className="flex items-start">
                 <div className="flex items-center h-5">
@@ -153,7 +155,7 @@ const TrackSelector = ({ map, tracks }) => {
                     onKeyDown={() => handleSelectTrack(track, index)}
                     style={{ width: '100%', height: '100%', textAlign: 'left', borderLeft: `10px solid ${color}`, margin: '2px 0px', paddingLeft: '10px' }}
                   >
-                    {title || name}
+                    {title || name}<br />({`${distance} | ${totalElevationGain} | ${totalElevationLoss}`})
                   </button>
                 </div>
               </div>
