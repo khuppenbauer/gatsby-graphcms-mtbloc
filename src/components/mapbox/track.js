@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useContext } from "react"
-import turf from "turf"
+import { point } from '@turf/helpers'
 import { colorbrewer } from "../../config/colorbrewer"
 
 import mapboxgl from "mapbox-gl"
@@ -72,11 +72,11 @@ const Mapbox = data => {
 
   useEffect(() => {
     if (!map.current) return; // wait for map to initialize
-    const { point } = state;
-    if (point.length > 0) {
+    const { point: mapPoint } = state;
+    if (mapPoint.length > 0) {
       map.current
         .getSource("chart-point-source")
-        .setData(turf.point(point));
+        .setData(point(mapPoint));
     }
   });
 

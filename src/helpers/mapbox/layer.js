@@ -532,6 +532,6 @@ export const flyTo = (map, track) => {
   selectTrack(map, name, name);
   map.flyTo({
     center,
-    zoom: zoom - 1,
+    zoom: zoom - 2,
   });
 }

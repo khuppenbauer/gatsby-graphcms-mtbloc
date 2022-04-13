@@ -1,5 +1,8 @@
 import React, { useState } from 'react'
 import { render } from 'react-dom'
+import { points } from '@turf/helpers'
+import bboxPolygon from '@turf/bbox-polygon'
+import pointsWithinPolygon from '@turf/points-within-polygon'
 
 import { convertMetaData } from '../track' 
 import { flyTo, unselectAllTracks, setTrackVisibility } from './layer'
@@ -65,49 +68,64 @@ const TrackList = ({ map, tracks }) => {
 }
 
 const TrackSelector = ({ map, tracks }) => {
-  const [checkedState, setCheckedState] = useState(
-    new Array(tracks.length).fill(true)
-  );
+  const [trigger, setTrigger] = useState(Date.now());
 
   map.once('idle', () => {
-    const checked = tracks.map((track) => {
-      const name = track.properties.name;
-      const visibility = map.getLayoutProperty(
-        `track-${name}`,
-        'visibility'
-      );
-      return visibility !== 'none';
-    })
-    setCheckedState(checked);
+    const date = Date.now();
+    if (date > trigger) {
+      setTrigger(date);
+    }
   });
 
-  const hasActiveState = checkedState.filter((item) => item === true);
+  const bounds = map.getBounds();
+  const {_sw, _ne } = bounds;
+  const bbox = bboxPolygon([_sw.lng, _sw.lat, _ne.lng, _ne.lat]);
+
+  const activeTracks = tracks.map((track) => {
+    const { geometry, properties } = track;
+    const { name } = properties;
+    const trackPoints = points(geometry.coordinates);
+    const tracksWithinBounds = pointsWithinPolygon(trackPoints, bbox);
+    const visibility = map.getLayoutProperty(
+      `track-${name}`,
+      'visibility'
+    );
+    track.properties = {
+      ...properties,
+      enabled: tracksWithinBounds.features.length > 10,
+      visibility: visibility !== 'none',
+    };
+    return track;
+  })
+
+  const hasActiveState = activeTracks.filter((item) => item.properties.visibility === true);
   const activeTracksCount = hasActiveState.length;
   const checkedAllState = activeTracksCount > 0;
-  const checkedSomeState = activeTracksCount > 0 && activeTracksCount < tracks.length
+  const checkedSomeState = activeTracksCount > 0 && activeTracksCount < activeTracks.length
 
   const handleSelectTrack = (track, index) => {
-    if (!checkedState[index]) {
+    if (!activeTracks[index].properties.visibility) {
       handleToggleTracks(index);
     }
     flyTo(map, track);
   }
 
   const handleToggleTracks = (trackIndex) => {
-    const track = tracks[trackIndex].properties.name;
-    const visibility = checkedState[trackIndex] ? 'none' : 'visible';
-    setTrackVisibility(map, track, visibility);
+    const { properties } = activeTracks[trackIndex];
+    const { name, visibility } = properties;
+    const trackVisibility = visibility ? 'none' : 'visible';
+    setTrackVisibility(map, name, trackVisibility);
   };
 
   const handleToggleAllTracks = () => {   
-    tracks.forEach((trackItem) => {
+    activeTracks.forEach((trackItem) => {
       const track = trackItem.properties.name;
       const visibility = checkedAllState ? 'none' : 'visible';
       setTrackVisibility(map, track, visibility);
     });
   };
 
-  const trackItems = tracks ? (
+  const trackItems = activeTracks ? (
     <div className="bg-white space-y-6">
       <fieldset>
         <div className="mt-1">
@@ -129,11 +147,12 @@ const TrackSelector = ({ map, tracks }) => {
               </label>
             </div>
           </div>
-          {tracks && tracks.map((track, index) => {
+          {activeTracks && activeTracks.map((track, index) => {
             const { properties } = track;
-            const { name, title, color } = properties;
+            const { name, title, color, visibility, enabled } = properties;
             const trackName = `track-${properties.name}`;
             const { distance, totalElevationGain, totalElevationLoss } = convertMetaData(properties);
+            const borderColor = enabled ? '' : 'rgb(156, 163, 175)';
             return (
               <div key={name} className="flex items-start">
                 <div className="flex items-center h-5">
@@ -142,15 +161,17 @@ const TrackSelector = ({ map, tracks }) => {
                     name={trackName}
                     value={trackName}
                     type="checkbox"
-                    className="h-4 w-4 border-gray-300 rounded"
-                    checked={checkedState[index]}
+                    className="h-4 w-4 rounded"
+                    checked={visibility}
+                    disabled={!enabled}
+                    style={{ borderColor }}
                     onChange={() => handleToggleTracks(index)}
                   />
                 </div>
                 <div className="ml-2 text-xs">
                   <button
                     href="#"
-                    className="text-blue-500"
+                    className={`${enabled ? "text-blue-500" : "text-gray-200"}`}
                     onClick={() => handleSelectTrack(track, index)}
                     onKeyDown={() => handleSelectTrack(track, index)}
                     style={{ width: '100%', height: '100%', textAlign: 'left', borderLeft: `10px solid ${color}`, margin: '2px 0px', paddingLeft: '10px' }}
