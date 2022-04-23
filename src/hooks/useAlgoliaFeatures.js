@@ -20,7 +20,7 @@ const getFeatures = async (minCoords, maxCoords, facets) => {
       facets,
       "meta.private:-true",
     ],
-    hitsPerPage: 1000,
+    hitsPerPage: 10000,
   }
   const body = {
     index: "feature",

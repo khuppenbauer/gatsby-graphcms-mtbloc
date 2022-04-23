@@ -9,6 +9,9 @@ const currentRefinements = connectCurrentRefinements((CurrentRefinements) => {
         <div className="my-2">
           {items.map((item) => {
             const { currentRefinement, value } = item;
+            if (typeof currentRefinement === 'object') {
+              return null;
+            }  
             const label = currentRefinement.split('>').pop().trim();
             return (
               <span key={value} className="rounded-sm py-1 px-2 text-xs font-medium text-white bg-blue-500">

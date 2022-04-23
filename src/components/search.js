@@ -4,21 +4,24 @@ import {
   InstantSearch,
   Configure,
 } from "react-instantsearch-dom"
+import { Tab } from '@headlessui/react'
+import { Grid, Map, Menu } from 'react-feather';
 
 import CustomRadius from "./algolia/aroundRadius"
 import CustomCurrentRefinements from "./algolia/currentRefinement"
 import CustomHierarchicalMenu from "./algolia/hierarchicalMenu"
-import CustomHits from "./algolia/hits"
+import CustomGrid from "./algolia/grid"
+import CustomList from "./algolia/list"
 import CustomPagination from "./algolia/pagination"
 import CustomPlaces from "./algolia/places"
-import CustomPoweredBy from "./algolia/poweredBy"
 import CustomStats from "./algolia/stats"
 import CustomSortBy from "./algolia/sortBy"
+import CustomMap from "./algolia/map"
 
-import Header from "../views/header"
 import Headline from "../views/headline"
 
 const indexName = "tracks";
+const hitsPerPage = 100;
 
 const Search = () => {
   const searchClient = useMemo(
@@ -29,7 +32,7 @@ const Search = () => {
       ),
     []
   )
-
+  const buttonClass = 'relative inline-flex items-center px-2 py-2 border-gray-800 text-sm font-medium text-gray-400 hover:bg-gray-800';
   return (
     <section className="text-gray-400 body-font bg-gray-900">
       <div className="container md:flex md:flex-wrap px-5 py-5 mx-auto">
@@ -47,42 +50,121 @@ const Search = () => {
             />        	
           </div>
           <div className="md:flex md:flex-col md:w-3/4 md:pl-12">
-            <Header title="Suche" />
+            <Headline title="Suche" />
             <CustomPlaces />
-            <div className="flex flex-wrap">
-              <div className="w:1/5">
-                <CustomStats />
+            <Tab.Group>
+              <div className="pt-5">
+                <Tab.List>
+                  <Tab
+                    className={({ selected }) =>
+                      selected ? `bg-gray-800 ${buttonClass}` : `border ${buttonClass}`
+                    }
+                  >
+                    <Grid className="h-5 w-5" />
+                  </Tab>
+                  <Tab
+                    className={({ selected }) =>
+                      selected ? `bg-gray-800 ${buttonClass}` : `border ${buttonClass}`
+                    }
+                  >
+                    <Menu className="h-5 w-5" />
+                  </Tab>
+                  <Tab
+                    className={({ selected }) =>
+                      selected ? `bg-gray-800 ${buttonClass}` : `border ${buttonClass}`
+                    }
+                  >
+                    <Map className="h-5 w-5" />
+                  </Tab>
+                </Tab.List>
               </div>
-              <div className="w:4/5">
-                <CustomRadius
-                  items={[
-                    { value: 1000, label: '1 km' },
-                    { value: 5000, label: '5 km' },
-                    { value: 10000, label: '10 km' },
-                    { value: 20000, label: '20 km' },
-                    { value: 50000, label: '50 km' },
-                  ]}
-                />
-              </div>
-            </div>
-            <CustomSortBy
-              defaultRefinement={indexName}
-              items={[
-                { value: `${indexName}`, label: 'Standard' },
-                { value: `${indexName}_title_asc`, label: 'Name', dir: 'asc' },
-                { value: `${indexName}_title_desc`, label: 'Name', dir: 'desc' },
-                { value: `${indexName}_distance_asc`, label: 'Länge', dir: 'asc' },
-                { value: `${indexName}_distance_desc`, label: 'Länge', dir: 'desc' },
-                { value: `${indexName}_elevation_asc`, label: 'Höhenmeter', dir: 'asc' },
-                { value: `${indexName}_elevation_desc`, label: 'Höhenmeter', dir: 'desc' },
+              <Tab.Panels>
+                <Tab.Panel>
+                  <div className="flex flex-wrap">
+                    <div className="w:1/5">
+                      <CustomStats />
+                    </div>
+                    <div className="w:4/5">
+                      <CustomRadius
+                        items={[
+                          { value: 1000, label: '1 km' },
+                          { value: 5000, label: '5 km' },
+                          { value: 10000, label: '10 km' },
+                          { value: 20000, label: '20 km' },
+                          { value: 50000, label: '50 km' },
+                        ]}
+                      />
+                    </div>
+                  </div>
+                  <CustomSortBy
+                    defaultRefinement={indexName}
+                    items={[
+                      { value: `${indexName}`, label: 'Standard' },
+                      { value: `${indexName}_title_asc`, label: 'Name', dir: 'asc' },
+                      { value: `${indexName}_title_desc`, label: 'Name', dir: 'desc' },
+                      { value: `${indexName}_distance_asc`, label: 'Länge', dir: 'asc' },
+                      { value: `${indexName}_distance_desc`, label: 'Länge', dir: 'desc' },
+                      { value: `${indexName}_elevation_asc`, label: 'Höhenmeter', dir: 'asc' },
+                      { value: `${indexName}_elevation_desc`, label: 'Höhenmeter', dir: 'desc' },
 
-              ]}
-            />
-            <CustomHits />
-            <CustomPagination />
-            <div className="bg-gray-900 px-4 py-3 md:flex md:flex-col items-center justify-between sm:px-6">
-              <CustomPoweredBy />
-            </div>
+                    ]}
+                  />
+                  <CustomGrid />
+                  <CustomPagination />
+                </Tab.Panel>
+                <Tab.Panel>
+                  <div className="flex flex-wrap">
+                    <div className="w:1/5">
+                      <CustomStats />
+                    </div>
+                    <div className="w:4/5">
+                      <CustomRadius
+                        items={[
+                          { value: 1000, label: '1 km' },
+                          { value: 5000, label: '5 km' },
+                          { value: 10000, label: '10 km' },
+                          { value: 20000, label: '20 km' },
+                          { value: 50000, label: '50 km' },
+                        ]}
+                      />
+                    </div>
+                  </div>
+                  <CustomSortBy
+                    defaultRefinement={indexName}
+                    items={[
+                      { value: `${indexName}`, label: 'Standard' },
+                      { value: `${indexName}_title_asc`, label: 'Name', dir: 'asc' },
+                      { value: `${indexName}_title_desc`, label: 'Name', dir: 'desc' },
+                      { value: `${indexName}_distance_asc`, label: 'Länge', dir: 'asc' },
+                      { value: `${indexName}_distance_desc`, label: 'Länge', dir: 'desc' },
+                      { value: `${indexName}_elevation_asc`, label: 'Höhenmeter', dir: 'asc' },
+                      { value: `${indexName}_elevation_desc`, label: 'Höhenmeter', dir: 'desc' },
+
+                    ]}
+                  />
+                  <CustomList />
+                  <CustomPagination />
+                </Tab.Panel>
+                <Tab.Panel>
+                  <div className="py-3 md:py-5">
+                    <div className="flex flex-wrap">
+                      <div className="w:4/5">
+                        <CustomRadius
+                          items={[
+                            { value: 1000, label: '1 km' },
+                            { value: 5000, label: '5 km' },
+                            { value: 10000, label: '10 km' },
+                            { value: 20000, label: '20 km' },
+                            { value: 50000, label: '50 km' },
+                          ]}
+                        />
+                      </div>
+                    </div>
+                    <CustomMap hitsPerPage={hitsPerPage} />
+                  </div>
+                </Tab.Panel>
+              </Tab.Panels>
+            </Tab.Group>
           </div>
         </InstantSearch>
       </div>

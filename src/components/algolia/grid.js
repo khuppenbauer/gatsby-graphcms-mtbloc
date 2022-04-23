@@ -3,7 +3,7 @@ import { connectHits } from 'react-instantsearch-dom';
 
 import Tracks from "../../views/tracks"
 
-const hits = connectHits((Hits) => {
+const grid = connectHits((Hits) => {
   const { hits } = Hits;
   const tracks = hits.map((hit) => {
     let geoDistance;
@@ -41,4 +41,4 @@ const hits = connectHits((Hits) => {
   )
 });
 
-export default hits;
+export default grid;
