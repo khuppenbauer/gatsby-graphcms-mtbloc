@@ -217,11 +217,9 @@ const CollectionsListTemplate = (props) => {
                                 tracks,
                                 collectionTypes,
                               } = collectionItem;
-                              return collectionTypes.map((collectionType) => {
-                                const { id: collectionTypeId, slug } = collectionType;
-                                const tracksCount = tracks.length;
-                                return <Teaser key={`${collectionTypeId}-${collectionId}`} id={collectionName} slug={`/${slug}/${collectionSlug ? collectionSlug : slugify(collectionName)}`} title={`${collectionName} (${tracksCount})`} image={image} staticImage={staticImage} className="p-4 md:w-1/3 w-full" />  
-                              })
+                              const { id: collectionTypeId, slug } = collectionTypes[0];
+                              const tracksCount = tracks.length;
+                              return <Teaser key={`${collectionTypeId}-${collectionId}`} id={collectionName} slug={`/${slug}/${collectionSlug ? collectionSlug : slugify(collectionName)}`} title={`${collectionName} (${tracksCount})`} image={image} staticImage={staticImage} className="p-4 md:w-1/3 w-full" />  
                             })}
                           </div>
                         ) : null
