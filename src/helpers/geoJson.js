@@ -31,7 +31,7 @@ export const getTrackPoints = (geoJson) => {
 }
 
 export const getRegions = (geoJson) => {
-  return geoJson.features.filter((feature) => feature.properties.type === 'regions');
+  return geoJson.features.filter((feature) => feature.geometry.type === 'Polygon');
 }
 
 export const getImages = (geoJson) => {
