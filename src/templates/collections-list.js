@@ -210,7 +210,8 @@ const CollectionsListTemplate = (props) => {
                             {subCollections.map(collectionItem => {
                               const { 
                                 id: collectionId, 
-                                name: collectionName, 
+                                name: collectionName,
+                                slug: collectionSlug,
                                 staticImage,
                                 image,
                                 tracks,
@@ -219,7 +220,7 @@ const CollectionsListTemplate = (props) => {
                               return collectionTypes.map((collectionType) => {
                                 const { id: collectionTypeId, slug } = collectionType;
                                 const tracksCount = tracks.length;
-                                return <Teaser key={`${collectionTypeId}-${collectionId}`} id={collectionName} slug={`/${slug}/${slugify(collectionName)}`} title={`${collectionName} (${tracksCount})`} image={image} staticImage={staticImage} className="p-4 md:w-1/3 w-full" />  
+                                return <Teaser key={`${collectionTypeId}-${collectionId}`} id={collectionName} slug={`/${slug}/${collectionSlug ? collectionSlug : slugify(collectionName)}`} title={`${collectionName} (${tracksCount})`} image={image} staticImage={staticImage} className="p-4 md:w-1/3 w-full" />  
                               })
                             })}
                           </div>

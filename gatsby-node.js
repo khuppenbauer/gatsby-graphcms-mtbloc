@@ -19,6 +19,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
               markdown
               html
             }
+            slug
             collectionTypes {
               name
               slug
@@ -63,6 +64,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
             subCollections {
               id
               name
+              slug
               tracks {
                 id
                 gatsbyPath(filePath: "/tracks/{graphCmsTrack.slug}")
@@ -123,12 +125,11 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
 
   result.data.allGraphCmsCollection.nodes.forEach(node => {
     const { 
-      id, name, collectionTypes, description, tracks, geoJson, minCoords, maxCoords, staticImage, subCollections, private: privateCollection 
+      id, name, collectionTypes, description, slug, tracks, geoJson, minCoords, maxCoords, staticImage, subCollections, private: privateCollection 
     } = node;
     collectionTypes.forEach((collectionType) => {
-      const slug = `${collectionType.slug}/${slugify(name)}`
       createPage({
-        path: slug,
+        path: `${collectionType.slug}/${slug ? slug : slugify(name)}`,
         component: path.resolve("./src/templates/collections-list.js"),
         context: { 
           id,

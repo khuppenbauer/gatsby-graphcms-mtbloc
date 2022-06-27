@@ -56,10 +56,10 @@ const CollectionTypePage = ({ data: { collectionType }}) => {
                 <Headline title={country} />
                 <div className="flex flex-wrap -m-4 mb-10">
                   {collections.map(collection => {
-                    const { id, name, tracks, image, staticImage } = collection
+                    const { id, name, slug: collectionSlug, tracks, image, staticImage } = collection
                     const tracksCount = tracks.length;
                     return tracksCount > 0 ? (
-                      <Teaser key={id} id={country} slug={`/${slug}/${slugify(name)}`} title={`${name} (${tracksCount})`} image={image} staticImage={staticImage} />
+                      <Teaser key={id} id={country} slug={`/${slug}/${collectionSlug ? collectionSlug : slugify(name)}`} title={`${name} (${tracksCount})`} image={image} staticImage={staticImage} />
                     ) : null
                   })}
                 </div>
@@ -70,9 +70,9 @@ const CollectionTypePage = ({ data: { collectionType }}) => {
           <div className="flex flex-wrap -m-4 mb-10">
             <>
               {collections.map(collection => {
-                const { id, name, image, staticImage } = collection
+                const { id, name, slug: collectionSlug, image, staticImage } = collection
                 return (
-                  <Teaser key={id} id={id} slug={`/${slug}/${slugify(name)}`} title={`${name}`} image={image} staticImage={staticImage} />
+                  <Teaser key={id} id={id} slug={`/${slug}/${collectionSlug ? collectionSlug : slugify(name)}`} title={`${name}`} image={image} staticImage={staticImage} />
                 )
               })}
             </>
@@ -91,6 +91,7 @@ export const pageQuery = graphql`
       collections {
         id
         name
+        slug
         private
         tracks {
           id
