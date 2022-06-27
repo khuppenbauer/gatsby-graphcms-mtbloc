@@ -65,7 +65,7 @@ const TrackTable = ({ tracks, subCollections }) => {
   let hasExperience = false;
   let hasDifficulty = false;
   let hasCollection = false;
-  if (tracks.length === 0 && subCollections.length > 0) {
+  if (subCollections.length > 0) {
     hasCollection = true;
     subCollections.forEach((collectionItem) => {
     collectionItem.tracks.forEach((track) => {
