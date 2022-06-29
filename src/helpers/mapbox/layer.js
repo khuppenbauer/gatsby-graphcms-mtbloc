@@ -70,33 +70,26 @@ export const addArea = (map, type, source) => {
     });
 
     map.on('click', `${type}-fill`, (e) => {
-      const { properties } = e.features[0];
       let html;
-      if (type === 'book') {
-        const {
-          title,
-          url,
-        } = properties;
-        html = `<a href="${url}" target="_blank">${title}</a>`;
-      }
-      if (type === 'map') {
-        const {
-          article,
-          name,
-          scale,
-          url,
-        } = properties;
-        html = `<a href="${url}" target="_blank">${article}<br />${name}<br />1:${scale}</a>`; 
-      }
-      if (type === 'regions') {
-        const { name } = properties;
-        const url = `/regions/${slugify(name)}`;
-        html = `<a href="${url}">${name}</a>`;
-      }
+      html = e.features.map((feature) => {
+        if (type === 'book') {
+          const { title, url } = feature.properties;
+          return `<li><a href="${url}" target="_blank">${title}</a></li>`;
+        }
+        if (type === 'map') {
+          const { article, name, scale, url } = feature.properties;
+          return `<li><a href="${url}" target="_blank">${article}<br />${name}<br />1:${scale}</a></li>`;
+        }
+        if (type === 'regions') {
+          const { name, slug } = feature.properties;
+          const url = slug ? slug : `/regions/${slugify(name)}`;
+          return `<li><a href="${url}">${name}</a></li>`;
+        }
+      })
       if (html) {
         new mapboxgl.Popup()
         .setLngLat(e.lngLat)
-        .setHTML(html)
+        .setHTML(`<ul>${html.join('<br />')}</ul>`)
         .addTo(map);
       }
     });

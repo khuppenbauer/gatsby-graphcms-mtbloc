@@ -1,4 +1,5 @@
 import { getBounds } from "geolib";
+import slugify from '@sindresorhus/slugify';
 
 export const getTracks = (geoJson) => {
   return geoJson.features
@@ -81,3 +82,62 @@ export const parseAlgoliaHits = (data, layer) => {
     features
   };
 };
+
+export const getCollectionsGeoJson = (collectionType) => {
+  const stroke = '#ff3300';
+  const strokeWidth = 2;
+  const fillOpacity = 0;
+  const coords = [];
+  const features = [];
+  const { slug, collections } = collectionType;
+  collections.forEach(collection => {
+    const { name: collectionName, slug: collectionSlug, minCoords, maxCoords } = collection;
+    const { latitude: minLat, longitude: minLng } = minCoords;
+    const { latitude: maxLat, longitude: maxLng } = maxCoords;
+    const feature = {
+      type: 'Feature',
+      properties: {
+        name: collectionName,
+        type: slug,
+        slug: `/${slug}/${collectionSlug ? collectionSlug : slugify(collectionName)}`,
+        color: stroke,
+        stroke,
+        'stroke-width': strokeWidth,
+        'fill-opacity': fillOpacity,
+      },
+      geometry: {
+        type: 'Polygon',
+        coordinates: [
+          [
+            [minLng, minLat],
+            [maxLng, minLat],
+            [maxLng, maxLat],
+            [minLng, maxLat],
+            [minLng, minLat],
+          ],
+        ],
+      },
+    };
+    coords.push(minCoords);
+    coords.push(maxCoords);
+    features.push(feature);
+  });
+  const geoJson = {
+    type: 'FeatureCollection',
+    features,
+  };
+  const { maxLat, maxLng, minLat, minLng } = getBounds(coords);
+  const minCoords = {
+    latitude: minLat,
+    longitude: minLng,
+  };
+  const maxCoords = {
+    latitude: maxLat,
+    longitude: maxLng,
+  };
+  return {
+    geoJson,
+    minCoords,
+    maxCoords,
+  };
+}

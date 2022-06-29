@@ -10,13 +10,6 @@ import { getTracks, getImages } from "../geoJson"
 export const addControls = (map, geoJson, minCoords, maxCoords, layers, type, mapSource) => {
   if (map) {
     let images = [];
-    if (type === 'collection') {
-      images = layers.filter((item) => item === 'image');
-    }
-    if (type === 'track') {
-      images = getImages(geoJson);
-    }
-    const mapLayers = layers.filter((item) => item !== 'image' && item !== 'track');
     map.addControl(new mapboxgl.NavigationControl(), 'top-right')
     map.addControl(new mapboxgl.GeolocateControl({
       positionOptions: {
@@ -26,6 +19,26 @@ export const addControls = (map, geoJson, minCoords, maxCoords, layers, type, ma
       showUserHeading: true
     }));
     map.addControl(new mapboxgl.FullscreenControl());
+    map.addControl(
+      new StyleSelector({
+        styles: [
+          'outdoors-v11',
+          'satellite-streets-v11'
+        ],
+      }),
+      'bottom-left'
+    );
+    if (!layers) {
+      return;
+    }
+    if (type === 'collection') {
+      images = layers.filter((item) => item === 'image');
+    }
+    if (type === 'track') {
+      images = getImages(geoJson);
+    }
+    const mapLayers = layers.filter((item) => item !== 'image' && item !== 'track');
+
     if (type === 'collection') {
       const types = mapSource === 'track' ? ['track', 'cluster'] : ['cluster', 'track'];
       map.addControl(
@@ -62,14 +75,5 @@ export const addControls = (map, geoJson, minCoords, maxCoords, layers, type, ma
         'top-left'
       );
     }
-    map.addControl(
-      new StyleSelector({
-        styles: [
-          'outdoors-v11',
-          'satellite-streets-v11'
-        ],
-      }),
-      'bottom-left'
-    );
   }
 };

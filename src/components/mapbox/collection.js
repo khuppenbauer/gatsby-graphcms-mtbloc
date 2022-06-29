@@ -121,11 +121,9 @@ const Mapbox = data => {
       }
       mapboxHelpers.layer.addLayers(map.current, geoJsonData, 'collection', mapSource);
     });
-    if (layers) {
-      map.current.once('style.load', () => {
-        mapboxHelpers.control.addControls(map.current, geoJsonData, minCoords, maxCoords, layers, 'collection', mapSource);
-      });
-    }
+    map.current.once('style.load', () => {
+      mapboxHelpers.control.addControls(map.current, geoJsonData, minCoords, maxCoords, layers, 'collection', mapSource);
+    });
   });
 
   return <div ref={mapContainer} style={{ height, width }} />;
