@@ -26,6 +26,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
               mapLayer
               teaser
               colorScheme
+              trackSorting
             }
             tracks {
               id

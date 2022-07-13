@@ -92,7 +92,7 @@ const addClusterSource = (map, geoJsonData) => {
 
 const Mapbox = data => {
   const { 
-    data: geoJson, url, minCoords, maxCoords, layers, subCollections, tracksCount, colorScheme, width, height,
+    data: geoJson, url, minCoords, maxCoords, layers, subCollections, tracksCount, colorScheme, trackSorting, width, height,
   } = data
   const geoJsonData = geoJson ? geoJson : url;
   const mapContainer = useRef(null)
@@ -122,7 +122,7 @@ const Mapbox = data => {
       mapboxHelpers.layer.addLayers(map.current, geoJsonData, 'collection', mapSource);
     });
     map.current.once('style.load', () => {
-      mapboxHelpers.control.addControls(map.current, geoJsonData, minCoords, maxCoords, layers, 'collection', mapSource);
+      mapboxHelpers.control.addControls(map.current, geoJsonData, minCoords, maxCoords, layers, 'collection', mapSource, trackSorting);
     });
   });
 

@@ -1,10 +1,14 @@
 import { getBounds } from "geolib";
 import slugify from '@sindresorhus/slugify';
 
-export const getTracks = (geoJson) => {
-  return geoJson.features
+export const getTracks = (geoJson, trackSorting) => {
+  const tracks = geoJson.features
     .filter((feature) => feature.geometry.type === 'LineString')
-    .sort((a, b) => (a.properties.title > b.properties.title) ? 1 : -1);
+  if (trackSorting) {
+    return tracks
+      .sort((a, b) => (a.properties[trackSorting] > b.properties[trackSorting]) ? 1 : -1);
+  }
+  return tracks;
 }
 
 export const getTrackPoints = (geoJson) => {

@@ -41,7 +41,7 @@ const FeatureTeaser = ({
 };
 
 const FeatureMap = ({ 
-  id, geoJson, minCoords, maxCoords, tracksCount, colorScheme, width, height,
+  id, geoJson, minCoords, maxCoords, tracksCount, colorScheme, trackSorting, width, height,
 }) => {
   const { status, data } = useAlgoliaLayers(id, minCoords, maxCoords);
   if (status === 'success') {
@@ -56,6 +56,7 @@ const FeatureMap = ({
         layers={layers}
         tracksCount={tracksCount}
         colorScheme={colorScheme}
+        trackSorting={trackSorting}
         width={width}
         height={height}
       />
@@ -70,7 +71,7 @@ const CollectionsListTemplate = (props) => {
     id, name, description, tracks, geoJson, minCoords, maxCoords, 
     staticImage, subCollections, privateCollection, collectionType,
   } = pageContext;
-  const { colorScheme, teaser, name: collectionTypeName, slug: collectionTypeSlug } = collectionType;
+  const { colorScheme, teaser, name: collectionTypeName, slug: collectionTypeSlug, trackSorting } = collectionType;
   geoJson.features.map((geoJsonFeature) => {
     const { geometry, properties } = geoJsonFeature;
     const { type, coordinates } = geometry;
@@ -115,6 +116,7 @@ const CollectionsListTemplate = (props) => {
           subCollections={subCollections}
           tracksCount={tracksCount}
           colorScheme={colorScheme}
+          trackSorting={trackSorting}
           width="100%"
           height="100vH"
         />
@@ -127,6 +129,7 @@ const CollectionsListTemplate = (props) => {
             maxCoords={maxCoords}
             tracksCount={tracksCount}
             colorScheme={colorScheme}
+            trackSorting={trackSorting}
             width="100%"
             height="100vH"
           />
@@ -182,6 +185,7 @@ const CollectionsListTemplate = (props) => {
                             subCollections={subCollections}
                             tracksCount={tracksCount}
                             colorScheme={colorScheme}
+                            trackSorting={trackSorting}
                             width="100%"
                             height="50vH"
                           />
@@ -194,6 +198,7 @@ const CollectionsListTemplate = (props) => {
                               maxCoords={maxCoords}
                               tracksCount={tracksCount}
                               colorScheme={colorScheme}
+                              trackSorting={trackSorting}
                               width="100%"
                               height="50vH"
                             />
