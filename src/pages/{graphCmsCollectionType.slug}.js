@@ -2,7 +2,7 @@ import * as React from "react"
 import { graphql } from "gatsby"
 import slugify from '@sindresorhus/slugify';
 import { Tab } from '@headlessui/react'
-import { Grid, Map, Menu } from 'react-feather';
+import { Grid, Map } from 'react-feather';
 
 import Layout from "../components/layout"
 import Seo from "../components/seo"

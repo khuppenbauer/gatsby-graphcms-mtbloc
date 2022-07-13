@@ -85,6 +85,7 @@ export const addArea = (map, type, source) => {
           const url = slug ? slug : `/regions/${slugify(name)}`;
           return `<li><a href="${url}">${name}</a></li>`;
         }
+        return null;
       })
       if (html) {
         new mapboxgl.Popup()
