@@ -241,6 +241,7 @@ const TrackPage = ({ data: { track } }) => {
   const {
     id,
     title,
+    description,
     collection,
     downloadGpx,
     gpxFileSmallUrl,
@@ -338,7 +339,7 @@ const TrackPage = ({ data: { track } }) => {
       <section className="text-gray-400 bg-gray-900 body-font">
         <div className="container lg:flex lg:flex-wrap px-5 py-5 mx-auto">
           <div className="lg:w-2/3 lg:pr-6 lg:border-r lg:border-b-0 lg:mb-0 mb-10 pb-10 border-b border-gray-800">       
-            <Header title={title} />
+            <Header title={title} description={description} />
             <div className="flex mb-4 -mt-4">
               <span className="text-gray-500 inline-flex items-center lg:mr-2 md:mr-0 mr-2 leading-none py-1">
                 <ArrowRightCircle className="w-4 h-4 mr-1" />
@@ -391,6 +392,10 @@ export const pageQuery = graphql`
     track: graphCmsTrack(slug: { eq: $slug }) {
       id
       name
+      description {
+        markdown
+        html
+      }
       title
       slug
       startCity
