@@ -14,6 +14,9 @@ const hits = connectHits((Hits) => {
       distance, totalElevationGain, totalElevationLoss, 
       previewImageUrl, overviewImageUrl,
     } = hit;
+    if (hit.private) {
+      return null;
+    }
     if (_rankingInfo && _rankingInfo.geoDistance) {
       geoDistance = _rankingInfo.geoDistance;
     }
