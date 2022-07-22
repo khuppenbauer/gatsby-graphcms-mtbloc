@@ -13,6 +13,10 @@
     "url": "https://github.com/khuppenbauer/gatsby-graphcms-mtbloc"
   },
   "dependencies": {
+    "@algolia/autocomplete-js": "^1.6.3",
+    "@algolia/autocomplete-plugin-query-suggestions": "^1.6.3",
+    "@algolia/autocomplete-plugin-recent-searches": "^1.7.1",
+    "@algolia/autocomplete-theme-classic": "^1.6.3",
     "@graphcms/react-image": "^1.0.1",
     "@headlessui/react": "^1.5.0",
     "@mapbox/geo-viewport": "^0.5.0",
@@ -50,6 +54,7 @@
     "places.js": "^1.19.0",
     "postcss-preset-env": "^7.2.3",
     "prop-types": "^15.8.1",
+    "qs": "^6.10.3",
     "react": "^17.0.1",
     "react-dom": "^17.0.2",
     "react-feather": "^2.0.9",

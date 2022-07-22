@@ -5,10 +5,13 @@ const connect = createConnector({
   displayName: 'Radius',
 
   getProvidedProps(props, searchState) {
-    const { aroundRadius, aroundLatLng } = searchState;
+    const { configure, aroundRadius } = searchState;
+    if (!configure) {
+      return null;
+    }
     const currentRefinement = {
       aroundRadius: aroundRadius || 5000,
-      aroundLatLng,
+      aroundLatLng: configure.aroundLatLng,
     };
     return { currentRefinement };
   },
@@ -35,10 +38,6 @@ const aroundRadius = connect((Radius) => {
   const { items, refine, createURL, currentRefinement } = Radius;
   const { aroundLatLng, aroundRadius } = currentRefinement;
   if (!aroundLatLng) {
-    return null;
-  }
-  const { lat, lng } = aroundLatLng;
-  if (!lat && !lng) {
     return null;
   }
   return (
