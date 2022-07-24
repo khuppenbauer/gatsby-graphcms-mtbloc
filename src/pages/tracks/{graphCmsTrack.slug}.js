@@ -7,7 +7,7 @@ import {
   ArrowRightCircle, ArrowUpCircle, ArrowDownCircle,
 } from "react-feather"
 import slugify from '@sindresorhus/slugify';
-import { QueryClient, QueryClientProvider } from "react-query";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useLocation } from "@reach/router"
 
 import Layout from "../../components/layout"

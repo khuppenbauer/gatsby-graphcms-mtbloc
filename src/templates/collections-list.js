@@ -1,6 +1,6 @@
 import * as React from "react"
 import slugify from '@sindresorhus/slugify';
-import { QueryClient, QueryClientProvider } from "react-query";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Tab } from '@headlessui/react'
 import { Grid, Map, Menu } from 'react-feather';
 import { useLocation } from "@reach/router"
