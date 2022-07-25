@@ -5,6 +5,7 @@ import {
   Configure,
 } from 'react-instantsearch-hooks-web';
 
+import CustomAutocomplete from "./algolia/autocomplete"
 import CustomCurrentRefinements from "./algolia/currentRefinement"
 import CustomHierarchicalMenu from "./algolia/hierarchicalMenu"
 import CustomHits from "./algolia/hits"
@@ -46,6 +47,13 @@ const Search = () => {
           </div>
           <div className="md:flex md:flex-col md:w-3/4 md:pl-12">
             <Header title="Suche" />
+            <CustomAutocomplete
+              searchClient={searchClient}
+              indexName={indexName}
+              placeholder="Search products"
+              detachedMediaQuery="none"
+              openOnFocus
+            />
             <div className="flex flex-wrap">
               <div className="w:1/5">
                 <CustomStats />
