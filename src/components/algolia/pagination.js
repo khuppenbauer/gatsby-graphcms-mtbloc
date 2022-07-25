@@ -1,11 +1,12 @@
 import { default as React } from "react"
-import { connectPagination } from 'react-instantsearch-dom';
+import { usePagination } from 'react-instantsearch-hooks-web';
 import { 
   ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight,
 } from "react-feather"
 
-const pagination = connectPagination((Pagination) => {
-  const { currentRefinement: currentPage, nbPages: numPages, refine, createURL } = Pagination;
+const Pagination = (props) => {
+  const {
+    currentRefinement: currentPage, nbPages: numPages, refine, createURL } = usePagination(props);
   const previous = currentPage > 2 ? currentPage - 1 : 1
   const next = currentPage < numPages ? currentPage + 1 : numPages
   let paginationLength = 7
@@ -48,15 +49,16 @@ const pagination = connectPagination((Pagination) => {
         </a>
         {Array.from({ length: paginationLength }, (_, i) => {
           const j = startPage + i
-          const active = j === currentPage ? "bg-gray-800" : ""
+          const page = j - 1;
+          const active = page === currentPage ? "bg-gray-800" : ""
           return (
             <a
               key={`pagination-number${j}`}
-              href={createURL(j)}
+              href={createURL(page)}
               className={`${active} relative inline-flex items-center px-2 py-2 border border-gray-800 text-sm font-medium text-gray-400 hover:bg-gray-800`}
               onClick={event => {
                 event.preventDefault();
-                refine(j);
+                refine(page);
               }}
             >
               {j}
@@ -88,6 +90,6 @@ const pagination = connectPagination((Pagination) => {
       </nav>
     </div>
   )
-});
+};
 
-export default pagination;
+export default Pagination;

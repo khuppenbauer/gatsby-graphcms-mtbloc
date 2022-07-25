@@ -1,10 +1,11 @@
 import { default as React } from "react"
-import { connectHits } from 'react-instantsearch-dom';
+import { useHits } from 'react-instantsearch-hooks-web';
 
 import Tracks from "../../views/tracks"
 
-const hits = connectHits((Hits) => {
-  const { hits } = Hits;
+
+const CustomHits = (props) => {
+  const { hits } = useHits(props);
   const tracks = hits.map((hit) => {
     let geoDistance;
     const { 
@@ -42,6 +43,6 @@ const hits = connectHits((Hits) => {
   return (
     <Tracks tracks={tracks} className="p-4 md:w-1/2" />
   )
-});
+}
 
-export default hits;
+export default CustomHits;

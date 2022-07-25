@@ -1,12 +1,14 @@
 import { default as React } from "react"
-import { connectHierarchicalMenu } from 'react-instantsearch-dom';
+import { useHierarchicalMenu } from 'react-instantsearch-hooks-web';
 
-const HierarchicalMenu = ({ items, refine, createURL, leaf }) => {
+const HierarchicalMenuItems = ({ 
+  items, refine, createURL, leaf 
+}) => {
   const className = leaf ? 'px-3' : '';
   return (
     <ul className={className}>
       {items.map((item) => {
-        const { label, value, isRefined, count, items } = item;
+        const { label, value, isRefined, count, data } = item;
         return (
           <li key={label}>
             <a
@@ -19,9 +21,9 @@ const HierarchicalMenu = ({ items, refine, createURL, leaf }) => {
             >
               {label} ({count})
             </a>
-            {items && (
-              <HierarchicalMenu
-                items={items}
+            {data && (
+              <HierarchicalMenuItems
+                items={data}
                 refine={refine}
                 createURL={createURL}
                 leaf="true"
@@ -34,6 +36,19 @@ const HierarchicalMenu = ({ items, refine, createURL, leaf }) => {
   )
 };
 
-const hierarchicalMenu = connectHierarchicalMenu(HierarchicalMenu);
+const HierarchicalMenu = (props) => {
+  const {
+    items,
+    refine,
+    createURL,
+  } = useHierarchicalMenu(props);
+  return (
+    <HierarchicalMenuItems 
+      items={items}
+      refine={refine}
+      createURL={createURL}
+    />
+  );
+}
 
-export default hierarchicalMenu;
+export default HierarchicalMenu;
