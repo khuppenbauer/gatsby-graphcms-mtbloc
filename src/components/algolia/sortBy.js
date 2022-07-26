@@ -1,5 +1,6 @@
 import { default as React } from "react"
 import { useSortBy } from 'react-instantsearch-hooks-web';
+import { useInstantSearch } from 'react-instantsearch-hooks';
 import { 
   ChevronDown, ChevronUp,
 } from "react-feather"
@@ -10,6 +11,12 @@ const SortBy = (props) => {
     options,
     refine,
   } = useSortBy(props);
+  const { results } = useInstantSearch()
+  const { _state } = results;
+  const { aroundLatLng } = _state;
+  if ((aroundLatLng && aroundLatLng !== "")) {
+    return null;
+  }
   return (
     <div className="bg-gray-900 pb-5 flex flex-col">
       <nav

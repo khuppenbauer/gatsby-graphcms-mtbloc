@@ -12,11 +12,14 @@ import { render } from 'react-dom';
 import {
   useSearchBox,
   usePagination,
+  useInstantSearch,
+  useSortBy,
 } from 'react-instantsearch-hooks';
 import { autocomplete } from '@algolia/autocomplete-js';
 import { createLocalStorageRecentSearchesPlugin } from '@algolia/autocomplete-plugin-recent-searches';
 import { debounce } from '@algolia/autocomplete-shared';
 
+import { createMapboxGeocodingPlugin } from './autocompletePlugins/mapboxGeocodingPlugin';
 import { createSuggestionsPlugin } from './autocompletePlugins/createSuggestionsPlugin';
 
 import '@algolia/autocomplete-theme-classic';
@@ -33,6 +36,8 @@ const Autocomplete = ({
 
   const { query, refine: setQuery } = useSearchBox();
   const { refine: setPage } = usePagination();
+  const { setIndexUiState } = useInstantSearch();
+  const { refine: setSortBy } = useSortBy({ items: []});
 
   const [
     instantSearchUiState,
@@ -46,7 +51,8 @@ const Autocomplete = ({
   useEffect(() => {
     setQuery(instantSearchUiState.query);
     setPage(0);
-  }, [instantSearchUiState, setQuery, setPage]);
+    setSortBy(indexName);
+  }, [instantSearchUiState, setQuery, setPage, setSortBy, indexName]);
 
   const plugins = useMemo(() => {
     const recentSearchesPlugin = createLocalStorageRecentSearchesPlugin({
@@ -59,10 +65,43 @@ const Autocomplete = ({
             setInstantSearchUiState({
               query: item.label,
             });
+            setIndexUiState((prevIndexUiState) => ({
+              ...prevIndexUiState,
+              configure: {
+                ...prevIndexUiState.configure,
+                aroundLatLng: '',
+              }
+            }));
           },
         };
       },
     });
+
+    const mapboxGeocodingPlugin = createMapboxGeocodingPlugin(
+      {
+        fuzzyMatch: true,
+        autocomplete: true,
+        types: ['postcode', 'place', 'poi', 'address'],
+        country: ['DE', 'AT', 'CH', 'IT', 'ES', 'FR', 'CZ'],
+        access_token: mapboxToken,
+      },
+      (item) => {
+        const { geometry } = item;
+        const { coordinates } = geometry;
+        setInstantSearchUiState({
+          query: '',
+        });
+        setIndexUiState((prevIndexUiState) => ({
+          ...prevIndexUiState,
+          configure: {
+            ...prevIndexUiState.configure,
+            aroundLatLng: `${coordinates[1]},${coordinates[0]}`,
+            aroundRadius: 5000,
+            getRankingInfo: true,
+          }
+        }));
+      },
+    );
 
     const querySuggestionsPlugin = createSuggestionsPlugin(
       searchClient,
@@ -71,9 +110,10 @@ const Autocomplete = ({
 
     return [
       recentSearchesPlugin,
+      mapboxGeocodingPlugin,
       querySuggestionsPlugin,
     ];
-  }, [searchClient, indexName]); 
+  }, [searchClient, indexName, setIndexUiState]); 
 
   useEffect(() => {
     if (!autocompleteContainer.current) {
@@ -87,9 +127,24 @@ const Autocomplete = ({
       plugins,
       onReset() {
         setInstantSearchUiState({ query: '' });
+        setIndexUiState((prevIndexUiState) => ({
+          ...prevIndexUiState,
+          configure: {
+            ...prevIndexUiState.configure,
+            aroundLatLng: '',
+          }
+        }));
+        
       },
       onSubmit({ state }) {
         setInstantSearchUiState({ query: state.query });
+        setIndexUiState((prevIndexUiState) => ({
+          ...prevIndexUiState,
+          configure: {
+            ...prevIndexUiState.configure,
+            aroundLatLng: '',
+          }
+        }));
       },
       onStateChange({ prevState, state }) {
         if (prevState.query !== state.query) {

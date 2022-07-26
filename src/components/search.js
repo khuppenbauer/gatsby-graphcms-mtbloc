@@ -6,6 +6,7 @@ import {
 } from 'react-instantsearch-hooks-web';
 
 import CustomAutocomplete from "./algolia/autocomplete"
+import CustomRadius from "./algolia/aroundRadius"
 import CustomCurrentRefinements from "./algolia/currentRefinement"
 import CustomHierarchicalMenu from "./algolia/hierarchicalMenu"
 import CustomHits from "./algolia/hits"
@@ -50,13 +51,24 @@ const Search = () => {
             <CustomAutocomplete
               searchClient={searchClient}
               indexName={indexName}
-              placeholder="Search products"
+              placeholder="Suche nach Ort, Plz oder Tour"
               detachedMediaQuery="none"
               openOnFocus
             />
             <div className="flex flex-wrap">
               <div className="w:1/5">
                 <CustomStats />
+              </div>
+              <div className="w:4/5">
+                <CustomRadius
+                  data={[
+                    { value: 1000, label: '1 km' },
+                    { value: 5000, label: '5 km' },
+                    { value: 10000, label: '10 km' },
+                    { value: 20000, label: '20 km' },
+                    { value: 50000, label: '50 km' },
+                  ]}
+                />
               </div>
             </div>
             <CustomSortBy
