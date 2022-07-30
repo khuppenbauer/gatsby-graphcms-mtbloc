@@ -3,12 +3,18 @@ import { useInstantSearch } from 'react-instantsearch-hooks';
 
 const AroundRadius = (props) => {
   const { setIndexUiState, results } = useInstantSearch()
+  if (!results) {
+    return <></>;
+  }
   const { _state } = results;
   const { aroundLatLng, aroundRadius } = _state;
   if ((!aroundLatLng || aroundLatLng === "")) {
-    return null;
+    return <></>;
   }
   const { data } = props;
+  if (!data) {
+    return <></>;
+  }
   return (
     <div className="bg-gray-900 pb-5 md:py-3 flex flex-col">
       <nav

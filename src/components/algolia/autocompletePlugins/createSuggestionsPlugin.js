@@ -35,7 +35,7 @@ const createSuggestionsPlugin = (
               <Link to={gatsbyPath}>
                 <div className="w-full">
                   <div className="flex">
-                    <div className="inline-flex items-center justify-center pr-8">
+                    <div className="inline-flex items-center justify-center pr-8 hidden md:block">
                       <img src={previewImageUrl} alt={title} width="120" height="90" />
                     </div>
                     <div>

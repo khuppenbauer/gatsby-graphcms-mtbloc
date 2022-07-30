@@ -12,6 +12,9 @@ const SortBy = (props) => {
     refine,
   } = useSortBy(props);
   const { results } = useInstantSearch()
+  if (!results) {
+    return null;
+  }
   const { _state } = results;
   const { aroundLatLng } = _state;
   if ((aroundLatLng && aroundLatLng !== "")) {

@@ -15,6 +15,7 @@ import {
   useInstantSearch,
   useSortBy,
 } from 'react-instantsearch-hooks';
+import { useClearRefinements } from 'react-instantsearch-hooks-web';
 import { autocomplete } from '@algolia/autocomplete-js';
 import { createLocalStorageRecentSearchesPlugin } from '@algolia/autocomplete-plugin-recent-searches';
 import { debounce } from '@algolia/autocomplete-shared';
@@ -37,6 +38,7 @@ const Autocomplete = ({
   const { query, refine: setQuery } = useSearchBox();
   const { refine: setPage } = usePagination();
   const { setIndexUiState } = useInstantSearch();
+  const { refine: clearRefinements } = useClearRefinements();
   const { refine: setSortBy } = useSortBy({ items: []});
 
   const [
@@ -52,7 +54,8 @@ const Autocomplete = ({
     setQuery(instantSearchUiState.query);
     setPage(0);
     setSortBy(indexName);
-  }, [instantSearchUiState, setQuery, setPage, setSortBy, indexName]);
+    clearRefinements();
+  }, [instantSearchUiState, setQuery, setPage, setSortBy, clearRefinements, indexName]);
 
   const plugins = useMemo(() => {
     const recentSearchesPlugin = createLocalStorageRecentSearchesPlugin({
