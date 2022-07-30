@@ -31,6 +31,7 @@ const Autocomplete = ({
   searchClient,
   className,
   indexName,
+  hitsPerPage,
   ...autocompleteProps
 }) => {
   const autocompleteContainer = useRef(null);
@@ -73,6 +74,7 @@ const Autocomplete = ({
               configure: {
                 ...prevIndexUiState.configure,
                 aroundLatLng: '',
+                hitsPerPage,
               }
             }));
           },
@@ -101,6 +103,7 @@ const Autocomplete = ({
             aroundLatLng: `${coordinates[1]},${coordinates[0]}`,
             aroundRadius: 5000,
             getRankingInfo: true,
+            hitsPerPage,
           }
         }));
       },
@@ -135,6 +138,7 @@ const Autocomplete = ({
           configure: {
             ...prevIndexUiState.configure,
             aroundLatLng: '',
+            hitsPerPage,
           }
         }));
         
@@ -146,6 +150,7 @@ const Autocomplete = ({
           configure: {
             ...prevIndexUiState.configure,
             aroundLatLng: '',
+            hitsPerPage,
           }
         }));
       },
