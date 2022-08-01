@@ -119,7 +119,7 @@ const Autocomplete = ({
       mapboxGeocodingPlugin,
       querySuggestionsPlugin,
     ];
-  }, [searchClient, indexName, setIndexUiState]); 
+  }, [searchClient, indexName, hitsPerPage, setIndexUiState]); 
 
   useEffect(() => {
     if (!autocompleteContainer.current) {

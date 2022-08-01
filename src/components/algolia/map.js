@@ -1,4 +1,4 @@
-import React, { useState, useReducer, createContext } from 'react';
+import React, { useReducer, createContext } from 'react';
 import update from 'immutability-helper'
 import { useConnector } from 'react-instantsearch-hooks-web';
 import { useInstantSearch } from 'react-instantsearch-hooks';
@@ -34,7 +34,7 @@ const parseHits = (hits) => {
   const coords = [];
   hits.forEach((hit) => {
     const { 
-      name, _geoloc,
+      name, _geoloc, title, slug, distance, totalElevationGain, totalElevationLoss,
     } = hit;
     const coordinates = _geoloc.map((coordinate) => {
       const { lat, lng } = coordinate;
@@ -43,15 +43,16 @@ const parseHits = (hits) => {
     features.push({
       type: 'Feature',
       properties: {
-        name
+        name,
+        title,
+        slug,
+        distance,
+        totalElevationGain,
+        totalElevationLoss,
       },
-      /* geometry: {
+      geometry: {
         type: 'LineString',
         coordinates,
-      } */
-      geometry: {
-        type: 'Point',
-        coordinates: [_geoloc[0].lng, _geoloc[0].lat],
       }
     });
     const bounds = getBounds(coordinates);
@@ -116,6 +117,7 @@ const Map = (props) => {
   }
   const { geoJson, minCoords, maxCoords } = parseHits(hits);
   const layers = ["track", "image"];
+  const colorScheme = ["Spectral_10", "PRGn_10", "BrBG_10"]
 
   return (
     <div className="mb-10 w-full">
@@ -135,6 +137,8 @@ const Map = (props) => {
             maxCoords={maxCoords}
             layers={layers}
             tracksCount={hits.length}
+            trackSorting="title"
+            colorScheme={colorScheme}
             width="100%"
             height="50vH"
           />

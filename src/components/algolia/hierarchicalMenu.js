@@ -5,7 +5,7 @@ import { useInstantSearch } from 'react-instantsearch-hooks';
 const HierarchicalMenuItems = ({ 
   items, refine, createURL, leaf, hitsPerPage,
 }) => {
-  const { setIndexUiState, indexUiState, results } = useInstantSearch();
+  const { setIndexUiState } = useInstantSearch();
   const className = leaf ? 'px-3' : '';
   return (
     <ul className={className}>

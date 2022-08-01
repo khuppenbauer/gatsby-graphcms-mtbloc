@@ -437,7 +437,7 @@ export const addTrackPoint = (map, source, mapType, mapSource) => {
               {title || name}
             </span>
           </div>
-          <div className="flex items-center flex-col">
+          <div className="flex items-center flex-wrap">
             {renderMetaData(properties)}
           </div>
         </>
