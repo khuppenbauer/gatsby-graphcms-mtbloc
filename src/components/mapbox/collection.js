@@ -91,7 +91,6 @@ const addClusterSource = (map, geoJsonData) => {
 }
 
 const Mapbox = data => {
-  console.log(data);
   const { 
     data: geoJson, url, minCoords, maxCoords, layers, subCollections, tracksCount, colorScheme, trackSorting, width, height,
   } = data

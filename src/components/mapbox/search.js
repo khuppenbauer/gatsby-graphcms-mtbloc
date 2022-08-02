@@ -42,28 +42,30 @@ const addTrackSource = (map, geoJsonData, colorScheme) => {
     feature.properties.color = colors[tracksCount][index];
     const id = `track-${properties.name}`;
     const center = Math.round(geometry.coordinates.length / 2);
-    map.addSource(id, {
-      type: 'geojson',
-      data: feature,
-      promoteId: 'name',
-    });
-    map.addSource(`${id}-border`, {
-      type: 'geojson',
-      data: feature,
-      promoteId: 'name',
-    });
-    map.addSource(`${id}-point`, {
-      type: 'geojson',
-      data: {
-        type: "Feature",
-        properties: feature.properties,
-        geometry: {
-          type: "Point",
-          coordinates: geometry.coordinates[center],
+    if (!map.getSource(id)) {
+      map.addSource(id, {
+        type: 'geojson',
+        data: feature,
+        promoteId: 'name',
+      });
+      map.addSource(`${id}-border`, {
+        type: 'geojson',
+        data: feature,
+        promoteId: 'name',
+      });
+      map.addSource(`${id}-point`, {
+        type: 'geojson',
+        data: {
+          type: "Feature",
+          properties: feature.properties,
+          geometry: {
+            type: "Point",
+            coordinates: geometry.coordinates[center],
+          },
         },
-      },
-      promoteId: 'name',
-    });
+        promoteId: 'name',
+      });
+    }
   });
 }
 
@@ -79,7 +81,6 @@ const addClusterSource = (map, geoJsonData) => {
 }
 
 const Mapbox = (data) => {
-  console.log(data);
   const { dispatch } = useContext(MapContext);
   const { data: geoJson, url, minCoords, maxCoords, layers, colorScheme, tracksCount, trackSorting } = data
   const geoJsonData = geoJson ? geoJson : url;
@@ -116,8 +117,14 @@ const Mapbox = (data) => {
   useEffect(() => {
     if (!(map.current && map.current.isStyleLoaded())) return
     const bounds = new mapboxgl.LngLatBounds([minCoords.longitude, minCoords.latitude], [maxCoords.longitude, maxCoords.latitude]);
-    //map.current.getSource('tracks').setData(geoJsonData);
-    map.current.fitBounds(bounds)
+    let mapSource = 'track';
+    if (tracksCount > 10) {
+      mapSource = 'cluster';
+    } 
+    addTrackSource(map.current, geoJsonData, colorScheme);
+    map.current.getSource('cluster').setData(getTrackPoints(geoJsonData));
+    mapboxHelpers.layer.addLayers(map.current, geoJsonData, 'collection', mapSource);
+    map.current.fitBounds(bounds, { padding: 50 });
   }, [minCoords, maxCoords, geoJsonData]);
 
   return <div ref={mapContainer} style={{ height: "50vH", width: "100%" }} />;

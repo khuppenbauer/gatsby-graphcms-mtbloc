@@ -12,16 +12,21 @@ import { getTracks } from "../geoJson"
 const assetBaseUrl = process.env.GATSBY_ASSET_BASE_URL
 
 export const addLayers = (map, geoJson, mapType, mapSource) => {
+  disableAllTracks(map);
   const tracks = getTracks(geoJson);
   if (tracks) {
     tracks.forEach((track) => {
       const source = `track-${track.properties.name}`;
-      addTrack(map, source, mapType, mapSource);
+      if (!map.getLayer(source)) {
+        addTrack(map, source, mapType, mapSource);
+      }
     })
     if (tracks.length > 1) {
       tracks.forEach((track) => {
         const source = `track-${track.properties.name}-point`;
-        addTrackPoint(map, source, mapType, mapSource);
+        if (!map.getLayer(source)) {
+          addTrackPoint(map, source, mapType, mapSource);
+        }
       })
     }
   }
@@ -493,6 +498,14 @@ export const unselectAllTracks = (map) => {
         { click: false }
       );
     }
+  })
+}
+
+export const disableAllTracks = (map) => {
+  const allLayers = map.getStyle().layers;     
+  const layers = allLayers.filter((layer) => layer.id.startsWith('track-'));
+  layers.forEach((layer) => {
+    map.setLayoutProperty(layer.id, 'visibility', 'none');
   })
 }
 
