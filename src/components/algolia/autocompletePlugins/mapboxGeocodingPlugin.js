@@ -67,9 +67,11 @@ const createMapboxGeocodingPlugin = (
                 },
                 item({ item }) {
                   return (
-                    <div onClick={() => onClick(item)}>
-                      {item.place_name}
-                  </div>
+                    <div>
+                      <button onClick={() => onClick(item)}>
+                        {item.place_name}
+                      </button>
+                    </div>
                   );
                 },
               },

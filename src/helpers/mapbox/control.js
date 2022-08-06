@@ -7,9 +7,8 @@ import TrackSelector from "./trackSelector"
 
 import { getTracks, getImages } from "../geoJson" 
 
-export const addControls = (map, geoJson, minCoords, maxCoords, layers, type, mapSource, trackSorting) => {
+export const addBasicControls = (map) => {
   if (map) {
-    let images = [];
     map.addControl(new mapboxgl.NavigationControl(), 'top-right')
     map.addControl(new mapboxgl.GeolocateControl({
       positionOptions: {
@@ -28,6 +27,12 @@ export const addControls = (map, geoJson, minCoords, maxCoords, layers, type, ma
       }),
       'bottom-left'
     );
+  }
+};
+
+export const addControls = (map, geoJson, minCoords, maxCoords, layers, type, mapSource, trackSorting) => {
+  if (map) {
+    let images = [];
     if (!layers) {
       return;
     }

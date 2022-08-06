@@ -24,6 +24,7 @@ import { createMapboxGeocodingPlugin } from './autocompletePlugins/mapboxGeocodi
 import { createSuggestionsPlugin } from './autocompletePlugins/createSuggestionsPlugin';
 
 import '@algolia/autocomplete-theme-classic';
+import './styles.css'
 
 const mapboxToken = process.env.GATSBY_MAPBOX_ACCESS_TOKEN;
 
@@ -31,6 +32,7 @@ const Autocomplete = ({
   searchClient,
   className,
   indexName,
+  hitsPerPage,
   ...autocompleteProps
 }) => {
   const autocompleteContainer = useRef(null);
@@ -73,6 +75,7 @@ const Autocomplete = ({
               configure: {
                 ...prevIndexUiState.configure,
                 aroundLatLng: '',
+                hitsPerPage,
               }
             }));
           },
@@ -101,6 +104,7 @@ const Autocomplete = ({
             aroundLatLng: `${coordinates[1]},${coordinates[0]}`,
             aroundRadius: 5000,
             getRankingInfo: true,
+            hitsPerPage,
           }
         }));
       },
@@ -116,7 +120,7 @@ const Autocomplete = ({
       mapboxGeocodingPlugin,
       querySuggestionsPlugin,
     ];
-  }, [searchClient, indexName, setIndexUiState]); 
+  }, [searchClient, indexName, hitsPerPage, setIndexUiState]); 
 
   useEffect(() => {
     if (!autocompleteContainer.current) {
@@ -135,6 +139,7 @@ const Autocomplete = ({
           configure: {
             ...prevIndexUiState.configure,
             aroundLatLng: '',
+            hitsPerPage,
           }
         }));
         
@@ -146,6 +151,7 @@ const Autocomplete = ({
           configure: {
             ...prevIndexUiState.configure,
             aroundLatLng: '',
+            hitsPerPage,
           }
         }));
       },
@@ -160,7 +166,7 @@ const Autocomplete = ({
     });
 
     return () => autocompleteInstance.destroy();
-  }, [plugins]);
+  }, [plugins, hitsPerPage]);
 
   return <div ref={autocompleteContainer} />;
 }

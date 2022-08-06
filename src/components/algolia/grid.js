@@ -4,7 +4,7 @@ import { useHits } from 'react-instantsearch-hooks-web';
 import Tracks from "../../views/tracks"
 
 
-const CustomHits = (props) => {
+const Grid = (props) => {
   const { hits } = useHits(props);
   const tracks = hits.map((hit) => {
     let geoDistance;
@@ -45,4 +45,4 @@ const CustomHits = (props) => {
   )
 }
 
-export default CustomHits;
+export default Grid;

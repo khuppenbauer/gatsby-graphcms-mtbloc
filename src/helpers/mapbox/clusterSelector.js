@@ -72,9 +72,14 @@ class Plugin {
   onAdd(map) {
     const { types, tracks } = this;
     this.map = map;
+    const clusterSelector = document.getElementById('cluster-selector');
+    if (clusterSelector) {
+      clusterSelector.parentNode.removeChild(clusterSelector);
+    }
     this.container = document.createElement('div');
     this.container.classList.add('mapboxgl-ctrl');
     this.container.classList.add('mapboxgl-ctrl-group');
+    this.container.setAttribute('id', 'cluster-selector');
     this.container.style.float = 'none !important';
     this.container.style.cursor = 'pointer';
     render(

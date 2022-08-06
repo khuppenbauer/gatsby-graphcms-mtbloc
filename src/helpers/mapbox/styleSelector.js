@@ -37,9 +37,14 @@ class Plugin {
   onAdd(map) {
     const { styles } = this;
     this.map = map;
+    const styleSelector = document.getElementById('style-selector');
+    if (styleSelector) {
+      styleSelector.parentNode.removeChild(styleSelector);
+    }
     this.container = document.createElement('div');
     this.container.classList.add('mapboxgl-ctrl');
     this.container.classList.add('mapboxgl-ctrl-style-selector');
+    this.container.setAttribute('id', 'style-selector');
     this.container.style.float = 'none !important';
     this.container.style.cursor = 'pointer';
     render(<StyleSelector map={map} styles={styles} />, this.container);

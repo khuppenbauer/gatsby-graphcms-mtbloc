@@ -1,9 +1,11 @@
 import { default as React } from "react"
 import { useHierarchicalMenu } from 'react-instantsearch-hooks-web';
+import { useInstantSearch } from 'react-instantsearch-hooks';
 
 const HierarchicalMenuItems = ({ 
-  items, refine, createURL, leaf 
+  items, refine, createURL, leaf, hitsPerPage,
 }) => {
+  const { setIndexUiState } = useInstantSearch();
   const className = leaf ? 'px-3' : '';
   return (
     <ul className={className}>
@@ -15,6 +17,13 @@ const HierarchicalMenuItems = ({
               href={createURL(value)}
               style={{ fontWeight: isRefined ? 'bold' : '' }}
               onClick={event => {
+                setIndexUiState((prevIndexUiState) => ({
+                  ...prevIndexUiState,
+                  configure: {
+                    ...prevIndexUiState.configure,
+                    hitsPerPage,
+                  }
+                }));
                 event.preventDefault();
                 refine(value);
               }}
@@ -37,6 +46,7 @@ const HierarchicalMenuItems = ({
 };
 
 const HierarchicalMenu = (props) => {
+  const { hitsPerPage } = props;
   const {
     items,
     refine,
@@ -47,6 +57,7 @@ const HierarchicalMenu = (props) => {
       items={items}
       refine={refine}
       createURL={createURL}
+      hitsPerPage={hitsPerPage}
     />
   );
 }

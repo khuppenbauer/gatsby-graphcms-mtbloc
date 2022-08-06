@@ -205,9 +205,14 @@ class Plugin {
   onAdd(map) {
     const { tracks } = this;
     this.map = map;
+    const trackSelector = document.getElementById('track-selector');
+    if (trackSelector) {
+      trackSelector.parentNode.removeChild(trackSelector);
+    }
     this.container = document.createElement('div');
     this.container.classList.add('mapboxgl-ctrl');
     this.container.classList.add('mapboxgl-ctrl-group');
+    this.container.setAttribute('id', 'track-selector');
     this.container.style.float = 'none !important';
     this.container.style.cursor = 'pointer';
     if (tracks.length > 1) {

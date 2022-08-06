@@ -66,6 +66,7 @@ const Mapbox = data => {
       mapboxHelpers.chart.addChartPoints(map.current);
     });
     map.current.once('style.load', () => {
+      mapboxHelpers.control.addBasicControls(map.current);
       mapboxHelpers.control.addControls(map.current, geoJsonData, minCoords, maxCoords, layers, 'track', 'track');
     });
   });

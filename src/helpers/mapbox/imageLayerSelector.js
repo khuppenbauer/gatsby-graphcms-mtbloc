@@ -66,9 +66,14 @@ class Plugin {
 
   onAdd(map) {
     this.map = map;
+    const imageSelector = document.getElementById('image-selector');
+    if (imageSelector) {
+      imageSelector.parentNode.removeChild(imageSelector);
+    }
     this.container = document.createElement('div');
     this.container.classList.add('mapboxgl-ctrl');
     this.container.classList.add('mapboxgl-ctrl-group');
+    this.container.setAttribute('id', 'image-selector');
     this.container.style.float = 'none !important';
     this.container.style.cursor = 'pointer';
     render(

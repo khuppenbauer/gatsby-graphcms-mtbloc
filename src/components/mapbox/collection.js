@@ -122,6 +122,7 @@ const Mapbox = data => {
       mapboxHelpers.layer.addLayers(map.current, geoJsonData, 'collection', mapSource);
     });
     map.current.once('style.load', () => {
+      mapboxHelpers.control.addBasicControls(map.current);
       mapboxHelpers.control.addControls(map.current, geoJsonData, minCoords, maxCoords, layers, 'collection', mapSource, trackSorting);
     });
   });
