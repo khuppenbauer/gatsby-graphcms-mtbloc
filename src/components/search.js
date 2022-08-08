@@ -4,8 +4,8 @@ import {
   InstantSearch, 
   Configure,
 } from 'react-instantsearch-hooks-web';
-import { Tab } from '@headlessui/react'
-import { Grid, Map } from 'react-feather';
+import { Tab, Disclosure } from '@headlessui/react'
+import { Grid, Map, Plus, Minus } from 'react-feather';
 
 import CustomAutocomplete from "./algolia/autocomplete"
 import CustomRadius from "./algolia/aroundRadius"
@@ -16,6 +16,7 @@ import CustomMap from "./algolia/map"
 import CustomPagination from "./algolia/pagination"
 import CustomStats from "./algolia/stats"
 import CustomSortBy from "./algolia/sortBy"
+import CustomRangeSlider from "./algolia/range"
 
 import Header from "../views/header"
 import Headline from "../views/headline"
@@ -41,16 +42,73 @@ const Search = () => {
           <Configure filters="NOT private:true" />
           <div className="md:w-1/4 md:pr-12 md:border-r md:border-b-0 md:mb-0 mb-10 pb-10 border-b border-gray-800">       
             <Headline title="Filter" />
-            <CustomCurrentRefinements />
-            <CustomHierarchicalMenu
-              hitsPerPage={hitsPerPage}
-              attributes={[
-                'hierarchicalCategories.lvl0',
-                'hierarchicalCategories.lvl1',
-                'hierarchicalCategories.lvl2',
-              ]}
-              limit={100}
-            />        	
+            <CustomCurrentRefinements /> 
+            <Disclosure>
+              {({ open }) => (
+                <>
+                  <Disclosure.Button className="bg-gray-800 flex w-full justify-between px-2 py-2 border border-gray-800 text-sm font-medium text-gray-400 hover:bg-gray-800">
+                    <span>Land / Region / Ort</span>
+                    {open ? <Minus className="h-5 w-5" /> : <Plus className="h-5 w-5" />}
+                  </Disclosure.Button>
+                  <Disclosure.Panel className="py-2">
+                    <CustomHierarchicalMenu
+                      hitsPerPage={hitsPerPage}
+                      attributes={[
+                        'hierarchicalCategories.lvl0',
+                        'hierarchicalCategories.lvl1',
+                        'hierarchicalCategories.lvl2',
+                      ]}
+                      limit={100}
+                    />                  
+                  </Disclosure.Panel>
+                </>
+              )}
+            </Disclosure>
+            <Disclosure as="div" className="mt-2">
+              {({ open }) => (
+                <>
+                  <Disclosure.Button className="bg-gray-800 flex w-full justify-between px-2 py-2 border border-gray-800 text-sm font-medium text-gray-400 hover:bg-gray-800">
+                    <span>Länge</span>
+                    {open ? <Minus className="h-5 w-5" /> : <Plus className="h-5 w-5" />}
+                  </Disclosure.Button>
+                  <Disclosure.Panel className="py-2">
+                    <CustomRangeSlider
+                      attribute="distance"
+                    /> 
+                  </Disclosure.Panel>
+                </>
+              )}
+            </Disclosure>
+            <Disclosure as="div" className="mt-2">
+              {({ open }) => (
+                <>
+                  <Disclosure.Button className="bg-gray-800 flex w-full justify-between px-2 py-2 border border-gray-800 text-sm font-medium text-gray-400 hover:bg-gray-800">
+                    <span>Höhenmeter</span>
+                    {open ? <Minus className="h-5 w-5" /> : <Plus className="h-5 w-5" />}
+                  </Disclosure.Button>
+                  <Disclosure.Panel className="py-2">
+                    <CustomRangeSlider
+                      attribute="totalElevationGain"
+                    />
+                  </Disclosure.Panel>
+                </>
+              )}
+            </Disclosure>
+            <Disclosure as="div" className="mt-2">
+              {({ open }) => (
+                <>
+                  <Disclosure.Button className="bg-gray-800 flex w-full justify-between px-2 py-2 border border-gray-800 text-sm font-medium text-gray-400 hover:bg-gray-800">
+                    <span>Tiefenmeter</span>
+                    {open ? <Minus className="h-5 w-5" /> : <Plus className="h-5 w-5" />}
+                  </Disclosure.Button>
+                  <Disclosure.Panel className="py-2">
+                    <CustomRangeSlider
+                      attribute="totalElevationLoss"
+                    />
+                  </Disclosure.Panel>
+                </>
+              )}
+            </Disclosure>
           </div>
           <div className="md:flex md:flex-col md:w-3/4 md:pl-12">
             <Header title="Suche" />

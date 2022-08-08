@@ -6,23 +6,35 @@ const CurrentRefinements = (props) => {
   return (
     <>
       {items.length > 0 ? (
-        <div className="my-2">
+        <div className="my-2" key="current-refinement">
           {items.map((item) => {
-            const { refinements } = item;
-            const { value, label } = refinements[0];
-            const text = label.split('>').pop().trim();
+            const { refinements, attribute: key } = item;
+            const items = refinements.map((refinement) => {
+              const { label, type } = refinement;
+              if (type === 'hierarchical') {
+                return label.split('>').pop().trim();
+              }
+              return null;
+            })
+            const text = items.join('');
+            if (text.length === 0) {
+              return null;
+            }
             return (
-              <span key={value} className="rounded-sm py-1 px-2 text-xs font-medium text-white bg-blue-500">
-                <a
-                  href={createURL(refinements)}
-                  onClick={event => {
-                    event.preventDefault();
-                    refine(refinements[0]);
-                  }}
-                >
-                  {text}<span className="ml-2 text-base cursor-pointer">×</span>
-                </a>
-              </span>
+              <>
+                <span key={key} className="rounded-sm py-1 px-2 text-xs font-medium text-white bg-blue-500">
+                  <a
+                    href={createURL(refinements)}
+                    onClick={event => {
+                      event.preventDefault();
+                      refine(refinements[0]);
+                    }}
+                  >
+                    {text}<span className="ml-2 text-base cursor-pointer">×</span>
+                  </a>
+                </span>
+                <br />
+              </>
             )
           })}
         </div>
