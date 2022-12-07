@@ -23,6 +23,7 @@ module.exports = {
         token: process.env.GRAPHCMS_TOKEN,
         locales: ["de"],
         stages: ["PUBLISHED"],
+        queryConcurrency: 5,
       },
     },
     `gatsby-transformer-sharp`,
