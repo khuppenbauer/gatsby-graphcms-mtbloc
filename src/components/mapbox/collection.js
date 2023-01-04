@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from "react"
+import randomColor from 'randomcolor';
 
 import mapboxgl from "mapbox-gl"
 import "mapbox-gl/dist/mapbox-gl.css"
@@ -51,7 +52,7 @@ const addTrackSource = (map, geoJsonData, colorScheme) => {
   });
   trackFeatures.forEach((feature, index) => {
     const { properties, geometry } = feature;
-    feature.properties.color = colors[tracksCount][index];
+    feature.properties.color = colors[tracksCount] ? colors[tracksCount][index] : randomColor();
     const id = `track-${properties.name}`;
     const center = Math.round(geometry.coordinates.length / 2);
     map.addSource(id, {
