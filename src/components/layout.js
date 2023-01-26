@@ -14,6 +14,9 @@ import Header from "./header"
 import Footer from "./footer"
 import "./layout.css"
 
+const umami = process.env.GATSBY_UMAMI_SITE_ID;
+const umamiSrc = process.env.GATSBY_UMAMI_SITE_SRC;
+
 const Layout = ({ children }) => {
   const data = useStaticQuery(graphql`
     query SiteTitleQuery {
@@ -46,6 +49,15 @@ const Layout = ({ children }) => {
     <>
       <Helmet>
         <script async data-no-cookie src="https://cdn.splitbee.io/sb.js"></script>
+        {process.env.NODE_ENV === 'production' && umami && (
+          <script
+            key="umami-script"
+            async
+            defer
+            data-website-id={`${umami}`}
+            src={`${umamiSrc}/umami.js`}
+          />
+        )}
       </Helmet>
       <Header siteTitle={data.site.siteMetadata?.title} />
       <main>{children}</main>
