@@ -6,7 +6,8 @@ import Tracks from "../../views/tracks"
 
 const Grid = (props) => {
   const { hits } = useHits(props);
-  const tracks = hits.map((hit) => {
+  const tracks = [];
+  hits.forEach((hit) => {
     let geoDistance;
     const { 
       objectID: id, title, slug, _rankingInfo,
@@ -38,7 +39,7 @@ const Grid = (props) => {
       totalElevationLoss,
       geoDistance,
     };
-    return track;
+    tracks.push(track);
   });
   return (
     <Tracks tracks={tracks} className="p-4 md:w-1/2" />
