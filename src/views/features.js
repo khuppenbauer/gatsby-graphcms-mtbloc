@@ -52,10 +52,13 @@ const getTrackItems = (data, tracks) => data
     const { _id: id, foreignKey: key, meta } = trackItem;
     const { title, slug, previewImageUrl: img, distance, totalElevationGain, totalElevationLoss } = meta;
     const text = renderMetaData({ distance, totalElevationGain, totalElevationLoss });
-    const preview = img.split('/preview/');
-    let previewImage = img;
-    if(preview[1]) {
-      previewImage = `${cloudinaryBaseUrl}/q_auto:eco/${cloudinaryAppId}/preview/${preview[1].replace(/.jpg/g, '.webp')}`;
+    let previewImage = '';
+    if (img) {
+      const preview = img.split('/preview/');
+      previewImage = img;
+      if(preview[1]) {
+        previewImage = `${cloudinaryBaseUrl}/q_auto:eco/${cloudinaryAppId}/preview/${preview[1].replace(/.jpg/g, '.webp')}`;
+      }
     }
     return {
       id,

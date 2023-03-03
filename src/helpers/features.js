@@ -15,7 +15,7 @@ export const getAlgoliaFeatures = async (minCoords, maxCoords, types) => {
         maxLng,
       ]
     ],
-    hitsPerPage: 1000,
+    hitsPerPage: 100,
   }
   if (types.length > 0) {
     const facets = types.map((type) => {
