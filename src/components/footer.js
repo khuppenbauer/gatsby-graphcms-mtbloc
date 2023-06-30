@@ -101,6 +101,9 @@ const Footer = ({ siteTitle, metaPages, collectionTypes }) => (
           © {new Date().getFullYear()} MapSeven — Kerstin Huppenbauer
         </p>
         <span className="inline-flex sm:ml-auto sm:mt-0 mt-2 justify-center sm:justify-start">
+          <img className="h-[24px]" src={'/api_logo_pwrdBy_strava_stack_gray.png'} alt="strava" />
+        </span>
+        <span className="inline-flex sm:ml-auto sm:mt-0 mt-2 justify-center sm:justify-start">
           <a
             className="text-gray-400"
             href="https://www.facebook.com/kerstin.huppenbauer"
