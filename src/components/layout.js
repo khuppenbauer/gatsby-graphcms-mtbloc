@@ -48,14 +48,13 @@ const Layout = ({ children }) => {
   return (
     <>
       <Helmet>
-        <script async data-no-cookie src="https://cdn.splitbee.io/sb.js"></script>
         {process.env.NODE_ENV === 'production' && umami && (
           <script
             key="umami-script"
             async
             defer
             data-website-id={`${umami}`}
-            src={`${umamiSrc}/umami.js`}
+            src={`${umamiSrc}`}
           />
         )}
       </Helmet>
