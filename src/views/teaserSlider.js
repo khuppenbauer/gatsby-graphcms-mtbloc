@@ -2,6 +2,8 @@ import React, { useState } from "react"
 import { Link } from "gatsby"
 import { ChevronLeft, ChevronRight } from "react-feather"
 
+const assetBaseUrl = process.env.GATSBY_ASSET_BASE_URL
+
 const TeaserSlider = ({ items }) => {
   const [index, setIndex] = useState(0);
 
@@ -48,7 +50,7 @@ const TeaserSlider = ({ items }) => {
         <div className="h-full border-2 border-gray-800 rounded-lg overflow-hidden">
           {items[index].img ? (
             <div className="bg-gray-800">
-              <img className={items[index].imgClassName} src={items[index].img} alt={items[index].title} />
+              <img className={items[index].imgClassName} src={items[index].img.replace('undefined', assetBaseUrl)} alt={items[index].title} />
             </div>
           ) : null}
           <div className="p-6">
