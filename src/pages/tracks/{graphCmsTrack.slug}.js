@@ -23,6 +23,7 @@ import useAlgoliaLayers from "../../hooks/useAlgoliaLayers"
 import { convertMetaData } from "../../helpers/track"
 
 const assetBaseUrl = process.env.GATSBY_ASSET_BASE_URL
+const hygraphAssetBaseUrl = process.env.GATSBY_HYGRAPH_ASSET_BASE_URL
 const queryClient = new QueryClient();
 
 const teaser = ['map', 'book', 'track', 'image'];
@@ -244,8 +245,6 @@ const TrackPage = ({ data: { track } }) => {
     description,
     collection,
     downloadGpx,
-    gpxFileSmallUrl,
-    gpxFileUrl,
     geoJson,
     minCoords,
     maxCoords,
@@ -258,6 +257,8 @@ const TrackPage = ({ data: { track } }) => {
     endState,
     endCountry,
   } = track
+  const gpxFileSmallUrl = track.gpxFileSmallUrl?.replace(assetBaseUrl, hygraphAssetBaseUrl);
+  const gpxFileUrl = track.gpxFileUrl?.replace(assetBaseUrl, hygraphAssetBaseUrl);
   const assets = [];
   const features = photos.map((photo) => {
     const { id, handle, fileName, location, width, height } = photo;
