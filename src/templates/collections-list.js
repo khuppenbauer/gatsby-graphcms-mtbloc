@@ -17,7 +17,7 @@ import Features from "../views/features"
 import useAlgoliaFeatures from "../hooks/useAlgoliaFeatures"
 import useAlgoliaLayers from "../hooks/useAlgoliaLayers"
 
-const assetBaseUrl = process.env.GATSBY_ASSET_BASE_URL
+const assetBaseUrl = process.env.GATSBY_ASSET_HYGRAPH_BASE_URL
 const queryClient = new QueryClient();
 
 const FeatureTeaser = ({ 

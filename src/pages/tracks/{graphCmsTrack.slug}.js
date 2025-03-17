@@ -22,8 +22,11 @@ import useAlgoliaFeatures from "../../hooks/useAlgoliaFeatures"
 import useAlgoliaLayers from "../../hooks/useAlgoliaLayers"
 import { convertMetaData } from "../../helpers/track"
 
+const cloudinaryBaseUrl = process.env.GATSBY_CLOUDINARY_BASE_URL
+const cloudinaryAppId = process.env.GATSBY_CLOUDINARY_APP_ID
 const assetBaseUrl = process.env.GATSBY_ASSET_BASE_URL
 const hygraphAssetBaseUrl = process.env.GATSBY_HYGRAPH_ASSET_BASE_URL
+const hygraphCdnBaseUrl = process.env.GATSBY_HYGRAPH_CDN_BASE_URL
 const queryClient = new QueryClient();
 
 const teaser = ['map', 'book', 'track', 'image'];
@@ -249,6 +252,7 @@ const TrackPage = ({ data: { track } }) => {
     minCoords,
     maxCoords,
     photos,
+    images,
     previewImageUrl,
     startCity,
     startState,
@@ -257,20 +261,46 @@ const TrackPage = ({ data: { track } }) => {
     endState,
     endCountry,
   } = track
-  const gpxFileSmallUrl = track.gpxFileSmallUrl?.replace(assetBaseUrl, hygraphAssetBaseUrl);
-  const gpxFileUrl = track.gpxFileUrl?.replace(assetBaseUrl, hygraphAssetBaseUrl);
+  const gpxFileSmallUrl = track.gpxFileSmallUrl?.replace(assetBaseUrl, hygraphCdnBaseUrl);
+  const gpxFileUrl = track.gpxFileUrl?.replace(assetBaseUrl, hygraphCdnBaseUrl);
+
   const assets = [];
-  const features = photos.map((photo) => {
-    const { id, handle, fileName, location, width, height } = photo;
-    const { latitude, longitude } = location;
-    const orientation = width > height ? 'landscape' : 'portrait';
-    assets.push({
-      key: id,
-      id: handle,
-      src: `${assetBaseUrl}/resize=h:320,fit:crop/auto_image/compress/${handle}`,
-      title: fileName,
-      orientation,
+  if(photos.length > 0) {
+    photos.forEach(photo => {
+      const { id, handle, fileName, location, width, height } = photo;
+      const { latitude, longitude } = location;
+      const orientation = width > height ? 'landscape' : 'portrait';
+      assets.push({
+        key: id,
+        id: handle,
+        src: `${hygraphAssetBaseUrl}/resize=h:320,fit:crop/auto_image/compress=metadata:true/${handle}`,
+        title: fileName,
+        orientation,
+        latitude,
+        longitude,
+        width,
+        height,
+      });
+    })
+  } else if (images.length > 0) {
+    images.forEach(image => {
+      const { asset_id: id, public_id, width, height, context: { custom: { lat: latitude, lon: longitude } } } = image;
+      const orientation = width > height ? 'landscape' : 'portrait';
+      assets.push({
+        key: id,
+        id: public_id,
+        src: `${cloudinaryBaseUrl}/c_fit,h_320/q_auto/f_auto/${cloudinaryAppId}/${public_id}`,
+        title: public_id,
+        orientation,
+        latitude,
+        longitude,
+        width,
+        height,
+      });
     });
+  }
+  const features = assets.map((asset) => {
+    const { latitude, longitude, title, width, height, orientation, src } = asset;
     return {
       type: "Feature",
       geometry: {
@@ -282,8 +312,8 @@ const TrackPage = ({ data: { track } }) => {
       },
       properties: {
         id,
-        handle, 
-        fileName,
+        fileName: title,
+        src,
         width,
         height,
         orientation,
@@ -471,6 +501,7 @@ export const pageQuery = graphql`
         width
         height
       }
+      images
       private
     }
   }

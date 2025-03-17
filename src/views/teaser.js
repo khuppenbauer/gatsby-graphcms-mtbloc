@@ -4,7 +4,7 @@ import slugify from '@sindresorhus/slugify';
 
 import Image from "./image"
 
-const assetBaseUrl = process.env.GATSBY_ASSET_BASE_URL
+const assetBaseUrl = process.env.GATSBY_HYGRAPH_ASSET_BASE_URL
 
 const Teaser = ({ id, slug, title, subtitle, image, staticImage, className }) => {
   let assets = [];
@@ -13,7 +13,7 @@ const Teaser = ({ id, slug, title, subtitle, image, staticImage, className }) =>
     assets.push({
       key: imageId,
       id: slugify(`${id}-${handle}`),
-      src: `${assetBaseUrl}/resize=w:320,h:240,fit:crop/auto_image/compress/${handle}`,
+      src: `${assetBaseUrl}/resize=w:320,h:240,fit:crop/auto_image/compress=metadata:true/${handle}`,
       title,
       button: 'map-pin',
     });
@@ -23,7 +23,7 @@ const Teaser = ({ id, slug, title, subtitle, image, staticImage, className }) =>
     assets.push({
       key: imageId,
       id: slugify(`${id}-${handle}`),
-      src: `${assetBaseUrl}/resize=w:320,h:240,fit:crop/auto_image/compress/${handle}`,
+      src: `${assetBaseUrl}/resize=w:320,h:240,fit:crop/auto_image/compress=metadata:true/${handle}`,
       title,
       button: 'image',
     });

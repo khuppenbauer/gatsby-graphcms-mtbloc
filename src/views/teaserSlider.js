@@ -2,6 +2,7 @@ import React, { useState } from "react"
 import { Link } from "gatsby"
 import { ChevronLeft, ChevronRight } from "react-feather"
 
+const hygraphAssetBaseUrl = process.env.GATSBY_HYGRAPH_ASSET_BASE_URL
 const assetBaseUrl = process.env.GATSBY_ASSET_BASE_URL
 
 const TeaserSlider = ({ items }) => {
@@ -37,6 +38,8 @@ const TeaserSlider = ({ items }) => {
     );
   };
 
+  const regex = new RegExp(`${assetBaseUrl}|undefined|https://media.graphcms.com`, "g");
+  const imgSrc = items[index].img.replace(regex, hygraphAssetBaseUrl);
   return (
     <div key={items[index].key} id={items[index].id} className="relative md:w-1/2 lg:w-full w-full flex justify-center">
       {items.length > 1 ? (
@@ -50,7 +53,7 @@ const TeaserSlider = ({ items }) => {
         <div className="h-full border-2 border-gray-800 rounded-lg overflow-hidden">
           {items[index].img ? (
             <div className="bg-gray-800">
-              <img className={items[index].imgClassName} src={items[index].img.replace('undefined', assetBaseUrl)} alt={items[index].title} />
+              <img className={items[index].imgClassName} src={imgSrc} alt={items[index].title} />
             </div>
           ) : null}
           <div className="p-6">

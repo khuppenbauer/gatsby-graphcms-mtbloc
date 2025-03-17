@@ -9,7 +9,7 @@ import geoViewport from '@mapbox/geo-viewport';
 import { renderMetaData, convertMetaData } from "../track" 
 import { getTracks } from "../geoJson"
 
-const assetBaseUrl = process.env.GATSBY_ASSET_BASE_URL
+const assetBaseUrl = process.env.GATSBY_HYGRAPH_ASSET_BASE_URL
 
 export const addLayers = (map, geoJson, mapType, mapSource) => {
   disableAllTracks(map);
@@ -316,16 +316,12 @@ export const addSymbol = (map, type, source) => {
     if (type === 'image') {
       map.on('click', type, (e) => {
         const { properties } = e.features[0];
-        const { handle, orientation, url, imageWidth, imageHeight } = properties;
+        const { src, orientation, imageWidth, imageHeight } = properties;
         let width = imageWidth;
         let height = imageHeight;
         if (orientation) {
           width = orientation === 'landscape' ? 320 : 240;
           height = orientation === 'landscape' ? 240 : 320; 
-        }
-        let src = url;
-        if (handle) {
-          src = `${assetBaseUrl}/resize=w:${width},h:${height},fit:crop/auto_image/compress/${handle}`;
         }
         const html = `<img src="${src}" width="${width}" height="${height}" />`;
         if (html) {

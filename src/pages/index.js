@@ -7,6 +7,8 @@ import Seo from "../components/seo"
 import Tracks from "../views/tracks"
 import Headline from "../views/headline"
 
+const assetBaseUrl = process.env.GATSBY_HYGRAPH_ASSET_BASE_URL
+
 const Statistic = ({data}) => {
   const statistic = data.reduce(
     (acc, { distance, totalElevationGain, totalElevationLoss }) => {
@@ -56,7 +58,7 @@ const Statistic = ({data}) => {
 }
 
 const IndexPage = ({ data: { tracks, trackStatistic }}) => {
-  const image = "https://media.graphcms.com/0faI5rNFTBaR2JdvNAML";
+  const image = `${assetBaseUrl}/0faI5rNFTBaR2JdvNAML`;
   return (
     <Layout>
       <Seo title="Home" image={image} />
@@ -84,7 +86,7 @@ const IndexPage = ({ data: { tracks, trackStatistic }}) => {
             <div className="p-4 md:w-1/2 w-full">
               <Link to={`/search`}>
                 <div className="h-full border-2 border-gray-800 rounded-lg overflow-hidden">
-                  <img className="w-full object-cover object-center" src="https://media.graphcms.com/kVt3w53XSKmJlKR8z3TB" alt="search" width="640" height="426" />
+                  <img className="w-full object-cover object-center" src={`${assetBaseUrl}/kVt3w53XSKmJlKR8z3TB`} alt="search" width="640" height="426" />
                   <div className="p-6">
                     <h1 className="title-font text-lg font-medium text-white mb-3">
                       Suche
@@ -101,7 +103,7 @@ const IndexPage = ({ data: { tracks, trackStatistic }}) => {
             <div className="p-4 md:w-1/2 w-full">
               <Link to={`/collections`}>
                 <div className="h-full border-2 border-gray-800 rounded-lg overflow-hidden">
-                  <img className="w-full object-cover object-center" src="https://media.graphcms.com/N0RNaxHPSYWcgHACTUY0" alt="search" width="640" height="426" />
+                  <img className="w-full object-cover object-center" src={`${assetBaseUrl}/N0RNaxHPSYWcgHACTUY0`} alt="search" width="640" height="426" />
                   <div className="p-6">
                     <h1 className="title-font text-lg font-medium text-white mb-3">
                       Sammlungen
