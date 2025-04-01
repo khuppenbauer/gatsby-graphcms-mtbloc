@@ -316,14 +316,15 @@ export const addSymbol = (map, type, source) => {
     if (type === 'image') {
       map.on('click', type, (e) => {
         const { properties } = e.features[0];
-        const { src, orientation, imageWidth, imageHeight } = properties;
+        const { src, url, orientation, imageWidth, imageHeight } = properties;
+        const imageSrc = src || url;
         let width = imageWidth;
         let height = imageHeight;
         if (orientation) {
           width = orientation === 'landscape' ? 320 : 240;
           height = orientation === 'landscape' ? 240 : 320; 
         }
-        const html = `<img src="${src}" width="${width}" height="${height}" />`;
+        const html = `<img src="${imageSrc}" width="${width}" height="${height}" />`;
         if (html) {
           new mapboxgl.Popup({ anchor: 'center' })
             .setLngLat(map.getCenter())
